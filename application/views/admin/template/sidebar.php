@@ -140,29 +140,12 @@
                             </a>
                         </li>
                     <?php endif ?>  
-                    <!-- <?php if (in_array('M005', $user_access) || in_array('*', $user_access)): ?>
-                        <li class="<?= $this->uri->segment(3) == 'project' ? 'active' : '' ?>">
-                            <a href="<?= route('dashboard/master/project') ?>"
-                                class="">
-                                <i class='bx bxs-right-arrow'></i> PROJECT
-                            </a>
-                        </li>
-                    <?php endif ?>
-                    <?php if (in_array('M006', $user_access) || in_array('*', $user_access)): ?>
-                        <li class="<?= $this->uri->segment(3) == 'plazma' ? 'active' : '' ?>">
-                            <a href="<?= route('dashboard/master/plazma') ?>"
-                                class="">
-                                <i class='bx bxs-right-arrow'></i> PLAZMA
-                            </a>
-                        </li>
-                    <?php endif ?> -->
                 </ul>
             </li>
             <?php endif ?>
 
-            <!-- <?php if (in_array('O003', $user_access) || in_array('*', $user_access)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'order' && $this->uri->segment(3) == 'entry') ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/order/entry') ?>">
+            <li class="<?= ($this->uri->segment(2) == 'plan-activity'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
+                <a href="<?= route('dashboard/sales/plan-activity') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
@@ -171,15 +154,12 @@
                             d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
                             stroke-width="1.5" />
                     </svg>
-
-                    <span class="link-name">ORDER CUSTOMER</span>
+                    <span class="link-name">SALES ACTIVITY</span>
                 </a>
             </li>
-            <?php endif ?>
 
-            <?php if (in_array('O004', $user_access) || in_array('*', $user_access)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'order' && $this->uri->segment(3) == 'entry') ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/order/entry') ?>">
+            <!-- <li class="<?= ($this->uri->segment(2) == 'actual-activity'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
+                <a href="<?= route('dashboard/sales/actual-activity') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
@@ -188,15 +168,12 @@
                             d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
                             stroke-width="1.5" />
                     </svg>
-
-                    <span class="link-name">ORDER LIST</span>
+                    <span class="link-name">ACTUAL ACTIVITY</span>
                 </a>
-            </li>
-            <?php endif ?> -->
+            </li> -->
 
-            <!-- <?php if (in_array('O001', $user_access) || in_array('*', $user_access)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'order' && $this->uri->segment(3) == 'entry') ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/order/entry') ?>">
+            <li class="<?= ($this->uri->segment(2) == 'sales' && $this->uri->segment(3) == 'report') ? 'active' : '' ?>">
+                <a href="<?= route('dashboard/sales/report') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
@@ -205,160 +182,9 @@
                             d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
                             stroke-width="1.5" />
                     </svg>
-
-                    <span class="link-name">ORDER BROILER</span>
+                    <span class="link-name">REPORT ACTIVITY</span>
                 </a>
             </li>
-            <?php endif ?> -->
-
-            <?php if (in_array('C001', $user_access) || in_array('O003', $user_access) || in_array('*', $user_access)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'confirm'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/confirm') ?>">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
-                            stroke-width="1.5" />
-                        <path
-                            d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
-                            stroke-width="1.5" />
-                    </svg>
-
-                    <span class="link-name">CONFIRM ORDER</span>
-                </a>
-            </li>
-            <?php endif ?>
-            <?php if (in_array('C002', $user_access) || in_array('O002', $user_access) || in_array('*', $user_access)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'confirm' && $this->uri->segment(3) == 'report') ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/confirm/report') ?>">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
-                            stroke-width="1.5" />
-                        <path
-                            d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
-                            stroke-width="1.5" />
-                    </svg>
-
-                    <span class="link-name">REPORT ORDER</span>
-                </a>
-            </li>
-            <?php endif ?>
-            <!-- <?php 
-                $role = ['SUPERADMIN']
-            ?>
-            <?php if (in_array($user['ROLE'], $role) || in_array('*', $user_access)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'confirm'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/confirm') ?>">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
-                            stroke-width="1.5" />
-                        <path
-                            d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
-                            stroke-width="1.5" />
-                    </svg>
-
-                    <span class="link-name">CONFIRM ORDER NEW</span>
-                </a>
-            </li>
-            <?php endif ?>
-            <?php if (in_array($user['ROLE'], $role)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'confirm' && $this->uri->segment(3) == 'report') ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/confirm/report') ?>">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
-                            stroke-width="1.5" />
-                        <path
-                            d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
-                            stroke-width="1.5" />
-                    </svg>
-
-                    <span class="link-name">REPORT ORDER NEW</span>
-                </a>
-            </li>
-            <?php endif ?> -->
-
-            <?php $role_report = ["SUPERADMIN", "ADMIN HO"]; if (in_array($user['ROLE'], $role_report)): ?>
-            <li class="">
-                <a href="<?= route('dashboard/confirm/report_approval') ?>">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
-                            stroke-width="1.5" />
-                        <path
-                            d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
-                            stroke-width="1.5" />
-                    </svg>
-
-                    <span class="link-name">REPORT APPROVAL</span>
-                </a>
-            </li>
-            <?php endif ?>
-
-            <?php if (in_array('O005', $user_access) || in_array('*', $user_access)): ?>
-            <li class="<?= ($this->uri->segment(2) == 'credit-limit') ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/credit-limit') ?>">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
-                            stroke-width="1.5" />
-                        <path
-                            d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
-                            stroke-width="1.5" />
-                    </svg>
-
-                    <span class="link-name">CREDIT LIMIT LIST</span>
-                </a>
-            </li>
-            <?php endif ?>
-
-            <?php if (in_array('O006', $user_access) || in_array('O007', $user_access) || in_array('O008', $user_access) || in_array('*', $user_access)): ?>
-            <li class="dropdown <?= (in_array($this->uri->segment(2), [ 'setting-approval', 'setting-approval-price', 'setting-open-price', 'setting-user-customer'])) ? 'active' : '' ?>">
-                <a href="javascript:void(0)" class="dropdown-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
-                            stroke-width="1.5" />
-                        <path
-                            d="M7.75716 19.3001L7 14H11L11.6772 18.7401C11.8476 19.9329 10.922 21 9.71716 21C8.73186 21 7.8965 20.2755 7.75716 19.3001Z"
-                            stroke-width="1.5" />
-                    </svg>
-
-                    <span class="link-name">SETTING</span>
-                    <i id="arrow" class='bx bx-chevron-right'></i>
-                </a>
-                <ul class="nav-submenu menu-content">
-                    <?php if (in_array('O006', $user_access) || in_array('*', $user_access)): ?>
-                    <li class="<?= ($this->uri->segment(2) == 'setting-user-customer') ? 'active' : '' ?>">
-                        <a href="<?= route('dashboard/setting-user-customer') ?>">
-                            <i class='bx bxs-right-arrow'></i>SALES AREA & CUSTOMER</span>
-                        </a>
-                    </li>
-                    <?php endif ?>
-                    <?php if (in_array('O007', $user_access) || in_array('*', $user_access)): ?>
-                    <li class="<?= ($this->uri->segment(2) == 'setting-approval-price') ? 'active' : '' ?>">
-                        <a href="<?= route('dashboard/setting-approval-price') ?>">
-                            <i class='bx bxs-right-arrow'></i>SALES APPROVAL PRICE</span>
-                        </a>
-                    </li>
-                    <?php endif ?>
-                    <?php if (in_array('O008', $user_access) || in_array('*', $user_access)): ?>
-                    <li class="<?= ($this->uri->segment(2) == 'setting-open-price') ? 'active' : '' ?>">
-                        <a href="<?= route('dashboard/setting-open-price') ?>">
-                            <i class='bx bxs-right-arrow'></i>SALES OPEN PRICE</span>
-                        </a>
-                    </li>
-                    <?php endif ?>
-                    <li class="<?= ($this->uri->segment(2) == 'setting-approval') ? 'active' : '' ?>">
-                        <a href="<?= route('dashboard/setting-approval') ?>">
-                            <i class='bx bxs-right-arrow'></i>SALES APPROVAL</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <?php endif ?>
-            
         </ul>
     </div>
 </nav>

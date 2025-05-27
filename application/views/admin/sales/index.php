@@ -199,9 +199,13 @@
 		padding-top: 5px;
 	}
 
-	table.table-bordered.dataTable th,
+	table.table-bordered.dataTable th {
+		font-size: 12px !important;
+        text-transform: uppercase !important;
+	}
+
 	table.table-bordered.dataTable td {
-		font-size: 10px !important;
+		font-size: 11px !important;
         text-transform: uppercase !important;
 	}
 
@@ -281,6 +285,57 @@
         width: 100%;
         height: 100px;
     }
+	.dot {
+		display: none;
+	}
+	td {
+		text-align: center;
+	}
+	input, select {
+		width: 65%;
+		margin-left: 8px
+	}
+	span.label-span {
+		width: 48%
+	}
+    .btn.btn-primary.btn-block:hover {
+        background: #000;
+        color: #fff
+    }
+    .btn-show-detail {
+        width: 100%;
+        background: yellow;
+        color: #000;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 5px;
+        border: 2px solid #000
+    }
+    .btn-show-cancel {
+        width: 100%;
+        background: red;
+        color: #fff;
+        border-radius: 8px;
+        padding: 10px;
+        border: 2px solid #000
+    }
+    .btn-show-detail:hover {
+        width: 100%;
+        background: transparent;
+        color: #000;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 5px;
+        border: 2px solid #000
+    }
+    .btn-show-cancel:hover {
+        width: 100%;
+        background: transparent;
+        color: #000;
+        border-radius: 8px;
+        padding: 10px;
+        border: 2px solid #000
+    }
 	@media (max-width: 600px) {
 		.table-responsive-new {
 			width: 100%;
@@ -292,6 +347,9 @@
 			justify-content: center;
 			align-items: flex-start;
 		}
+		.dot {
+			display: block;
+		}
 		.filter-style .label-span {
 			margin-bottom: 5px
 		}
@@ -301,13 +359,65 @@
 		.table-container {
 			width: 100%;
 			overflow-x: auto;
-			max-height: 500px; /* Atur tinggi maksimal sesuai kebutuhan */
 			position: relative; /* Agar sticky header berfungsi */
+		}
+
+		input, select {
+			width: 100%;
+			margin-left: 0px
 		}
 
 		table {
 			width: 100%;
 			border-collapse: collapse;
+		}
+
+		table thead {
+            display: none;
+        }
+        table, table tbody, table tr, table td {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        } 
+		tr {
+			padding: 15px;
+			border-radius: 10px;
+			margin: 10px 0px !important;
+			background: #f5f5f5;
+		}
+        th, td {
+            font-size: 12px !important;
+            text-align: left !important;
+			width: auto !important;
+        }
+		td {
+			padding: 5px 12px !important;
+			border: 0px solid #C1C1C1 !important;
+		}
+        table tbody tr td {
+            text-align: center;
+            padding-left: 50%;
+            position: relative;
+            white-space: normal !important;
+            font-size: 12px !important;
+        }
+
+		table td:before {
+            content: attr(data-label);
+            width: 35%;
+            font-weight: 600;
+            font-size: 13px;
+            text-align: left;
+            text-transform: uppercase;
+			margin-right: 15px
+        }
+
+		table.table-bordered.dataTable td {
+			font-size: 13px !important;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
 		}
 
 		thead th {
@@ -334,65 +444,90 @@
 			z-index: 1; /* Lebih rendah dari header */
 			box-shadow: 2px 0 2px -1px rgba(0, 0, 0, 0.4); /* Efek bayangan pada kolom */
 		}
+		.table-bordered {
+			border: 0px solid #C1C1C1;
+			font-size: 12px;
+		}
+		.table-responsive {
+			border: 0px solid #ddd;
+		}
+		.btn-show-detail {
+			width: 50%;
+			margin-top: 10px
+		}
+		.btn-show-detail svg {
+			font-size: 25px
+		}
+		table td:last-child:before {
+			width: 0%;
+		}
+		.dataTables_length {
+			display: none;
+		}
+		div.dataTables_wrapper div.dataTables_filter label {
+			font-size: 14px !important;
+			text-transform: uppercase;
+		}
+		div.dataTables_wrapper div.dataTables_filter input {
+			font-size: 16px;
+		}
 	}
 </style>
 
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>CREDIT LIMIT LIST</strong>
+        <strong>ACTIVITY - SALES RPA</strong>
     </h3>
-		<form class="form-horizontal" action="#" method="POST">
-        <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px; margin-bottom: 10px; ">
-			<div class="col-md-6 col-sm-12 filter-style" style="display: flex; margin-bottom: 10px">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 5px; font-weight: 600">CUSTOMER : </span> 
-                <select style="width: 65%" id="customer" class="form-control" name="customer">
-					<option <?= $filter['customer'] == '*' ? 'selected' : '' ?> value="*">* - ALL CUSTOMER </option>
-                    <?php foreach ($customer as $field): ?>
-                        <option <?= $filter['customer'] == $field['CUST'] ? 'selected' : '' ?> value="<?= $field['CUST'] ?>"><?= $field['CUST'] ?> - <?= $field['FULL_NAME'] ?></option>
-                    <?php endforeach ?>
-                </select>
+		<form class="form-horizontal" action="#" method="POST" style="margin-bottom: 20px">
+        <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
+			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex;">
+                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
+                <input  type="date" name="sdate" value="" class="form-control" required> <span style="display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">-</span> <input  type="date" name="edate" value="" class="form-control" required>
             </div>
-			<div class="col-md-3 col-sm-12 filter-style" style="display: flex; margin-bottom: 10px"></div>
-            <div class="col-md-3 col-sm-12 btn-filter" style="display: flex;">
-                <button type="submit" class="btn btn-primary btn-block" style="height: 34px">FILTER</button>
+            <div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
+                <button type="submit" class="btn btn-primary btn-block" style="height: auto; width: 15%;background: transparent; color: #000; border: 2px solid #000; border-radius: 8px; margin-left: -20px;"><i class="fas fa-search" style="font-size: 20px"></i></button> 
+            </div>
+            <div class="col-md-2 col-sm-12 btn-filter" style="display: flex;">
+                <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: auto; padding: 10px">CREATE PLAN</a> 
             </div>
         </div>
     </form>
-	<div class="table-responsive-new table-container">
+	<div class="table-responsive table-container">
 		<table class="table table-bordered table-hover" id="example1">
 			<thead>
 				<tr>
-					<!-- <th>NO</th> -->
-					<th>CUSTOMER</th>
-					<th>CREDIT LIMIT</th>
-					<!-- <th>CREDIT TERM</th> -->
-					<th>REMAIN AMT (A/R)</th>
-					<th>A/R NORMAL</th>
-					<th>A/R OVERDUE</th>
-					<th>REMAINING LIMIT</th>
+					<th>NO</th>
+					<th>DATE</th>
+                    <th>DEPT.</th>
+					<th>SALES</th>
+                    <th>PLAN</th>
+					<th>ACTION</th>
 				</tr>
 			</thead>
 			<tbody>
-			<?php foreach ($datatable as $i => $v): ?>
-			<?php 
-				$remain_limit = $v['CREDIT_LIMIT'] - $v['REMAIN_AMT'];
-			?>
 				<tr>
-					<!-- <td style="text-align: center"><strong><?= $i + 1; ?></strong></td> -->
-					<td style="text-align: center"><?= $v['CUST'] . ' - ' . $v['FULL_NAME'] ?></td>
-					<td style="text-align: center"><?= number_format($v['CREDIT_LIMIT']) ?></td>
-					<!-- <td style="text-align: center"><?= number_format($v['CREDIT_TERM']) ?></td> -->
-					<td style="text-align: center"><?= number_format($v['REMAIN_AMT']) ?></td>
-					<td style="text-align: center"><?= number_format($v['NORMAL_AMT']) ?></td>
-					<td style="text-align: center"><?= number_format($v['ABNORMAL_AMT']) ?></td>
-					<td style="text-align: center"><?= number_format($remain_limit) ?></td>
+					<td data-label="NO">1</td>
+					<td data-label="DATE">27 MEI 2025</td>
+                    <td data-label="DATE">SALES RPA</td>
+					<td data-label="CUSTOMER">FIRQY SUTANWALIYAH IKHSAN</td>
+                    <td data-label="PLAN">
+                        <p>CUSTOMER 1</p>
+                        <p>CUSTOMER 2</p>
+                    </td>
+					<td>
+						<!-- <a href="" class="btn btn-sm btn-show-detail"><i class="fas fa-eye text-success"></i></a> -->
+						<a href="<?= admin_url('sales/plan-activity/edit') ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
+						<a href="" class="btn btn-sm btn-show-cancel">DELETE</a>
+					</td>
 				</tr>
-			<?php endforeach ?>
 			</tbody>
 		</table>
 	</div>
 </div>
 
+<form id="form-cancel" action="<?= admin_url('confirm/do_cancel') ?>" method="POST">
+	<input type="hidden" id="request_no" name="req_no">
+</form>
 
 <script src="<?= asset('vendor/select2/js/select2.min.js') ?>"></script>
 <script src="<?= asset('vendor/select2/js/en.js') ?>"></script>
@@ -405,10 +540,24 @@
         {"language": {"paginate": { "previous": "&lt","next": "&gt",}}}
       );
     })
+
+	function deleteRow(reqNo) {
+        Swal.fire({
+            type: "warning",
+            title: "CANCEL ORDER",
+            showCancelButton: true,
+            text: "ANDA YAKIN INGIN CANCEL ORDER ?"
+        }).then((result) => {
+            if (result.value) {
+							$("#request_no").val(reqNo);
+              $("#form-cancel").submit();
+            }
+        });
+    }
+
 	$('#customer').select2({
         theme: 'bootstrap4',
         language: "en",
         placeholder: "- SELECT CUSTOMER -",
     });
-	
 </script>

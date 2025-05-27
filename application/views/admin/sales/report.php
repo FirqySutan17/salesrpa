@@ -200,12 +200,12 @@
 	}
 
 	table.table-bordered.dataTable th {
-		font-size: 9px !important;
+		font-size: 12px !important;
         text-transform: uppercase !important;
 	}
 
 	table.table-bordered.dataTable td {
-		font-size: 8px !important;
+		font-size: 11px !important;
         text-transform: uppercase !important;
 	}
 
@@ -292,32 +292,49 @@
 		text-align: center;
 	}
 	input, select {
-		width: 65% !important;
+		width: 65%;
 		margin-left: 8px
 	}
 	span.label-span {
-		width: 35%
+		width: 48%
 	}
-    .approved {
-        color: white;
-        background: green;
+    .btn.btn-primary.btn-block:hover {
+        background: #000;
+        color: #fff
+    }
+    .btn-show-detail {
+        width: 100%;
+        background: yellow;
+        color: #000;
         border-radius: 8px;
         padding: 10px;
-        font-weight: 700
+        margin-bottom: 5px;
+        border: 2px solid #000
     }
-    .rejected {
-        color: white;
+    .btn-show-cancel {
+        width: 100%;
         background: red;
+        color: #fff;
         border-radius: 8px;
         padding: 10px;
-        font-weight: 700
+        border: 2px solid #000
     }
-    .waiting-approval {
-        color: white;
-        background: blue;
+    .btn-show-detail:hover {
+        width: 100%;
+        background: transparent;
+        color: #000;
         border-radius: 8px;
         padding: 10px;
-        font-weight: 700
+        margin-bottom: 5px;
+        border: 2px solid #000
+    }
+    .btn-show-cancel:hover {
+        width: 100%;
+        background: transparent;
+        color: #000;
+        border-radius: 8px;
+        padding: 10px;
+        border: 2px solid #000
     }
 	@media (max-width: 600px) {
 		.table-responsive-new {
@@ -393,6 +410,7 @@
             font-size: 13px;
             text-align: left;
             text-transform: uppercase;
+			margin-right: 15px
         }
 
 		table.table-bordered.dataTable td {
@@ -434,7 +452,7 @@
 			border: 0px solid #ddd;
 		}
 		.btn-show-detail {
-			width: 100%;
+			width: 50%;
 			margin-top: 10px
 		}
 		.btn-show-detail svg {
@@ -458,32 +476,19 @@
 
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>REPORT APPROVAL</strong>
+        <strong>ACTIVITY - SALES RPA</strong>
     </h3>
-		<form class="form-horizontal" action="#" method="POST">
-        <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px; margin-bottom: 10px; ">
-			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex; margin-bottom: 10px">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 12px; font-weight: 600">START DATE : </span> 
-                <input  type="date" name="sdate" value="<?= $filter['sdate'] ?>" class="form-control" required>
+		<form class="form-horizontal" action="#" method="POST" style="margin-bottom: 20px">
+        <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
+			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex;">
+                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
+                <input  type="date" name="sdate" value="" class="form-control" required> <span style="display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">-</span> <input  type="date" name="edate" value="" class="form-control" required>
             </div>
-            <div class="col-md-6 col-sm-12 filter-style"  style="display: flex; margin-bottom: 10px">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 12px; font-weight: 600">END DATE : </span> 
-                <input  type="date" name="edate" value="<?= $filter['edate'] ?>" class="form-control" required>
-            </div>
-			<div class="col-md-6 col-sm-12 filter-style" style="display: flex; margin-bottom: 10px">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 5px; font-weight: 600">APPROVAL : </span> 
-                <select  id="approval" class="form-control" name="approval">
-						<option <?= $filter['approval'] == '*' ? 'selected' : '' ?> value="*">* - ALL APPROVAL </option>
-                    <?php foreach ($approval as $field): ?>
-                        <option <?= $filter['approval'] == $field['EMPLOYEE_ID'] ? 'selected' : '' ?> value="<?= $field['EMPLOYEE_ID'] ?>"><?= $field['EMPLOYEE_ID'] ?> - <?= $field['FULL_NAME'] ?></option>
-                    <?php endforeach ?>
-                </select>
+            <div class="col-md-3 col-sm-12 filter-style"  style="display: flex;">
+                <button type="submit" class="btn btn-primary btn-block" style="height: auto; width: 15%;background: transparent; color: #000; border: 2px solid #000; border-radius: 8px; margin-left: -20px;"><i class="fas fa-search" style="font-size: 20px"></i></button> 
             </div>
             <div class="col-md-3 col-sm-12 btn-filter" style="display: flex;">
-                <button type="submit" class="btn btn-primary btn-block" style="height: 34px">FILTER</button>
-            </div>
-			<div class="col-md-3 col-sm-12 btn-filter" style="display: flex;">
-				<button type="submit" class="btn btn-danger btn-block" style="height: 34px" formaction="<?= admin_url('confirm/report_excel') ?>">EXPORT</button>
+                <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: auto; padding: 10px">CREATE PLAN</a> 
             </div>
         </div>
     </form>
@@ -491,55 +496,34 @@
 		<table class="table table-bordered table-hover" id="example1">
 			<thead>
 				<tr>
-                    <th style="text-align: center">REQUEST</th>
-                    <th style="text-align: center">DATE</th>
-                    <th style="text-align: center">CUSTOMER</th>
-                    <th style="text-align: center">QTY</th>
-                    <th style="text-align: center">BW</th>
-                    <th style="text-align: center">OPEN PRICE</th>
-                    <th style="text-align: center">SALES PRICE</th>
-                    <th style="text-align: center; width: 8%">STATUS PRICE</th>
-                    <th style="text-align: center">APPROVER</th>
-                    <th style="text-align: center">REMARK</th>
-                    <th style="text-align: center">STATUS APPROVAL</th>
-                </tr>
+					<th>NO</th>
+					<th>DATE</th>
+					<th>SALES</th>
+                    <th>PLAN</th>
+					<th>ACTION</th>
+				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($history as $i => $v): ?>
-                    <tr>
-                        <td data-label="REQUEST"><STRONG>#<?= $v['REQ_NO'].' - '.$v['SEQ_NO'] ?></STRONG></td>
-                        <td data-label="DATE"><?= date('d M Y', strtotime($v['CREATED_AT'])) ?> <br> <?= date('H:i:s', strtotime($v['CREATED_AT'])) ?></td>
-                        <td data-label="CUSTOMER"><?= $v['CUSTOMER_NAME'] ?></td>
-                        <td data-label="QTY"><?= number_format($v['QTY']) ?></td>
-                        <td data-label="BW"><?= number_format($v['BW']) ?></td>
-                        <td data-label="OPEN PRICE"><?= $v['OPEN_PRICE'] ?></td>
-                        <td data-label="SALES PRICE"><?= $v['UNIT_PRICE'] ?></td>
-                        <td data-label="STATUS PRICE">
-                            <?php if ($v['STATUS_PRICE'] == 'Y'): ?>
-                                <span class="approved">APPROVED</span>
-                            <?php elseif ($v['STATUS_PRICE'] == 'R'): ?>
-                                <span class="rejected">REJECTED</span>
-                            <?php else: ?>
-                                <span class="waiting-approval">IN PROGRESS</span>
-                            <?php endif ?>
-                        </td>
-                        <td data-label="APPROVER"><?= $v['APPROVER_NAME'] ?></td>
-                        <td data-label="REMARKS"><?= $v['APPROVER_REMARKS'] ?></td>
-                        <td data-label="STATUS APPROVAL">
-                            <?php if ($v['APPROVAL'] == 'Y'): ?>
-                                <span class="approved">APPROVED</span>
-                            <?php elseif ($v['APPROVAL'] == 'R'): ?>
-                                <span class="rejected">REJECTED</span>
-                            <?php endif ?>
-                        </td> 
-                    </tr>
-                <?php endforeach ?>
+				<tr>
+					<td data-label="NO">1</td>
+					<td data-label="DATE">27 MEI 2025</td>
+					<td data-label="CUSTOMER">FIRQY SUTANWALIYAH IKHSAN</td>
+                    <td data-label="PLAN">
+                        <p>CUSTOMER 1</p>
+                        <p>CUSTOMER 2</p>
+                    </td>
+					<td>
+						<!-- <a href="" class="btn btn-sm btn-show-detail"><i class="fas fa-eye text-success"></i></a> -->
+						<a href="" target="_blank" class="btn btn-sm btn-show-detail">DETAIL</a>
+						<a href="" class="btn btn-sm btn-show-cancel">DELETE</a>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
 
-<form id="form-cancel" action="<?= admin_url('confirm/do_delete') ?>" method="POST">
+<form id="form-cancel" action="<?= admin_url('confirm/do_cancel') ?>" method="POST">
 	<input type="hidden" id="request_no" name="req_no">
 </form>
 
@@ -558,9 +542,9 @@
 	function deleteRow(reqNo) {
         Swal.fire({
             type: "warning",
-            title: "DELETE ORDER",
+            title: "CANCEL ORDER",
             showCancelButton: true,
-            text: "ANDA YAKIN INGIN DELETE ORDER ?"
+            text: "ANDA YAKIN INGIN CANCEL ORDER ?"
         }).then((result) => {
             if (result.value) {
 							$("#request_no").val(reqNo);

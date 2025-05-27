@@ -200,12 +200,12 @@
 	}
 
 	table.table-bordered.dataTable th {
-		font-size: 9px !important;
+		font-size: 12px !important;
         text-transform: uppercase !important;
 	}
 
 	table.table-bordered.dataTable td {
-		font-size: 8px !important;
+		font-size: 11px !important;
         text-transform: uppercase !important;
 	}
 
@@ -298,6 +298,10 @@
 	span.label-span {
 		width: 48%
 	}
+    .btn.btn-primary.btn-block:hover {
+        background: #000;
+        color: #fff
+    }
 	@media (max-width: 600px) {
 		.table-responsive-new {
 			width: 100%;
@@ -438,29 +442,22 @@
 
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>CONFIRM REQUEST ORDER</strong>
+        <strong>ACTUAL ACTIVITY - SALES RPA</strong>
     </h3>
-		<form class="form-horizontal" action="#" method="POST">
-        <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px; margin-bottom: 10px; ">
-			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex; margin-bottom: 10px">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 12px; font-weight: 600">START DATE : </span> 
-                <input  type="date" name="sdate" value="<?= $filter['sdate'] ?>" class="form-control" required>
+		<form class="form-horizontal" action="#" method="POST" style="margin-bottom: 20px">
+        <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
+			<div class="col-md-3 col-sm-12 filter-style"  style="display: flex;">
+                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
+                <input  type="date" name="sdate" value="" class="form-control" required>
             </div>
-            <div class="col-md-6 col-sm-12 filter-style"  style="display: flex; margin-bottom: 10px">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 12px; font-weight: 600">END DATE : </span> 
-                <input  type="date" name="edate" value="<?= $filter['edate'] ?>" class="form-control" required>
+            <div class="col-md-3 col-sm-12 filter-style"  style="display: flex;">
+                <button type="submit" class="btn btn-primary btn-block" style="height: auto; width: 15%;background: transparent; color: #000; border: 2px solid #000; border-radius: 8px; margin-left: -20px;"><i class="fas fa-search" style="font-size: 20px"></i></button> 
             </div>
-			<div class="col-md-6 col-sm-12 filter-style" style="display: flex; margin-bottom: 10px">
-                <span class="label-span" style="display: inline-block; vertical-align: middle; margin-top: 5px; font-weight: 600">CUSTOMER : </span> 
-                <select  id="customer" class="form-control" name="customer">
-					<option <?= $filter['customer'] == '*' ? 'selected' : '' ?> value="*">* - ALL CUSTOMER </option>
-                    <?php foreach ($customer as $field): ?>
-                        <option <?= $filter['customer'] == $field['CUST'] ? 'selected' : '' ?> value="<?= $field['CUST'] ?>"><?= $field['CUST'] ?> - <?= $field['FULL_NAME'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </div>	
-            <div class="col-md-12 col-sm-12 btn-filter" style="display: flex;">
-                <button type="submit" class="btn btn-primary btn-block" style="height: 34px">FILTER</button>
+            <div class="col-md-3 col-sm-12 filter-style"  style="display: flex;">
+                
+            </div>
+            <div class="col-md-3 col-sm-12 btn-filter" style="display: flex;">
+                <!-- <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: auto; padding: 10px">CREATE</a>  -->
             </div>
         </div>
     </form>
@@ -469,60 +466,33 @@
 			<thead>
 				<tr>
 					<th>NO</th>
-					<th>REQUEST</th>
 					<th>DATE</th>
-					<th>TIME</th>
-					<th>CUSTOMER</th>
-					<th>REQ QTY</th>
-					<th>REQ BW</th>
-					<th>REQ REMARKS</th>
-					<th>QTY</th>
-					<th>BW</th>
-					<th>SIZE</th>
-					<th>ORDER STATUS</th>
-					<th>CONFIRM STATUS</th>
-					<th>CONFIRM ORDER NO</th>
-					<th>CONFIRM REMARK</th>
-					<th>DELIVERY QTY</th>
-					<th>DELIVERY BW</th>
+					<th>SALES</th>
+                    <th>PLAN</th>
 					<th>ACTION</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($datatable as $i => $v): ?>
 				<tr>
-					<td data-label="NO"><?= $i + 1 ?></td>
-					<td data-label="REQUEST"><STRONG>#<?= $v['REQ_NO'] ?></STRONG></td>
-					<td data-label="DATE"><?= date('d M Y', strtotime($v['REG_DATE'])) ?></td>
-					<td data-label="TIME"><?= date('H:i:s', strtotime($v['REG_DATE'])) ?></td>
-					<td data-label="CUSTOMER"><?= $v['FULL_NAME'] ?></td>
-					<td data-label="REQ QTY"><?= number_format($v['REQ_QTY']) ?></td>
-					<td data-label="REQ BW"><?= number_format($v['REQ_BW']) ?></td>
-					<td data-label="REQ REMARKS"><?= $v['REMARKS'] ?></td>
-					<td data-label="QTY"><?= number_format($v['QTY']) ?></td>
-					<td data-label="BW"><?= number_format($v['BW']) ?></td>
-					<td data-label="SIZE"><?= $v['CONTROL_NO'] ?></td>
-					<td data-label="ORDER STATUS"><?= $v['STATUS'] ?></td>
-					<td data-label="CONFIRM STATUS"><?= $v['CONFIRM_STATUS'] ?></td>
-					<td data-label="CONFIRM ORDER NO"><STRONG>#<?= $v['ORDER_NO'] ?></STRONG></td>
-					<td data-label="CONFIRM REMARK"><?= $v['CONFIRM_REMARK'] ?></td>
-					<td data-label="DELIVERY QTY"><?= number_format($v['DELIVERY_QTY']) ?></td>
-					<td data-label="DELIVERY BW"><?= number_format($v['DELIVERY_BW']) ?></td>
+					<td data-label="NO">1</td>
+					<td data-label="DATE">27 MEI 2025</td>
+					<td data-label="CUSTOMER">FIRQY SUTANWALIYAH IKHSAN</td>
+                    <td data-label="PLAN">
+                        <p>CUSTOMER 1</p>
+                        <p>CUSTOMER 2</p>
+                    </td>
 					<td>
-						<!-- <a href="<?= admin_url('order/detail/'.$v['REQ_NO']) ?>" class="btn btn-sm btn-show-detail"><i class="fas fa-eye text-success"></i></a> -->
-						<?php if ($v['STATUS'] != 'CANCELED' && $v['CONFIRM_STATUS'] != 'CONFIRM'): ?>
-							<a href="<?= admin_url('order/edit/'.$v['REQ_NO']) ?>" target="_blank" class="btn btn-sm btn-show-detail"><i class="fas fa-pencil text-warning"></i></a>
-							<a href="javascript:void(0)" onclick="deleteRow(`<?= $v['REQ_NO'] ?>`)" class="btn btn-sm btn-show-detail"><i class="fas fa-xmark text-primary"></i></a>
-						<?php endif ?>
+						<!-- <a href="" class="btn btn-sm btn-show-detail"><i class="fas fa-eye text-success"></i></a> -->
+						<a href="" target="_blank" class="btn btn-sm btn-show-detail"><i class="fas fa-pencil text-warning"></i></a>
+						<a href="" class="btn btn-sm btn-show-detail"><i class="fas fa-xmark text-primary"></i></a>
 					</td>
 				</tr>
-				<?php endforeach ?>
 			</tbody>
 		</table>
 	</div>
 </div>
 
-<form id="form-cancel" action="<?= admin_url('order/do_cancel') ?>" method="POST">
+<form id="form-cancel" action="<?= admin_url('confirm/do_cancel') ?>" method="POST">
 	<input type="hidden" id="request_no" name="req_no">
 </form>
 

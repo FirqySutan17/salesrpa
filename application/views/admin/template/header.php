@@ -11,7 +11,7 @@
     <link rel="icon" type="image/png" href="<?= asset('icon/iconcj.ico') ?>" sizes="32x32">
 
 
-    <title>Broiler - PT. Super Unggas Jaya</title>
+    <title>Sales RPA - PT. Super Unggas Jaya</title>
 
     <!-- Scripts -->
     <script src="<?= asset('js/app.js') ?>" defer></script>

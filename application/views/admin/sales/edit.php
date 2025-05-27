@@ -260,7 +260,8 @@
         font-size: 11px;
     }
     .table-responsive {
-        width: 100%
+        width: 100%;
+        border: none !important; 
     }
     .table-w-message {
         width: 1330px;
@@ -316,7 +317,7 @@
         border: 1px solid green;
     }
     .select2-container .select2-selection--single .select2-selection__rendered {
-        font-size: 15px !important;
+        font-size: 10px !important;
         margin-top: 3px !important;
     }
     .select2-container--bootstrap4 .select2-results__option {
@@ -342,7 +343,6 @@
         }
     }
 </style>
-
 <style>
     .pre-posttest h3 {
         font-weight: 700;
@@ -647,14 +647,14 @@
         border: 1px solid green;
     }
     .select2-container .select2-selection--single .select2-selection__rendered {
-        font-size: 15px !important;
+        font-size: 10px !important;
         margin-top: 3px !important;
     }
     .select2-container--bootstrap4 .select2-results__option {
         font-size: 12px
     }
 
-    #corninfo .cust-btn-add {
+    #farmersinfo .cust-btn-add {
         display: none;
     }
     #segment .cust-btn-add {
@@ -666,14 +666,24 @@
     #visitimages .cust-btn-add {
         display: none;
     }
-    .select2-container--bootstrap4 .select2-selection--single {
-        height: 35px !important;
-        font-size: 20px
+
+    td {
+        border: 2px solid #ddd !important;
     }
-    span.important {
-        color: red;
-        font-size: 14px
+
+    .upload-img {
+        width: 10%
     }
+
+    label.actual-btn {
+        background-color: red;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 0.3rem;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
     @media (max-width: 1024px) {
         #region_entry {
             margin-bottom: 20px
@@ -725,6 +735,7 @@
             position: relative;
             white-space: normal !important;
             font-size: 12px !important;
+
         }
         input {
             font-size: 12px !important;
@@ -765,7 +776,7 @@
             height: auto !important;
             padding: 15px !important;
         }
-        #corninfo .cust-btn-add {
+        #farmersinfo .cust-btn-add {
             display: block;
         }
         #segment .cust-btn-add {
@@ -777,322 +788,269 @@
         #visitimages .cust-btn-add {
             display: block;
         }
+        .upload-img {
+            width: 100%
+        }
+        .btn.cust-btn-add {
+            width: 100%;
+            font-size: 22px;
+            padding: 10px;
+        }
+        .th-mobile {
+            width: 100%
+        }
     }
 </style>
 
-
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>CREATE REQUEST ORDER</strong>
+        <strong>ACTUAL ACTIVITY</strong>
     </h3>
-    <div class="row" style="align-items: center; justify-content: center; min-height: 80vh">
-        <form class="form-category" action="<?= admin_url('order/do_create') ?>" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="order_class" value="11">
-            <div class="content-task">
-                <div class="table-responsive mt-2">
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="50%">ORDER DATE</th>
-                                <th style="text-align: left" width="50%"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="DATE">
-                                    <input type="date" name="req_date" class="form-control" style="font-size: 14px; width: 100%" value="<?php echo date('Y-m-d') ?>" readonly>
-                                </td>
-                                <td data-label="">
-                                </td> 
-                            </tr>
-                        </tbody>
-                    </table>
+    <div class="row">
+        <form action="" method="POST" enctype="multipart/form-data">
+            <div class="content-task mt-5">
+                    <div class="table-responsive">
+                         <table class="table table-bordered" style="margin-bottom: 20px;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left" width="30%">DATE</th>
+                                    <th style="text-align: left" width="70%">SALES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="DATE">
+                                    <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="plan_date" value="<?php echo date('d-m-Y') ?>" readonly>
+                                    </td> 
+                                    <td data-label="SALES NAME">
+                                        <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" value="<?= $user['FULL_NAME'] ?>" readonly>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="50%">AREA <span class="important">*</span></th>
-                                <th style="text-align: left" width="50%">CUSTOMER <span class="important">*</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="AREA">
-                                    <select id="area" class="form-control" style="width: 100%;"  required>
-                                        <option value="" selected>- PILIH AREA -</option>
-                                        <?php foreach($area as $item): ?>
-                                            <option value="<?= $item['CODE'] ?>"><?= $item['CODE'] ?> - <?= $item['CODE_NAME'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </td>
-                                <td data-label="CUSTOMER">
-                                    <select id="customer" class="form-control" style="width: 100%;" name="customer" required>
-                                        <option value="" selected>- PILIH CUSTOMER -</option>
-                                        <?php // foreach($customers as $item): ?>
-                                            <!-- <option data-phone="<?= $item['MOBILE_PHONE'] ?>" value="<?= $item['CUST'] ?>"><?= $item['CUST'] ?> - <?= $item['FULL_NAME'] ?></option> -->
-                                        <?php // endforeach ?>
-                                    </select>
-                                </td> 
-                            </tr>
-                        </tbody>
-                    </table>
+                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;"> PT. SUPER UNGGAS JAYA</h3>
+                        <table class="table table-bordered" style="margin-bottom: 0px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left" width="30%">COORDINATE</th>
+                                    <th style="text-align: left" width="70%">REMARK</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="COORDINATE" style="padding-bottom: 20px !important;">
+                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="plan_date" value="-6.233259847253184, 106.8220139244133" readonly>
+                                        <br>
+                                        <a href="javascript:void(0)" onclick="getLocation()" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;">UPDATE LOCATION</a>
+                                    </td> 
+                                    <td data-label="REMARK">
+                                        <textarea placeholder="Cth: lorem ipsum dolor sit amet..." name="" id="" rows="5" style="width: 100%; padding: 10px; border-radius: 8px; font-size: 12px; text-transform: uppercase;" required></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered" style="margin-bottom: 20px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left">UPLOAD IMAGE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="UPLOAD IMAGE">
+                                        <input type="file" accept="image/png, image/jpeg, image/jpg" name="" class="form-control" style="text-transform: uppercase;">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="25%">CREDIT LIMIT</th>
-                                <th style="text-align: left" width="25%">REMAIN AMT (A/R)</th>
-                                <th style="text-align: left; background: #e6e6e6;" width="25%">A/R OVERDUE</th>
-                                <th style="text-align: left; background: #e6e6e6;" width="25%">REMAIN LIMIT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="CREDIT LIMIT">
-                                    <input type="text" id="credit_limit" class="form-control" style="font-size: 14px;" placeholder="-" readonly>
-                                </td>
-                                <td data-label="REMAIN AMT (A/R)">
-                                    <input type="text" id="remain_amt" class="form-control" style="font-size: 14px;" placeholder="-" readonly>
-                                </td>
-                                <td data-label="A/R OVERDUE" style="background: #e6e6e6">
-                                    <input type="text" id="overdue" class="form-control" style="font-size: 14px;  background: #e6e6e6;" placeholder="-" readonly>
-                                </td>
-                                <td data-label="REMAIN LIMIT" style="background: #e6e6e6">
-                                    <input type="text" id="remain_limit" class="form-control" style="font-size: 14px; background: #e6e6e6;" placeholder="-" readonly>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER ACTUAL PLAN</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="6" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                </tr>
+                                <tr>
+                                    <th>CUSTOMER</th>
+                                    <th>PHONE NUMBER</th>
+                                    <th>ALAMAT</th>
+                                    <th>REMARK</th>
+                                    <th>UPLOAD</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="farmersinfo">
+                                <tr style="align-items: flex-end">
+                                    <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                </tr>
+                                <tr>
+                                    <td data-label="CUSTOMER">
+                                        <input type="text" placeholder="CTH: PT. SUPER UNGGAS JAYA" name="customer_phone" class="form-control" style="font-size: 14px;" value="">
+                                    </td>
+                                    <td data-label="CONTACT PHONE">
+                                        <input type="number" placeholder="CTH: 08XXXXXXXXX" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx">
+                                    </td>
+                                    <td data-label="ALAMAT" style="padding-top: 20px !important;">
+                                        <a href="javascript:void(0)" onclick="getLocation()" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 10px">UPDATE LOCATION</a>
+                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%; margin: 15px 0px !important" name="plan_date" value="-6.233259847253184, 106.8220139244133" readonly>
+                                        <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="5" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
+                                    </td>
+                                    <td data-label="REMARK">
+                                        <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="5"></textarea>
+                                    </td>
+                                    <td data-label="UPLOAD IMAGE" class="upload-img">
+                                        <!-- actual upload which is hidden -->
+                                        <input type="file" id="actual-btn" hidden/>
 
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="50%">PROJECT <span class="important">*</span></th>
-                                <th style="text-align: left" width="25%">PLAZMA <span class="important">*</span></th>
-                                <th style="text-align: left" width="25%">FARM <span class="important">*</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="PROJECT">
-                                    <select id="project" class="form-control" style="width: 100%;" name="project" required>
-                                        <option value="" selected>- PILIH PROJECT -</option>
-                                        <?php foreach($projects as $item): ?>
-                                            <option value="<?= $item['PROJECT'] ?>"><?= $item['PROJECT'] ?> - <?= $item['PROJECT_NAME'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </td>
-                                <td data-label="PLAZMA">
-                                    <input type="hidden" id="plazma" name="plazma">
-                                    <input type="hidden" id="plant" name="plant">
-                                    <input type="hidden" id="note" name="note">
-                                    <input type="text" id="plazma_text" class="form-control" style="font-size: 14px; width: 100%" placeholder="-" readonly>
-                                </td>
-                                <td data-label="FARM">
-                                    <input type="hidden" id="farm" name="farm">
-                                    <input type="text" id="farm_text" class="form-control" style="font-size: 14px; width: 100%" placeholder="-" readonly>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left">QTY <span class="important">*</span></th>
-                                <th style="text-align: left">WEIGHT (KG) <span class="important">*</span></th>
-                                <th style="text-align: left">PRICE <span class="important">*</span></th>
-                                <th style="text-align: left">AMOUNT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="QTY">
-                                <input type="hidden" name="item" value="10001001">
-                                    <input type="number" name="qty" class="form-control" style="font-size: 14px; width: 100%" placeholder="0" required>
-                                </td>
-                                <td data-label="WEIGHT (KG)">
-                                    <input type="text" id="bw" name="bw" class="form-control calculateAmount" style="font-size: 14px; width: 100%" placeholder="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" required>
-                                </td> 
-                                <td data-label="PRICE">
-                                    <input type="text" id="price" name="price" class="form-control calculateAmount" style="font-size: 14px; width: 100%" placeholder="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                                </td>
-                                <td data-label="AMOUNT">
-                                    <input type="text" id="amount" name="amount" class="form-control" style="font-size: 14px; width: 100%" placeholder="0" readonly>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left">NOTE</th>
-                                <th style="text-align: left">REMARK</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="NOTE">
-                                    <input type="text" name="note" class="form-control" style="font-size: 14px; width: 100%" placeholder="EX : 1.8 - 2.0 KG">
-                                </td>
-                                <td data-label="REMARKS">
-                                    <input type="text" name="remarks" class="form-control" style="font-size: 14px; width: 100%" placeholder="INPUT REMARKS HERE...">
-                                </td> 
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="50%">CUSTOMER PHONE NUMBER <span class="important">*</span></th>
-                                <th style="text-align: left" width="50%">IMAGE <span class="important">*</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="PHONE NUMBER">
-                                    <input type="text" name="customer_phone" class="form-control" style="font-size: 14px; width: 100%" placeholder="INPUT PHONE NUMBER HERE..." required>
-                                </td>
-                                <td data-label="CONTROL NO">
-                                    <input type="file" name="image" class="form-control" style="font-size: 14px; width: 100%" required>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
+                                        <!-- our custom upload button -->
+                                        <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
+                                        <br>
+                                        <!-- name of file chosen -->
+                                        <span id="file-chosen">NO FILE CHOOSEN</span>
+                                    </td>
+                                    <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
             </div>
-               
+
             <div class="form-group row mt-5" style="margin: 20px 0px !important">
                 <div class="col-lg-12 col-sm-12" style="display: flex; padding: 0px">
-                    <a href="<?= admin_url('order') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
+                    <a href="<?= admin_url('sales/plan-activity') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
                     <span style="margin: 5px;"></span>
                     <button type="submit" class="btn btn-primary cust-btn-save" style="width: 50%; height: 50px">SAVE</button>
                 </div>
             </div>
-            </form>
+        </form>
     </div>
 </div>
-
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLUc8QC0GYh5ozbMbGBcNUm1BBIjvmmg8&callback=myMap"></script> -->
 <script>
-    $('#customer').select2({
-        theme: 'bootstrap4',
-        placeholder: "- PILIH CUSTOMER -",
-        ajax: {
-            url: "<?= base_url('ajax/load/customer') ?>",
-            dataType: 'json',
-            data: function (params) {
-              return {
-                q: params.term,
-                area: $("#area option:selected").val()
-              };
-            },
+    const actualBtn = document.getElementById('actual-btn');
+    const fileChosen = document.getElementById('file-chosen');
+
+    actualBtn.addEventListener('change', function(){
+        fileChosen.textContent = this.files[0].name
+    })
+
+    const lang = document.getElementById("coordinateText");
+    let segmenIndex = 0;
+
+    function getLocation() {
+        console.log('ask this');
+        console.log(navigator.geolocation);
+        if (navigator.geolocation) {
             
-            processResults: function(data) {
-                return {
-                    results: $.map(data, function(item) {
-                        return {
-                            text: item.CUST + " - " + item.FULL_NAME,
-                            id: item.CUST,
-                            // phone: item.MOBILE_PHONE
-                        }
-                    })
-                };
-            }
-        },
-        
-        // templateSelection: function (data, container) {// Log jsondetail untuk memeriksa data JSON
-        //     $(data.element).attr('data-phone', data.phone);
-        //     return data.text;
-        // }
-    }).on('change', function() {
-        loadCustomerLimit()
-    });
-    $(document).ready(function() {
-        // loadMPCustomer();
-        // loadProject();
-    });
-
-    $('#project').select2({
-        theme: 'bootstrap4',
-        language: "en",
-        placeholder: "- PILIH PROJECT -",
-    }).on('change', function() {
-        loadProject()
-    });
-
-    $(".calculateAmount").on('keyup', function() {
-        let bw = Number($("#bw").val());
-        let price = Number($("#price").val());
-        let amount = bw * price;
-        console.log(bw, price, amount);
-        $("#amount").val(formatRupiah(amount));
-    });
-
-    // $("#customer").on('change', function() {
-    //     // loadMPCustomer();
-    //     loadCustomerLimit();
-    // });
-
-    function loadMPCustomer() {
-        // let customer_phone = $("#customer option:selected").data('phone');
-        // $("#customer_phone").val(customer_phone);
+            console.log('ask this 1');
+            navigator.geolocation.watchPosition(showPosition);
+        } else { 
+            console.log('ask this 2');
+            lang.innerHTML = "Geolocation is not supported by this browser.";
+        }
     }
 
-    function loadProject() {
+    $(document).ready(function() {
+        getLocation();
+    });
+        
+    function showPosition(position) {
+        let latitude    = position.coords.latitude;
+        let longitude   = position.coords.longitude;
+        let coordinate  = latitude + "," + longitude;
+
+        lang.innerHTML  = coordinate;
+        let iframe_gmap = `<iframe class="maps-frame" src="https://maps.google.com/maps?q=${coordinate}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+            
+        $("#coordinate").val(coordinate);
+        $("#iframe-location").html(iframe_gmap);
+        
+        detailPosition(latitude, longitude)
+        detailWeather(latitude, longitude)
+    }
+
+    function detailPosition(latitude, longitude) {
+        let addressAPI = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
         $.ajax({
-            url : `<?= base_url('ajax/load/project-detail') ?>`,
-            type : "GET",
-            data: {
-                project: $("#project option:selected").val()
+            url: addressAPI,
+            type: "GET",
+            beforeSend: function () {
+                // removeElements();
             },
-            dataType : "json",
-            success:function(data)
-            {
-                $("#plant").val(data["PLANT"]);
-                $("#note").val(data["NOTE"]);
-                $("#plazma").val(data["PLAZMA"]);
-                $("#plazma_text").val(data["PLAZMA"] + " - " +data["PLAZMA_NAME"]);
-                $("#farm").val(data["FARM"]);
-                $("#farm_text").val(data["FARM"] + " - " +data["FARM_NAME"]);
+            success: function(response) {
+                // let data = JSON.parse(response);
+                // console.log(response);
+                // alert(data.data);
+                $("#address").val(response.display_name);
+                $("#address-info").text(response.display_name);
             }
         });
     }
 
-    function formatRupiah(angka) {
-        angka = Number(angka); // Pastikan angka dalam bentuk number
-        return 'RP ' + angka.toLocaleString('id-ID');
+    $('#customer').select2({
+        theme: 'bootstrap4',
+        language: "en",
+        placeholder: "- SELECT PHASE -",
+    });
+
+    function addFarmers() {
+        let tabledata = `
+        <tr>
+            <td data-label="CUSTOMER">
+                <input type="text" placeholder="CTH: PT. SUPER UNGGAS JAYA" name="customer_phone" class="form-control" style="font-size: 14px;" value="">
+            </td>
+            <td data-label="CONTACT PHONE">
+                <input type="number" placeholder="CTH: 08XXXXXXXXX" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx">
+            </td>
+            <td data-label="ALAMAT" style="padding-top: 20px !important;">
+                <a href="javascript:void(0)" onclick="getLocation()" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 10px">UPDATE LOCATION</a>
+                <input type="text" class="form-control" style="font-size: 14px; width: 100%; margin: 15px 0px !important" name="plan_date" value="-6.233259847253184, 106.8220139244133" readonly>
+                <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="5" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
+            </td>
+            <td data-label="REMARK">
+                <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="5"></textarea>
+            </td>
+            <td class="upload-img">
+                <!-- actual upload which is hidden -->
+                <input type="file" id="actual-btn" hidden/>
+
+                <!-- our custom upload button -->
+                <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
+                <br>
+                <!-- name of file chosen -->
+                <span id="file-chosen">NO FILE CHOOSEN</span>
+            </td>
+            <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
+        </tr>
+        `;
+
+        $("#farmersinfo").append(tabledata);
     }
 
-    function loadCustomerLimit() {
-        $.ajax({
-            url : `<?= base_url('ajax/load/customer-limit') ?>`,
-            type : "GET",
-            data: {
-                customer: $("#customer option:selected").val()
-            },
-            dataType : "json",
-            success:function(response)
-            {
-                if (response.status == true) {
-                    let data = response.data;
-                    let limit = data["CREDIT_LIMIT"] - data["REMAIN_AMT"];
-                    $("#credit_limit").val(formatRupiah(data["CREDIT_LIMIT"]));
-                    $("#remain_amt").val(formatRupiah(data["REMAIN_AMT"]));
-                    $("#overdue").val(formatRupiah(data["ABNORMAL_AMT"]));
-                    $("#remain_limit").val(formatRupiah(limit));
-                    console.log(data);                    
-                } else if (response.status == false) {
-                    $("#credit_limit").val("-");
-                    $("#remain_amt").val("-");
-                    $("#overdue").val("-");
-                    $("#remain_limit").val("-");
+    function deleteRow(e) {
+        Swal.fire({
+            type: "warning",
+            title: "Delete Row",
+            showCancelButton: true,
+            text: "Are you sure want to delete this data ?"
+        }).then((result) => {
+            if (result.value) {
+                $(e).parent().parent().remove();
+            }
+        });
+    }
 
-                    alert('CUSTOMER SUDAH TIDAK AKTIF');
-                    
-                }
+    function deleteRowSegment(e) {
+        Swal.fire({
+            type: "warning",
+            title: "Delete Row",
+            showCancelButton: true,
+            text: "Are you sure want to delete this cycle ?"
+        }).then((result) => {
+            if (result.value) {
+                $("#segment-" + e).remove();
             }
         });
     }

@@ -316,7 +316,7 @@
         border: 1px solid green;
     }
     .select2-container .select2-selection--single .select2-selection__rendered {
-        font-size: 15px !important;
+        font-size: 13px !important;
         margin-top: 3px !important;
     }
     .select2-container--bootstrap4 .select2-results__option {
@@ -342,7 +342,6 @@
         }
     }
 </style>
-
 <style>
     .pre-posttest h3 {
         font-weight: 700;
@@ -647,14 +646,14 @@
         border: 1px solid green;
     }
     .select2-container .select2-selection--single .select2-selection__rendered {
-        font-size: 15px !important;
+        font-size: 12px !important;
         margin-top: 3px !important;
     }
     .select2-container--bootstrap4 .select2-results__option {
         font-size: 12px
     }
 
-    #corninfo .cust-btn-add {
+    #farmersinfo .cust-btn-add {
         display: none;
     }
     #segment .cust-btn-add {
@@ -666,14 +665,14 @@
     #visitimages .cust-btn-add {
         display: none;
     }
-    .select2-container--bootstrap4 .select2-selection--single {
-        height: 35px !important;
-        font-size: 20px
+    .w-25 {
+        width: 25% !important;
     }
-    span.important {
-        color: red;
-        font-size: 14px
+    textarea {
+        min-height: 115px;
+        overflow: auto;
     }
+
     @media (max-width: 1024px) {
         #region_entry {
             margin-bottom: 20px
@@ -687,6 +686,13 @@
     }
 
     @media(max-width: 600px) {
+        .w-25 {
+            width: 100% !important;
+        }
+        .w-25 textarea {
+            min-height: 115px;
+            overflow: auto;
+        }
         .answer {
             margin-left: 0px
         }
@@ -725,9 +731,10 @@
             position: relative;
             white-space: normal !important;
             font-size: 12px !important;
+
         }
         input {
-            font-size: 12px !important;
+            font-size: 14px !important;
         }
         select {
             font-size: 12px !important;
@@ -765,7 +772,7 @@
             height: auto !important;
             padding: 15px !important;
         }
-        #corninfo .cust-btn-add {
+        #farmersinfo .cust-btn-add {
             display: block;
         }
         #segment .cust-btn-add {
@@ -777,310 +784,215 @@
         #visitimages .cust-btn-add {
             display: block;
         }
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            font-size: 14px !important;
+        }
+        .select2-container--bootstrap4 .select2-selection--single {
+            height: calc(2.5em + .75rem + 2px) !important;
+        }
+        .btn-group-sm>.btn, .btn-sm {
+            font-size: 18px !important;
+        }
+        .btn.cust-btn-add {
+            width: 100%;
+            font-size: 22px;
+            padding: 10px;
+        }
+        .th-mobile {
+            width: 100%
+        }
     }
 </style>
 
-
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>CREATE REQUEST ORDER</strong>
+        <strong>PLAN ACTIVITY</strong>
     </h3>
-    <div class="row" style="align-items: center; justify-content: center; min-height: 80vh">
-        <form class="form-category" action="<?= admin_url('confirm/do_create') ?>" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="order_class" value="11">
-            <div class="content-task">
-                <div class="table-responsive mt-2">
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="50%">ORDER DATE</th>
-                                <th style="text-align: left" width="50%"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="DATE">
-                                    <input type="date" name="req_date" class="form-control" style="font-size: 14px; width: 100%" value="<?php echo date('Y-m-d') ?>" readonly>
-                                </td>
-                                <td data-label="">
-                                </td> 
-                            </tr>
-                        </tbody>
-                    </table>
+    <div class="row">
+        <form action="" method="POST" enctype="multipart/form-data">
+            <div class="content-task mt-5">
+                    <div class="table-responsive">
+                         <table class="table table-bordered" style="margin-bottom: 20px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left" width="30%">DATE</th>
+                                    <th style="text-align: left" width="70%">SALES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="DATE">
+                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="plan_date" value="<?php echo date('d-m-Y') ?>" readonly>
+                                    </td> 
+                                    <td data-label="SALES NAME">
+                                        <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" value="<?= $user['FULL_NAME'] ?>" readonly>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="50%">AREA <span class="important">*</span></th>
-                                <th style="text-align: left" width="50%">CUSTOMER <span class="important">*</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="AREA">
-                                    <select id="area" class="form-control" style="width: 100%;"  required>
-                                        <option value="" selected>- PILIH AREA -</option>
-                                        <?php foreach($area as $item): ?>
-                                            <option value="<?= $item['CODE'] ?>"><?= $item['CODE'] ?> - <?= $item['CODE_NAME'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </td>
-                                <td data-label="CUSTOMER">
-                                    <select id="customer" class="form-control" style="width: 100%;" name="customer" required>
-                                        <option value="" selected>- PILIH CUSTOMER -</option>
-                                        <?php // foreach($customers as $item): ?>
-                                            <!-- <option data-phone="<?= $item['MOBILE_PHONE'] ?>" value="<?= $item['CUST'] ?>"><?= $item['CUST'] ?> - <?= $item['FULL_NAME'] ?></option> -->
-                                        <?php // endforeach ?>
-                                    </select>
-                                </td> 
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="25%">CREDIT LIMIT</th>
-                                <th style="text-align: left" width="25%">REMAIN AMT (A/R)</th>
-                                <th style="text-align: left; background: #e6e6e6;" width="25%">A/R OVERDUE</th>
-                                <th style="text-align: left; background: #e6e6e6;" width="25%">REMAIN LIMIT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="CREDIT LIMIT">
-                                    <input type="text" id="credit_limit" class="form-control" style="font-size: 14px;" placeholder="-" readonly>
-                                </td>
-                                <td data-label="REMAIN AMT (A/R)">
-                                    <input type="text" id="remain_amt" class="form-control" style="font-size: 14px;" placeholder="-" readonly>
-                                </td>
-                                <td data-label="A/R OVERDUE" style="background: #e6e6e6">
-                                    <input type="text" id="overdue" class="form-control" style="font-size: 14px;  background: #e6e6e6;" placeholder="-" readonly>
-                                </td>
-                                <td data-label="REMAIN LIMIT" style="background: #e6e6e6">
-                                    <input type="text" id="remain_limit" class="form-control" style="font-size: 14px; background: #e6e6e6;" placeholder="-" readonly>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left">RANGE BW <span class="important">*</span></th>
-                                <th style="text-align: left">REQ QTY <span class="important">*</span></th>
-                                <th style="text-align: left">REQ WEIGHT (KG) <span class="important">*</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="RANGE BW">
-                                    <select id="range_bw" name="range_bw" class="form-control" style="width: 100%;" required>
-                                        <option value="" data-calculation="" disabled>Pilih ukuran BW</option>
-                                        <option data-calculation="0.3" value="0.2 - 0.4">0.2 - 0.4</option>
-                                        <option data-calculation="0.4" value="0.3 - 0.5">0.3 - 0.5</option>
-                                        <option data-calculation="0.5" value="0.4 - 0.6">0.4 - 0.6</option>
-                                        <option data-calculation="0.6" value="0.5 - 0.7">0.5 - 0.7</option>
-                                        <option data-calculation="0.7" value="0.6 - 0.8">0.6 - 0.8</option>
-                                        <option data-calculation="0.8" value="0.7 - 0.9">0.7 - 0.9</option>
-                                        <option data-calculation="0.9" value="0.8 - 1.0">0.8 - 1.0</option>
-                                        <option data-calculation="1.0" value="0.9 - 1.1">0.9 - 1.1</option>
-                                        <option data-calculation="1.1" value="1.0 - 1.2">1.0 - 1.2</option>
-                                        <option data-calculation="1.2" value="1.1 - 1.3">1.1 - 1.3</option>
-                                        <option data-calculation="1.3" value="1.2 - 1.4">1.2 - 1.4</option>
-                                        <option data-calculation="1.4" value="1.3 - 1.5">1.3 - 1.5</option>
-                                        <option data-calculation="1.5" value="1.4 - 1.6">1.4 - 1.6</option>
-                                        <option data-calculation="1.6" value="1.5 - 1.7">1.5 - 1.7</option>
-                                        <option data-calculation="1.7" value="1.6 - 1.8">1.6 - 1.8</option>
-                                        <option data-calculation="1.8" value="1.7 - 1.9">1.7 - 1.9</option>
-                                        <option data-calculation="1.9" value="1.8 - 2.0">1.8 - 2.0</option>
-                                        <option data-calculation="2.0" value="1.9 - 2.1">1.9 - 2.1</option>
-                                        <option data-calculation="2.1" value="2.0 - 2.2">2.0 - 2.2</option>
-                                        <option data-calculation="2.2" value="2.1 - 2.3">2.1 - 2.3</option>
-                                        <option data-calculation="2.3" value="2.2 - 2.4">2.2 - 2.4</option>
-                                        <option data-calculation="2.4" value="2.3 - 2.5">2.3 - 2.5</option>
-                                        <option data-calculation="2.5" value="2.4 - 2.6">2.4 - 2.6</option>
-                                        <option data-calculation="2.6" value="2.5 - 2.7">2.5 - 2.7</option>
-                                        <option data-calculation="2.7" value="2.6 - 2.8">2.6 - 2.8</option>
-                                        <option data-calculation="2.8" value="2.7 - 2.9">2.7 - 2.9</option>
-                                        <option data-calculation="2.9" value="2.8 - 3.0">2.8 - 3.0</option>
-                                        <option data-calculation="3.0" value="2.9 - 3.1">2.9 - 3.1</option>
-                                    </select>
-                                </td>
-                                <td data-label="REQ QTY">
-                                    <input type="hidden" name="item" value="10001001">
-                                    <input id="qty" type="number" name="qty" class="form-control" style="font-size: 14px; width: 100%" placeholder="CONTOH : 10">
-                                </td>
-                                <td data-label="REQ WEIGHT (KG)">
-                                    <input id="bw" type="number" name="bw" class="form-control" style="font-size: 14px; width: 100%" placeholder="CONTOH : 100" oninput="this.value = this.value.replace(/[^0-9.]/g, '')">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left">REMARK</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="REMARKS">
-                                    <textarea type="text" name="remark" class="form-control" style="font-size: 14px; width: 100%" placeholder="Contoh: DO 1 KANDANG FATMAWATI" rows="5"></textarea>
-                                </td> 
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-bordered" style="margin-bottom: 0px">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left" width="50%">CUSTOMER PHONE NUMBER <span class="important">*</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="PHONE NUMBER">
-                                    <input type="text" name="customer_phone" class="form-control" style="font-size: 14px; width: 100%" placeholder="INPUT PHONE NUMBER HERE..." required>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
+                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px 10px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">CUSTOMER PLAN</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="5" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                </tr>
+                                <tr>
+                                    <th>CUSTOMER</th>
+                                    <th>PHONE NUMBER</th>
+                                    <th>ALAMAT</th>
+                                    <th>TARGET PLAN</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="farmersinfo">
+                                <tr style="align-items: flex-end">
+                                    <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                </tr>
+                                <tr>
+                                    <td data-label="CUSTOMER">
+                                        <select id="customer" class="form-control" style="width: 100%;" name="customer" required>
+                                            <option value="SKAAI01" selected>SKAAI01 - AFRIDA BLA XXXXXX</option>
+                                            <option value="SKAAI02" selected>SKAAI02 - SUKATANI BLA XXXXXX</option>
+                                            <option value="SKAAI03" selected>SKAAI03 - BROSIS BLA XXXXXX</option>
+                                        </select>
+                                    </td>
+                                    <td data-label="CONTACT PHONE">
+                                        <input type="text" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx" readonly>
+                                    </td>
+                                    <td data-label="ADDRESS">
+                                        <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="3" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
+                                    </td>
+                                    <td data-label="TARGET PLAN">
+                                        <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
+                                    </td>
+                                    <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
             </div>
-               
+
             <div class="form-group row mt-5" style="margin: 20px 0px !important">
                 <div class="col-lg-12 col-sm-12" style="display: flex; padding: 0px">
-                    <a href="<?= admin_url('order') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
+                    <a href="<?= admin_url('sales/plan-activity') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
                     <span style="margin: 5px;"></span>
                     <button type="submit" class="btn btn-primary cust-btn-save" style="width: 50%; height: 50px">SAVE</button>
                 </div>
             </div>
-            </form>
+        </form>
     </div>
 </div>
-
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLUc8QC0GYh5ozbMbGBcNUm1BBIjvmmg8&callback=myMap"></script> -->
 <script>
-    $('#customer').select2({
-        theme: 'bootstrap4',
-        placeholder: "- PILIH CUSTOMER -",
-        ajax: {
-            url: "<?= base_url('ajax/load/customer') ?>",
-            dataType: 'json',
-            data: function (params) {
-              return {
-                q: params.term,
-                area: $("#area option:selected").val()
-              };
-            },
+    const lang = document.getElementById("coordinateText");
+    let segmenIndex = 0;
+
+    function getLocation() {
+        console.log('ask this');
+        console.log(navigator.geolocation);
+        if (navigator.geolocation) {
             
-            processResults: function(data) {
-                return {
-                    results: $.map(data, function(item) {
-                        return {
-                            text: item.CUST + " - " + item.FULL_NAME,
-                            id: item.CUST,
-                            // phone: item.MOBILE_PHONE
-                        }
-                    })
-                };
-            }
-        },
-        
-        // templateSelection: function (data, container) {// Log jsondetail untuk memeriksa data JSON
-        //     $(data.element).attr('data-phone', data.phone);
-        //     return data.text;
-        // }
-    }).on('change', function() {
-        loadCustomerLimit()
-    });
-
-    $(document).ready(function() {
-    });
-
-    $(".calculateAmount").on('keyup', function() {
-        let bw = Number($("#bw").val());
-        let price = Number($("#price").val());
-        let amount = bw * price;
-        console.log(bw, price, amount);
-        $("#amount").val(formatRupiah(amount));
-    });
-
-    $(`#qty`).on('keyup', function (e) {
-        var code = e.keyCode || e.which;
-        // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
-        var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
-        if (allowed_keycode.includes(code)) {
-            var qty = Number($(`#qty`).val());
-            var calculation_text = $(`#range_bw option:selected`).data('calculation');
-            var calculation = Number(calculation_text);
-            var weight  = qty * calculation;
-            $("#bw").val(weight.toString());
-            console.log(qty, calculation_text, calculation);
-            // var total_price = final_price * qty;
-            // $(`#total_price_${item_id}`).val(total_price);
-            // $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
-            // calculate_vat();
-        } else {
-            e.preventDefault();
+            console.log('ask this 1');
+            navigator.geolocation.watchPosition(showPosition);
+        } else { 
+            console.log('ask this 2');
+            lang.innerHTML = "Geolocation is not supported by this browser.";
         }
-    });
-
-    $(`#bw`).on('keyup', function (e) {
-        var code = e.keyCode || e.which;
-        // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
-        var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
-        if (allowed_keycode.includes(code)) {
-            var bw = Number($(`#bw`).val());
-            var calculation_text = $(`#range_bw option:selected`).data('calculation');
-            var calculation = Number(calculation_text);
-            var qty  = bw / calculation;
-            $("#qty").val(qty.toString());
-            console.log(qty, calculation_text, calculation);
-            // var total_price = final_price * qty;
-            // $(`#total_price_${item_id}`).val(total_price);
-            // $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
-            // calculate_vat();
-        } else {
-            e.preventDefault();
-        }
-    });
-
-
-    function formatRupiah(angka) {
-        angka = Number(angka); // Pastikan angka dalam bentuk number
-        return 'RP ' + angka.toLocaleString('id-ID');
     }
 
-    function loadCustomerLimit() {
-        $.ajax({
-            url : `<?= base_url('ajax/load/customer-limit') ?>`,
-            type : "GET",
-            data: {
-                customer: $("#customer option:selected").val()
-            },
-            dataType : "json",
-            success:function(response)
-            {
-                if (response.status == true) {
-                    let data = response.data;
-                    let limit = data["CREDIT_LIMIT"] - data["REMAIN_AMT"];
-                    $("#credit_limit").val(formatRupiah(data["CREDIT_LIMIT"]));
-                    $("#remain_amt").val(formatRupiah(data["REMAIN_AMT"]));
-                    $("#overdue").val(formatRupiah(data["ABNORMAL_AMT"]));
-                    $("#remain_limit").val(formatRupiah(limit));
-                    console.log(data);                    
-                } else if (response.status == false) {
-                    $("#credit_limit").val("-");
-                    $("#remain_amt").val("-");
-                    $("#overdue").val("-");
-                    $("#remain_limit").val("-");
+    $(document).ready(function() {
+        getLocation();
+    });
+        
+    function showPosition(position) {
+        let latitude    = position.coords.latitude;
+        let longitude   = position.coords.longitude;
+        let coordinate  = latitude + "," + longitude;
 
-                    alert('CUSTOMER SUDAH TIDAK AKTIF');
-                    
-                }
+        lang.innerHTML  = coordinate;
+        let iframe_gmap = `<iframe class="maps-frame" src="https://maps.google.com/maps?q=${coordinate}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+            
+        $("#coordinate").val(coordinate);
+        $("#iframe-location").html(iframe_gmap);
+        
+        detailPosition(latitude, longitude)
+        detailWeather(latitude, longitude)
+    }
+
+    function detailPosition(latitude, longitude) {
+        let addressAPI = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+        $.ajax({
+            url: addressAPI,
+            type: "GET",
+            beforeSend: function () {
+                // removeElements();
+            },
+            success: function(response) {
+                // let data = JSON.parse(response);
+                // console.log(response);
+                // alert(data.data);
+                $("#address").val(response.display_name);
+                $("#address-info").text(response.display_name);
+            }
+        });
+    }
+
+    $('#customer').select2({
+        theme: 'bootstrap4',
+        language: "en",
+        placeholder: "- SELECT PHASE -",
+    });
+
+    function addFarmers() {
+        let tabledata = `
+       <tr>
+            <td data-label="CUSTOMER">
+                <select id="customer" class="form-control" style="width: 100%;" name="customer" required>
+                    <option value="SKAAI01" selected>SKAAI01 - AFRIDA BLA XXXXXX</option>
+                    <option value="SKAAI02" selected>SKAAI02 - SUKATANI BLA XXXXXX</option>
+                    <option value="SKAAI03" selected>SKAAI03 - BROSIS BLA XXXXXX</option>
+                </select>
+            </td>
+            <td data-label="CONTACT PHONE">
+                <input type="text" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx" readonly>
+            </td>
+            <td data-label="ADDRESS">
+                <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="3" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
+            </td>
+            <td data-label="TARGET PLAN">
+                <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
+            </td>
+            <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
+        </tr>
+        `;
+
+        $("#farmersinfo").append(tabledata);
+    }
+
+    function deleteRow(e) {
+        Swal.fire({
+            type: "warning",
+            title: "Delete Row",
+            showCancelButton: true,
+            text: "Are you sure want to delete this data ?"
+        }).then((result) => {
+            if (result.value) {
+                $(e).parent().parent().remove();
+            }
+        });
+    }
+
+    function deleteRowSegment(e) {
+        Swal.fire({
+            type: "warning",
+            title: "Delete Row",
+            showCancelButton: true,
+            text: "Are you sure want to delete this cycle ?"
+        }).then((result) => {
+            if (result.value) {
+                $("#segment-" + e).remove();
             }
         });
     }

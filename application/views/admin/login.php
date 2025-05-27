@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Broiler System | Log in</title>
+    <title>Sales RPA | Log in</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="<?= asset('/js/app.js') ?>" defer></script>
@@ -66,7 +66,7 @@
                               </center>
 
                               <h2 style="text-align: center; margin-bottom: 5px">SIGN IN</h2>
-                              <h2 style="text-align: center; font-size: 14px; font-weight: 700">ORDER BROILER</h2>
+                              <h2 style="text-align: center; font-size: 14px; font-weight: 700">DAILY SALES RPA</h2>
                               <form method="POST" action="<?= route('login') ?>">
                                 <?php if ($this->session->flashdata('alert')): ?>
                                   <div class="invalid-feedback" role="alert" style="display: block !important;">
