@@ -667,7 +667,7 @@
         display: none;
     }
 
-    td {
+    th, td {
         border: 2px solid #ddd !important;
     }
 
@@ -682,6 +682,11 @@
         border-radius: 0.3rem;
         cursor: pointer;
         margin-top: 1rem;
+    }
+
+    textarea, input, button {
+        font-size: 12px !important;
+        text-transform: uppercase;
     }
 
     @media (max-width: 1024px) {
@@ -807,63 +812,80 @@
         <strong>ACTUAL ACTIVITY</strong>
     </h3>
     <div class="row">
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="<?= base_url('dashboard/sales/plan-activity/update') ?>" method="POST" enctype="multipart/form-data">
             <div class="content-task mt-5">
                     <div class="table-responsive">
-                         <table class="table table-bordered" style="margin-bottom: 20px;">
+                        <table class="table table-bordered" style="margin-bottom: 20px">
                             <thead>
                                 <tr>
+                                    <th style="text-align: left" width="20%">ACTIVITY NUMBER</th>
                                     <th style="text-align: left" width="30%">DATE</th>
-                                    <th style="text-align: left" width="70%">SALES</th>
+                                    <th style="text-align: left" width="50%">SALES</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td data-label="ACTIVITY NUMBER">
+                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_no" value="#<?= $plan['ACTIVITY_NO'] ?>" readonly>
+                                    </td> 
                                     <td data-label="DATE">
-                                    <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="plan_date" value="<?php echo date('d-m-Y') ?>" readonly>
+                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_date" value="<?= $plan['ACTIVITY_DATE'] ?>" readonly>
                                     </td> 
                                     <td data-label="SALES NAME">
-                                        <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" value="<?= $user['FULL_NAME'] ?>" readonly>
+                                        <input type="hidden" name="sales_npk" value="<?= $plan['SALES_NPK'] ?>">
+                                        <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" value="<?= $plan['SALES_NAME'] ?>" readonly>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;"> PT. SUPER UNGGAS JAYA</h3>
-                        <table class="table table-bordered" style="margin-bottom: 0px">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left" width="30%">COORDINATE</th>
-                                    <th style="text-align: left" width="70%">REMARK</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td data-label="COORDINATE" style="padding-bottom: 20px !important;">
-                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="plan_date" value="-6.233259847253184, 106.8220139244133" readonly>
-                                        <br>
-                                        <a href="javascript:void(0)" onclick="getLocation()" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;">UPDATE LOCATION</a>
-                                    </td> 
-                                    <td data-label="REMARK">
-                                        <textarea placeholder="Cth: lorem ipsum dolor sit amet..." name="" id="" rows="5" style="width: 100%; padding: 10px; border-radius: 8px; font-size: 12px; text-transform: uppercase;" required></textarea>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="table table-bordered" style="margin-bottom: 20px">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left">UPLOAD IMAGE</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td data-label="UPLOAD IMAGE">
-                                        <input type="file" accept="image/png, image/jpeg, image/jpg" name="" class="form-control" style="text-transform: uppercase;">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <?php foreach ($plan_activities as $i => $activity): ?>
+                            <!-- Hidden untuk identifikasi record unik -->
+                            <input type="hidden" name="activity_no[]" value="<?= $activity['ACTIVITY_NO'] ?>">
+                            <input type="hidden" name="cust[]" value="<?= $activity['CUST'] ?>">
+                            
+                            <h3 style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;" class="sub-title"><STRONG><?= $activity['CUST'] ?></STRONG>&nbsp;-&nbsp;<?= $activity['CUST_NAME'] ?></h3>
+
+                            <table class="table table-bordered" style="margin-bottom: 0px">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">COORDINATE</th>
+                                        <th width="70%">REMARK</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <input type="text" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="coordinate[]" class="form-control" value="<?= $activity['COORDINATE'] ?>" readonly>
+                                            <br>
+                                            <a href="javascript:void(0)" onclick="getLocation(this)" class="btn btn-sm" style="background: #00c0ff; color: #fff;">UPDATE LOCATION</a>
+                                        </td>
+                                        <td>
+                                            <textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control"><?= $activity['REMARK'] ?></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="table table-bordered" style="margin-bottom: 20px">
+                                <thead>
+                                    <tr><th>UPLOAD IMAGE</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <?php if (!empty($activity['IMAGE_PATH'])): ?>
+                                                <div style="margin-bottom: 10px;">
+                                                    <img src="<?= base_url('uploads/plan/' . $activity['IMAGE_PATH']) ?>" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">
+                                                </div>
+                                            <?php endif; ?>
+                                            
+                                            <input type="file" name="image[]" class="form-control" accept="image/*">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <?php endforeach; ?>
 
                         <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER ACTUAL PLAN</h3>
                         <table class="table table-bordered">
@@ -884,34 +906,41 @@
                                 <tr style="align-items: flex-end">
                                     <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
                                 </tr>
-                                <tr>
-                                    <td data-label="CUSTOMER">
-                                        <input type="text" placeholder="CTH: PT. SUPER UNGGAS JAYA" name="customer_phone" class="form-control" style="font-size: 14px;" value="">
-                                    </td>
-                                    <td data-label="CONTACT PHONE">
-                                        <input type="number" placeholder="CTH: 08XXXXXXXXX" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx">
-                                    </td>
-                                    <td data-label="ALAMAT" style="padding-top: 20px !important;">
-                                        <a href="javascript:void(0)" onclick="getLocation()" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 10px">UPDATE LOCATION</a>
-                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%; margin: 15px 0px !important" name="plan_date" value="-6.233259847253184, 106.8220139244133" readonly>
-                                        <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="5" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
-                                    </td>
-                                    <td data-label="REMARK">
-                                        <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="5"></textarea>
-                                    </td>
-                                    <td data-label="UPLOAD IMAGE" class="upload-img">
-                                        <!-- actual upload which is hidden -->
-                                        <input type="file" id="actual-btn" hidden/>
-
-                                        <!-- our custom upload button -->
-                                        <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
-                                        <br>
-                                        <!-- name of file chosen -->
-                                        <span id="file-chosen">NO FILE CHOOSEN</span>
-                                    </td>
-                                    <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
-                                </tr>
-                                
+                                <?php if (!empty($other_activities)): ?>
+                                    <?php foreach ($other_activities as $i => $other): ?>
+                                    <tr>
+                                        <td data-label="CUSTOMER">
+                                            <input type="hidden" name="other_id[]" value="<?= $other['ID'] ?>">
+                                            <input type="text" name="other_customer[]" class="form-control" value="<?= $other['CUSTOMER'] ?>" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
+                                        </td>
+                                        <td data-label="PHONE NUMBER">
+                                            <input type="text" name="other_phone[]" class="form-control" value="<?= $other['PHONE'] ?>" placeholder="CTH: 08XXXXXXXXX" />
+                                        </td>
+                                        <td data-label="ALAMAT" style="padding-top: 15px !important">
+                                            <a href="javascript:void(0)" onclick="getLoc(this)" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 10px">UPDATE LOCATION</a>
+                                            <input type="text" name="other_coordinate[]" class="form-control" readonly  style="font-size: 14px; width: 100%; margin: 15px 0px !important" value="<?= $other['COORDINATE'] ?>" />
+                                            <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px"><?= $other['ADDRESS'] ?></textarea>
+                                        </td>
+                                        <td data-label="REMARK">
+                                            <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"><?= $other['REMARK'] ?></textarea>
+                                        </td>
+                                        <td data-label="UPLOAD">
+                                            <?php if (!empty($other['IMAGE_PATH'])): ?>
+                                                <small>Existing: <?= $other['IMAGE_PATH'] ?></small>
+                                            <?php endif; ?>
+                                            <input type="file" name="other_image[]" class="form-control" accept="image/*" hidden/>
+                                            <!-- our custom upload button -->
+                                            <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
+                                                <br>
+                                            <!-- name of file chosen -->
+                                            <span id="file-chosen">NO FILE CHOOSEN</span>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -939,52 +968,71 @@
     const lang = document.getElementById("coordinateText");
     let segmenIndex = 0;
 
-    function getLocation() {
-        console.log('ask this');
-        console.log(navigator.geolocation);
+    function getLocation(button) {
         if (navigator.geolocation) {
-            
-            console.log('ask this 1');
-            navigator.geolocation.watchPosition(showPosition);
-        } else { 
-            console.log('ask this 2');
-            lang.innerHTML = "Geolocation is not supported by this browser.";
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let input = button.parentElement.querySelector('input[name="coordinate[]"]');
+                input.value = position.coords.latitude + ", " + position.coords.longitude;
+            });
+        } else {
+            alert("Geolocation tidak didukung browser ini.");
+        }
+    }
+    function getLoc(button) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const coordinate = latitude + ", " + longitude;
+
+                // Ambil parent row dari tombol yang diklik
+                const row = button.closest('tr');
+
+                // Set nilai koordinat
+                const coordinateInput = row.querySelector('input[name="other_coordinate[]"]');
+                if (coordinateInput) coordinateInput.value = coordinate;
+
+                // Set nilai address (hasil reverse geocode)
+                detailPosition(latitude, longitude, function(address) {
+                    const addressTextarea = row.querySelector('textarea[name="other_address[]"]');
+                    if (addressTextarea) addressTextarea.value = address;
+                });
+
+            }, function(error) {
+                alert("Gagal mendapatkan lokasi: " + error.message);
+            });
+        } else {
+            alert("Geolocation tidak didukung browser ini.");
         }
     }
 
     $(document).ready(function() {
         getLocation();
+        getLoc();
     });
         
     function showPosition(position) {
         let latitude    = position.coords.latitude;
         let longitude   = position.coords.longitude;
-        let coordinate  = latitude + "," + longitude;
-
-        lang.innerHTML  = coordinate;
-        let iframe_gmap = `<iframe class="maps-frame" src="https://maps.google.com/maps?q=${coordinate}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
             
         $("#coordinate").val(coordinate);
-        $("#iframe-location").html(iframe_gmap);
         
         detailPosition(latitude, longitude)
-        detailWeather(latitude, longitude)
     }
 
-    function detailPosition(latitude, longitude) {
-        let addressAPI = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+    function detailPosition(latitude, longitude, callback) {
+        const addressAPI = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
         $.ajax({
             url: addressAPI,
             type: "GET",
-            beforeSend: function () {
-                // removeElements();
-            },
             success: function(response) {
-                // let data = JSON.parse(response);
-                // console.log(response);
-                // alert(data.data);
-                $("#address").val(response.display_name);
-                $("#address-info").text(response.display_name);
+                const address = response.display_name;
+                if (typeof callback === 'function') {
+                    callback(address);
+                }
+            },
+            error: function() {
+                alert("Gagal mengambil alamat dari koordinat.");
             }
         });
     }
@@ -999,30 +1047,31 @@
         let tabledata = `
         <tr>
             <td data-label="CUSTOMER">
-                <input type="text" placeholder="CTH: PT. SUPER UNGGAS JAYA" name="customer_phone" class="form-control" style="font-size: 14px;" value="">
+                <input type="hidden" name="other_id[]" value="">
+                <input type="text" name="other_customer[]" class="form-control" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
             </td>
-            <td data-label="CONTACT PHONE">
-                <input type="number" placeholder="CTH: 08XXXXXXXXX" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx">
+            <td data-label="PHONE NUMBER">
+                <input type="text" name="other_phone[]" class="form-control" placeholder="CTH: 08XXXXXXXXX" />
             </td>
-            <td data-label="ALAMAT" style="padding-top: 20px !important;">
-                <a href="javascript:void(0)" onclick="getLocation()" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 10px">UPDATE LOCATION</a>
-                <input type="text" class="form-control" style="font-size: 14px; width: 100%; margin: 15px 0px !important" name="plan_date" value="-6.233259847253184, 106.8220139244133" readonly>
-                <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="5" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
+            <td data-label="ALAMAT" style="padding-top: 15px !important">
+                <a href="javascript:void(0)" onclick="getLoc(this)" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 15px;">UPDATE LOCATION</a>
+                <input type="text" name="other_coordinate[]" class="form-control" readonly  style="font-size: 14px; width: 100%; margin: 15px 0px !important" />
+                <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px" id="address-info"></textarea>
             </td>
             <td data-label="REMARK">
-                <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="5"></textarea>
+                <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"></textarea>
             </td>
-            <td class="upload-img">
-                <!-- actual upload which is hidden -->
-                <input type="file" id="actual-btn" hidden/>
-
+            <td data-label="UPLOAD">
+                <input type="file" name="other_image[]" class="form-control" accept="image/*" hidden/>
                 <!-- our custom upload button -->
                 <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
-                <br>
+                    <br>
                 <!-- name of file chosen -->
                 <span id="file-chosen">NO FILE CHOOSEN</span>
             </td>
-            <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
+            <td>
+                <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
+            </td>
         </tr>
         `;
 
@@ -1031,26 +1080,23 @@
 
     function deleteRow(e) {
         Swal.fire({
-            type: "warning",
+            icon: "warning",
             title: "Delete Row",
             showCancelButton: true,
             text: "Are you sure want to delete this data ?"
         }).then((result) => {
             if (result.value) {
-                $(e).parent().parent().remove();
-            }
-        });
-    }
+                const row = $(e).closest('tr');
+                
+                // Cek apakah baris ini punya ID dari database
+                const hiddenInput = row.find('input[name="other_id[]"]');
+                if (hiddenInput.length > 0 && hiddenInput.val() !== '') {
+                    // Buatkan input untuk menandai ID yang perlu dihapus
+                    const deletedInput = `<input type="hidden" name="deleted_other_id[]" value="${hiddenInput.val()}">`;
+                    $("form").append(deletedInput);
+                }
 
-    function deleteRowSegment(e) {
-        Swal.fire({
-            type: "warning",
-            title: "Delete Row",
-            showCancelButton: true,
-            text: "Are you sure want to delete this cycle ?"
-        }).then((result) => {
-            if (result.value) {
-                $("#segment-" + e).remove();
+                row.remove();
             }
         });
     }

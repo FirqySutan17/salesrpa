@@ -144,7 +144,7 @@
             </li>
             <?php endif ?>
 
-            <li class="<?= ($this->uri->segment(2) == 'plan-activity'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
+            <li class="<?= ($this->uri->segment(2) == 'sales'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
                 <a href="<?= route('dashboard/sales/plan-activity') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -158,7 +158,7 @@
                 </a>
             </li>
 
-            <!-- <li class="<?= ($this->uri->segment(2) == 'actual-activity'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
+            <!-- <li class="<?= ($this->uri->segment(2) == 'sales'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
                 <a href="<?= route('dashboard/sales/actual-activity') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path

@@ -653,7 +653,7 @@
         font-size: 12px
     }
 
-    #farmersinfo .cust-btn-add {
+    #customersinfo .cust-btn-add {
         display: none;
     }
     #segment .cust-btn-add {
@@ -772,7 +772,7 @@
             height: auto !important;
             padding: 15px !important;
         }
-        #farmersinfo .cust-btn-add {
+        #customersinfo .cust-btn-add {
             display: block;
         }
         #segment .cust-btn-add {
@@ -809,22 +809,27 @@
         <strong>PLAN ACTIVITY</strong>
     </h3>
     <div class="row">
-        <form action="" method="POST" enctype="multipart/form-data">
+        <form action="<?= admin_url('sales/plan-activity/save-plan') ?>" method="POST" enctype="multipart/form-data">
             <div class="content-task mt-5">
                     <div class="table-responsive">
                          <table class="table table-bordered" style="margin-bottom: 20px">
                             <thead>
                                 <tr>
+                                    <th style="text-align: left" width="20%">ACTIVITY NUMBER</th>
                                     <th style="text-align: left" width="30%">DATE</th>
-                                    <th style="text-align: left" width="70%">SALES</th>
+                                    <th style="text-align: left" width="50%">SALES</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td data-label="ACTIVITY NUMBER">
+                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_no" value="AS<?= $user['EMPLOYEE_ID'] ?><?php echo date('Ymd') ?>" readonly>
+                                    </td> 
                                     <td data-label="DATE">
-                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="plan_date" value="<?php echo date('d-m-Y') ?>" readonly>
+                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_date" value="<?php echo date('d-m-Y') ?>" readonly>
                                     </td> 
                                     <td data-label="SALES NAME">
+                                        <input type="hidden" name="sales_npk" value="<?= $user['EMPLOYEE_ID'] ?>">
                                         <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" value="<?= $user['FULL_NAME'] ?>" readonly>
                                     </td>
                                 </tr>
@@ -835,7 +840,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th colspan="5" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                    <th colspan="5" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addCustomers()">+</button></th>
                                 </tr>
                                 <tr>
                                     <th>CUSTOMER</th>
@@ -845,26 +850,28 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody id="farmersinfo">
+                            <tbody id="customersinfo">
                                 <tr style="align-items: flex-end">
-                                    <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                    <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addCustomers()">+</button></th>
                                 </tr>
                                 <tr>
                                     <td data-label="CUSTOMER">
-                                        <select id="customer" class="form-control" style="width: 100%;" name="customer" required>
-                                            <option value="SKAAI01" selected>SKAAI01 - AFRIDA BLA XXXXXX</option>
-                                            <option value="SKAAI02" selected>SKAAI02 - SUKATANI BLA XXXXXX</option>
-                                            <option value="SKAAI03" selected>SKAAI03 - BROSIS BLA XXXXXX</option>
+                                        <select id="customer" class="form-control customer-select" style="width: 100%;" name="cust[]" required>
+                                            <option value="" selected>- PILIH CUSTOMER -</option>
+                                            <?php foreach ($customer as $item): ?>
+                                                <option value="<?= $item['CUST'] ?>"><?= $item['CUST'] ?> - <?= $item['FULL_NAME'] ?></option>
+                                            <?php endforeach ?>
                                         </select>
                                     </td>
                                     <td data-label="CONTACT PHONE">
-                                        <input type="text" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx" readonly>
+                                        <input type="hidden" name="cust_name[]" class="form-control name-field">
+                                        <input type="text" name="phone[]" class="form-control phone-field" style="font-size: 14px;" readonly>
                                     </td>
                                     <td data-label="ADDRESS">
-                                        <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="3" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
+                                        <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
                                     </td>
                                     <td data-label="TARGET PLAN">
-                                        <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
+                                        <textarea name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
                                     </td>
                                     <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
                                 </tr>
@@ -886,89 +893,70 @@
 </div>
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLUc8QC0GYh5ozbMbGBcNUm1BBIjvmmg8&callback=myMap"></script> -->
 <script>
-    const lang = document.getElementById("coordinateText");
-    let segmenIndex = 0;
+    const customerData = <?= json_encode($customer) ?>;
 
-    function getLocation() {
-        console.log('ask this');
-        console.log(navigator.geolocation);
-        if (navigator.geolocation) {
-            
-            console.log('ask this 1');
-            navigator.geolocation.watchPosition(showPosition);
-        } else { 
-            console.log('ask this 2');
-            lang.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    }
-
-    $(document).ready(function() {
-        getLocation();
-    });
-        
-    function showPosition(position) {
-        let latitude    = position.coords.latitude;
-        let longitude   = position.coords.longitude;
-        let coordinate  = latitude + "," + longitude;
-
-        lang.innerHTML  = coordinate;
-        let iframe_gmap = `<iframe class="maps-frame" src="https://maps.google.com/maps?q=${coordinate}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
-            
-        $("#coordinate").val(coordinate);
-        $("#iframe-location").html(iframe_gmap);
-        
-        detailPosition(latitude, longitude)
-        detailWeather(latitude, longitude)
-    }
-
-    function detailPosition(latitude, longitude) {
-        let addressAPI = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
-        $.ajax({
-            url: addressAPI,
-            type: "GET",
-            beforeSend: function () {
-                // removeElements();
-            },
-            success: function(response) {
-                // let data = JSON.parse(response);
-                // console.log(response);
-                // alert(data.data);
-                $("#address").val(response.display_name);
-                $("#address-info").text(response.display_name);
-            }
-        });
-    }
+    // Generate select options dari PHP (satu kali saja)
+    const customerOptionsHtml = `
+        <option value="" selected>- PILIH CUSTOMER -</option>
+        <?php foreach($customer as $item): ?>
+            <option value="<?= $item['CUST'] ?>"><?= $item['CUST'] ?> - <?= $item['FULL_NAME'] ?></option>
+        <?php endforeach ?>
+    `;
 
     $('#customer').select2({
         theme: 'bootstrap4',
         language: "en",
-        placeholder: "- SELECT PHASE -",
+        placeholder: "- SELECT CUSTOMER -",
     });
 
-    function addFarmers() {
+    // Auto isi telepon & alamat saat pilih customer
+    $(document).on('change', '.customer-select', function () {
+        const selectedVal = $(this).val();
+        const selectedRow = $(this).closest('tr');
+
+        const customer = customerData.find(c => c.CUST === selectedVal);
+
+        if (customer) {
+            selectedRow.find('.phone-field').val(customer.MOBILE_PHONE);
+            selectedRow.find('.address-field').val(customer.ADDRESS);
+            selectedRow.find('.name-field').val(customer.FULL_NAME);
+        } else {
+            selectedRow.find('.phone-field').val('');
+            selectedRow.find('.address-field').val('');
+            selectedRow.find('.name-field').val('');
+        }
+    });
+
+    function addCustomers() {
         let tabledata = `
-       <tr>
+        <tr>
             <td data-label="CUSTOMER">
-                <select id="customer" class="form-control" style="width: 100%;" name="customer" required>
-                    <option value="SKAAI01" selected>SKAAI01 - AFRIDA BLA XXXXXX</option>
-                    <option value="SKAAI02" selected>SKAAI02 - SUKATANI BLA XXXXXX</option>
-                    <option value="SKAAI03" selected>SKAAI03 - BROSIS BLA XXXXXX</option>
+                <select class="form-control customer-select" style="width: 100%;" name="cust[]" required>
+                    ${customerOptionsHtml}
                 </select>
             </td>
             <td data-label="CONTACT PHONE">
-                <input type="text" name="customer_phone" class="form-control" style="font-size: 14px;" value="08123xxxxxx" readonly>
+                <input type="hidden" name="cust_name[]" class="form-control name-field">
+                <input type="text" name="phone[]" class="form-control phone-field" style="font-size: 14px;" readonly>
             </td>
             <td data-label="ADDRESS">
-                <textarea name="address" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" id="" rows="3" readonly>Menara Jamsostek Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus Ibukota Jakarta 12710</textarea>
+                <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
             </td>
             <td data-label="TARGET PLAN">
-                <textarea name="address" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
+                <textarea name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" rows="3"></textarea>
             </td>
             <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
         </tr>
         `;
 
-        $("#farmersinfo").append(tabledata);
+        $("#customersinfo").append(tabledata);
+
+        // Inisialisasi ulang Select2 hanya untuk elemen baru
+        $("#customersinfo .customer-select").last().select2({
+            theme: 'bootstrap4',
+            language: "en",
+            placeholder: "- SELECT CUSTOMER -"
+        });
     }
 
     function deleteRow(e) {

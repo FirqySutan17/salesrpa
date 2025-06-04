@@ -37,10 +37,13 @@ $route['survey/do_create_mobile'] 	= 'Home/do_create_mobile';
 	$route['dashboard/master/user/excel'] 				= 'admin/master/User/excel';
 /* MASTER DATA ROUTES */
 
-$route['dashboard/sales/plan-activity'] 				= 'admin/Sales/index';
-$route['dashboard/sales/actual-activity'] 				= 'admin/Sales/index_actual';
-$route['dashboard/sales/plan-activity/create'] 			= 'admin/Sales/create_plan';
-$route['dashboard/sales/plan-activity/edit'] 			= 'admin/Sales/edit_plan';
+$route['dashboard/sales/plan-activity'] 					 = 'admin/Sales/index';
+$route['dashboard/sales/actual-activity'] 					 = 'admin/Sales/index_actual';
+$route['dashboard/sales/plan-activity/create'] 				 = 'admin/Sales/create_plan';
+$route['dashboard/sales/plan-activity/save-plan'] 			 = 'admin/Sales/save_plan';
+$route['dashboard/sales/plan-activity/edit/(:any)'] 		 = 'admin/Sales/edit_plan/$1';
+$route['dashboard/sales/plan-activity/update'] 				 = 'admin/Sales/update_plan';
+$route['dashboard/sales/plan-activity/delete/(:any)']        = 'admin/Sales/delete_plan/$1';
 
 $route['404_override'] 					= '';
 $route['translate_uri_dashes'] 			= FALSE;

@@ -15,12 +15,12 @@ class Dashboard extends CI_Controller {
 		$data['user']				= $this->session_data['user'];
 
 		
-		$user_level = $this->session_data['user']['ROLE'];
-		$approvalUser = getUserLevel($user_level);
-		if (!empty($approvalUser)) {
-			$data['request'] 			= $this->datatable();
-			$data['history'] 			= $this->history();
-		}
+		// $user_level = $this->session_data['user']['ROLE'];
+		// $approvalUser = getUserLevel($user_level);
+		// if (!empty($approvalUser)) {
+		// 	$data['request'] 			= $this->datatable();
+		// 	$data['history'] 			= $this->history();
+		// }
 
 		// dd($data);
 

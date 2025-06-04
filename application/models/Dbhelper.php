@@ -164,7 +164,13 @@
 			return $hasil;
 		}
 		function insertData($tabel=false,$data=false){
-			$hasil = $this->db->insert($tabel,$data);
+			$hasil = $this->db->insert($tabel, $data);
+
+			// if (!$hasil) {
+			// 	echo 'Query Gagal: ' . $this->db->last_query() . '<br>';
+			// 	echo 'DB Error: <pre>' . print_r($this->db->error(), true) . '</pre>';
+			// 	exit;
+			// }
 			return $hasil;
 		}
 		function insertDataWithReturnID($tabel=false,$data=false,$id=false){

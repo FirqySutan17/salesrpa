@@ -336,6 +336,14 @@
         padding: 10px;
         border: 2px solid #000
     }
+	.btn.btn-primary.btn-block {
+		height: 36px;
+		width: 15%;
+		border: 2px solid #000;
+		border-radius: 8px;
+		margin-left: -20px;
+	}
+	
 	@media (max-width: 600px) {
 		.table-responsive-new {
 			width: 100%;
@@ -405,19 +413,22 @@
 
 		table td:before {
             content: attr(data-label);
-            width: 35%;
+            width: 100%;
             font-weight: 600;
             font-size: 13px;
             text-align: left;
             text-transform: uppercase;
-			margin-right: 15px
+			margin-right: 15px;
+			border-bottom: 1px solid #000;
+			padding-bottom: 5px;
+			margin-bottom: 10px;
         }
 
 		table.table-bordered.dataTable td {
 			font-size: 13px !important;
 			display: flex;
-			flex-direction: row;
-			align-items: center;
+			flex-direction: column;
+        	align-items: flex-start;
 		}
 
 		thead th {
@@ -452,7 +463,7 @@
 			border: 0px solid #ddd;
 		}
 		.btn-show-detail {
-			width: 50%;
+			width: 100%;
 			margin-top: 10px
 		}
 		.btn-show-detail svg {
@@ -471,6 +482,11 @@
 		div.dataTables_wrapper div.dataTables_filter input {
 			font-size: 16px;
 		}
+		.btn.btn-primary.btn-block {
+			margin-left: 0px;
+			margin-top: 15px;
+			width: 100%;
+		}
 	}
 </style>
 
@@ -478,17 +494,19 @@
     <h3 class="card-title">
         <strong>ACTIVITY - SALES RPA</strong>
     </h3>
-		<form class="form-horizontal" action="#" method="POST" style="margin-bottom: 20px">
+	<form class="form-horizontal" action="<?= admin_url('sales/plan-activity') ?>" method="POST" style="margin-bottom: 20px">
         <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
 			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex;">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
-                <input  type="date" name="sdate" value="" class="form-control" required> <span style="display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">-</span> <input  type="date" name="edate" value="" class="form-control" required>
-            </div>
-            <div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
-                <button type="submit" class="btn btn-primary btn-block" style="height: auto; width: 15%;background: transparent; color: #000; border: 2px solid #000; border-radius: 8px; margin-left: -20px;"><i class="fas fa-search" style="font-size: 20px"></i></button> 
-            </div>
+				<span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
+				<input type="date" name="sdate" value="<?= $filter['sdate'] ?>" class="form-control" required> 
+				<span style="margin-top: 9px; font-weight: 600">-</span> 
+				<input type="date" name="edate" value="<?= $filter['edate'] ?>" class="form-control" required>
+			</div>
+			<div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
+				<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search" style="font-size: 20px"></i></button> 
+			</div>
             <div class="col-md-2 col-sm-12 btn-filter" style="display: flex;">
-                <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: auto; padding: 10px">CREATE PLAN</a> 
+                <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: 36px; padding: 7px 10px 10px 10px; width: 100%">CREATE PLAN</a> 
             </div>
         </div>
     </form>
@@ -497,29 +515,32 @@
 			<thead>
 				<tr>
 					<th>NO</th>
+					<th>PLAN NUMBER</th>
 					<th>DATE</th>
-                    <th>DEPT.</th>
 					<th>SALES</th>
                     <th>PLAN</th>
 					<th>ACTION</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td data-label="NO">1</td>
-					<td data-label="DATE">27 MEI 2025</td>
-                    <td data-label="DATE">SALES RPA</td>
-					<td data-label="CUSTOMER">FIRQY SUTANWALIYAH IKHSAN</td>
-                    <td data-label="PLAN">
-                        <p>CUSTOMER 1</p>
-                        <p>CUSTOMER 2</p>
-                    </td>
-					<td>
-						<!-- <a href="" class="btn btn-sm btn-show-detail"><i class="fas fa-eye text-success"></i></a> -->
-						<a href="<?= admin_url('sales/plan-activity/edit') ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
-						<a href="" class="btn btn-sm btn-show-cancel">DELETE</a>
-					</td>
-				</tr>
+				<?php $no = 1; ?>
+				<?php foreach ($plans as $plan): ?>
+					<tr>
+						<td data-label="NO"><?= $no++ ?></td>
+						<td data-label="PLAN NUMBER"><strong>#<?= $plan['ACTIVITY_NO'] ?></strong> </td>
+						<td data-label="DATE"><?= date('d M Y', strtotime($plan['ACTIVITY_DATE'])) ?></td>
+						<td data-label="SALES"><?= $plan['SALES_NAME'] ?></td>
+						<td data-label="PLAN">
+							<?php foreach ($plan['customers'] as $cust): ?>
+								<p><?= $cust['CUST_NAME'] ?> (<?= $cust['CUST'] ?>)</p>
+							<?php endforeach; ?>
+						</td>
+						<td>
+							<a href="<?= base_url('dashboard/sales/plan-activity/edit/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
+							<a href="<?= base_url('dashboard/sales/plan-activity/delete?act_number=' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
+						</td>
+					</tr>
+				<?php endforeach; ?>
 			</tbody>
 		</table>
 	</div>

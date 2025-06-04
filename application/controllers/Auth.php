@@ -57,26 +57,26 @@ class Auth extends CI_Controller {
 
 	private function proceed_login($user) {
 		$user_access = json_decode($user['MENU_ACCESS']);
-		$user_area 	= $this->Dbhelper->selectTabel('CODE_AREA', 'CD_USER_AREA', array('EMPLOYEE_ID' => $user['EMPLOYEE_ID']));
-		$user_customer 	= $this->Dbhelper->selectTabel('CUSTOMER', 'CD_USER_CUSTOMER', array('EMPLOYEE_ID' => $user['EMPLOYEE_ID']));
+		// $user_area 	= $this->Dbhelper->selectTabel('CODE_AREA', 'CD_USER_AREA', array('EMPLOYEE_ID' => $user['EMPLOYEE_ID']));
+		// $user_customer 	= $this->Dbhelper->selectTabel('CUSTOMER', 'CD_USER_CUSTOMER', array('EMPLOYEE_ID' => $user['EMPLOYEE_ID']));
 
-		$area = [];
-		$customer = [];
-		if (!empty($user_area)) {
-			foreach ($user_area as $v) {
-				$area[] = $v['CODE_AREA'];
-			}
-		}
+		// $area = [];
+		// $customer = [];
+		// if (!empty($user_area)) {
+		// 	foreach ($user_area as $v) {
+		// 		$area[] = $v['CODE_AREA'];
+		// 	}
+		// }
 
-		if (!empty($user_customer)) {
-			foreach ($user_customer as $v) {
-				$customer[] = $v['CUSTOMER'];
-			}
-		}
+		// if (!empty($user_customer)) {
+		// 	foreach ($user_customer as $v) {
+		// 		$customer[] = $v['CUSTOMER'];
+		// 	}
+		// }
 		$data["user"] 					= $user;
 		$data["user_access"] 		= !empty($user_access) ? $user_access : [];
-		$data["user_area"] 			= $area;
-		$data["user_customer"] 	= $customer;
+		// $data["user_area"] 			= $area;
+		// $data["user_customer"] 	= $customer;
 		// $data["user_access_detail"] = $user_access_detail;
 		if (!empty($this->session->userdata('user_dashboard'))) {
 			$this->session->sess_destroy();
