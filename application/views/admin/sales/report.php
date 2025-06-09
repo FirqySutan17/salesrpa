@@ -8,7 +8,18 @@
 
 	.pre-posttest h4 {
 		font-weight: 500;
-		font-style: italic;
+	}
+
+	h4 {
+		font-family: 'cjFont' !important;
+	}
+
+	.desktop-h4 {
+		display: block;
+	}
+
+	.mobile-h4 {
+		display: none;
 	}
 
 	.qna {
@@ -336,7 +347,157 @@
         padding: 10px;
         border: 2px solid #000
     }
+	.btn.btn-primary.btn-block {
+		height: 36px;
+		width: 15%;
+		border: 2px solid #000;
+		border-radius: 8px;
+		margin-left: -20px;
+	}
+	/* Modal box */
+    .modal-wrapper {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .modal-punya {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 90%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      top: 50%; margin: auto; position: absolute; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: fadeIn 0.3s ease;
+      max-height: 92vh;
+      overflow: auto;
+    }
+
+	.modal-punya input {
+		margin: 0px !important;
+	}
+
+    /* Close button */
+    .modal-punya .close-btn {
+        position: absolute;
+        top: 0px;
+        right: 15px;
+        font-size: 40px;
+        color: #888;
+        cursor: pointer;
+    }
+
+    .modal-td {
+        padding: 5px !important;
+        margin: 0px !important;
+    }
+	.modal-punya th, .modal-punya td, .modal-punya textarea, .modal-punya input {
+		font-size: 13px !important;
+		text-align: center;
+	}
+    .cust-btn-save {
+        width: 50%;
+        font-size: 14px
+    }
+    .cust-btn-danger {
+        width: 50%
+    }
+    .cust-btn-save:hover {
+        background: transparent;
+        color: #3c8dbc;
+        font-weight: 700;
+    }
+
+    .cust-btn-danger:hover {
+        background: transparent;
+        color: #dd4b39;
+        font-weight: 700;
+    }
+    span.important {
+        color: red;
+        font-size: 14px
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #000;
+      width: 100%;
+      margin-bottom: 20px
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      background-color: #f1f1f1;
+      border-radius: 15px 15px 0 0;
+      transition: background-color 0.3s;
+      
+    }
+
+    .tab.active {
+      border-radius: 15px 15px 0 0;
+      background-color: #ffffff;
+      border: 2px solid #000;
+      border-bottom: 0px solid transparent;
+      font-weight: bold;
+    }
+
+    .tab-content {
+      display: none;
+      /* padding: 20px;
+      border: 1px solid #ccc; */
+      width: 100%;
+      border-top: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+    .approved {
+        color: white;
+        background: green;
+        border-radius: 8px;
+        padding: 5px;
+        font-weight: 700
+    }
+    .rejected {
+        color: white;
+        background: red;
+        border-radius: 8px;
+        padding: 10px;
+        font-weight: 700
+    }
+    .waiting-approval {
+        color: white;
+        background: blue;
+        border-radius: 8px;
+        padding: 10px;
+        font-weight: 700
+    }
+    input, textarea {
+        text-transform: uppercase !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+	
 	@media (max-width: 600px) {
+		.desktop-h4 {
+			display: none;
+		}
+
+		.mobile-h4 {
+			display: block;
+		}
 		.table-responsive-new {
 			width: 100%;
 			overflow: auto;
@@ -405,19 +566,22 @@
 
 		table td:before {
             content: attr(data-label);
-            width: 35%;
+            width: 100%;
             font-weight: 600;
             font-size: 13px;
             text-align: left;
             text-transform: uppercase;
-			margin-right: 15px
+			margin-right: 15px;
+			border-bottom: 1px solid #000;
+			padding-bottom: 5px;
+			margin-bottom: 10px;
         }
 
 		table.table-bordered.dataTable td {
 			font-size: 13px !important;
 			display: flex;
-			flex-direction: row;
-			align-items: center;
+			flex-direction: column;
+        	align-items: flex-start;
 		}
 
 		thead th {
@@ -452,7 +616,7 @@
 			border: 0px solid #ddd;
 		}
 		.btn-show-detail {
-			width: 50%;
+			width: 100%;
 			margin-top: 10px
 		}
 		.btn-show-detail svg {
@@ -471,32 +635,103 @@
 		div.dataTables_wrapper div.dataTables_filter input {
 			font-size: 16px;
 		}
+		.btn.btn-primary.btn-block {
+			margin-left: 0px;
+			margin-top: 15px;
+			width: 100%;
+		}
+		.modal-punya {
+			width: 100%;
+			max-width: 100%;
+		}
+		.modal-punya td {
+			display: block !important;
+			margin-bottom: 5px
+		}
+		.modal-punya textarea, .modal-punya input {
+			margin-top: 10px !important;
+        	line-height: 23px;
+		}
+		.modal-punya tr {
+			border-radius: 10px;
+			margin: 5px 0px !important;
+			padding: 10px 5px;
+		}
+		.cust-btn-save {
+			width: 50%
+		}
+		.cust-btn-danger {
+			width: 50%
+		}
+		.col-lg-12.col-sm-12 {
+			flex-direction: column
+		}
+		.approved {
+			color: white;
+			background: green;
+			border-radius: 8px;
+			padding: 10px;
+			font-weight: 700;
+			margin-top: -15px;
+			width: 100%;
+			text-align: center;
+		}
+		h3.sub-title {
+			line-height: 25px;
+			font-size: 15px !important;
+		}
+		.img-top {
+			margin-top: 20px;
+			object-fit: cover;
+		}
+
+		.modal-punya tr.mobile-space {
+			border-radius: 0px;
+			margin: 0px 0px !important;
+			padding: 10px 5px;
+		}
 	}
+
+	@media (max-width: 480px) {
+      .modal-punya {
+        padding: 15px;
+		border-radius: 0px;
+		max-height: 100vh;
+      }
+    }
 </style>
 
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>ACTIVITY - SALES RPA</strong>
+        <strong>REPORT ACTIVITY - SALES RPA</strong>
     </h3>
-		<form class="form-horizontal" action="#" method="POST" style="margin-bottom: 20px">
+	<form class="form-horizontal" action="<?= admin_url('sales/activity') ?>" method="POST" style="margin-bottom: 20px">
         <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
 			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex;">
-                <span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
-                <input  type="date" name="sdate" value="" class="form-control" required> <span style="display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">-</span> <input  type="date" name="edate" value="" class="form-control" required>
-            </div>
-            <div class="col-md-3 col-sm-12 filter-style"  style="display: flex;">
-                <button type="submit" class="btn btn-primary btn-block" style="height: auto; width: 15%;background: transparent; color: #000; border: 2px solid #000; border-radius: 8px; margin-left: -20px;"><i class="fas fa-search" style="font-size: 20px"></i></button> 
-            </div>
-            <div class="col-md-3 col-sm-12 btn-filter" style="display: flex;">
-                <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: auto; padding: 10px">CREATE PLAN</a> 
+				<span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
+				<input type="date" name="sdate" value="<?= $filter['sdate'] ?>" class="form-control" required> 
+				<span style="margin-top: 9px; font-weight: 600">-</span> 
+				<input type="date" name="edate" value="<?= $filter['edate'] ?>" class="form-control" required>
+			</div>
+			<div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
+				<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search" style="font-size: 20px"></i></button> 
+			</div>
+            <div class="col-md-2 col-sm-12 btn-filter" style="display: flex;">
+                <!-- <a href="<?= admin_url('sales/activity/create') ?>"  class="btn btn-primary btn-block" style="height: 36px; padding: 7px 10px 10px 10px; width: 100%">CREATE PLAN</a>  -->
             </div>
         </div>
     </form>
 	<div class="table-responsive table-container">
+		<?php if ($this->session->flashdata('success')): ?>
+			<div class="alert alert-success">
+				<?= $this->session->flashdata('success') ?>
+			</div>
+		<?php endif; ?>
 		<table class="table table-bordered table-hover" id="example1">
 			<thead>
 				<tr>
 					<th>NO</th>
+					<th>PLAN NUMBER</th>
 					<th>DATE</th>
 					<th>SALES</th>
                     <th>PLAN</th>
@@ -504,28 +739,108 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td data-label="NO">1</td>
-					<td data-label="DATE">27 MEI 2025</td>
-					<td data-label="CUSTOMER">FIRQY SUTANWALIYAH IKHSAN</td>
-                    <td data-label="PLAN">
-                        <p>CUSTOMER 1</p>
-                        <p>CUSTOMER 2</p>
-                    </td>
-					<td>
-						<!-- <a href="" class="btn btn-sm btn-show-detail"><i class="fas fa-eye text-success"></i></a> -->
-						<a href="" target="_blank" class="btn btn-sm btn-show-detail">DETAIL</a>
-						<a href="" class="btn btn-sm btn-show-cancel">DELETE</a>
-					</td>
-				</tr>
+				<?php $no = 1; ?>
+				<?php foreach ($plans as $plan): ?>
+					<tr>
+						<td data-label="NO"><?= $no++ ?></td>
+						<td data-label="PLAN NUMBER"><strong>#<?= $plan['ACTIVITY_NO'] ?></strong> </td>
+						<td data-label="DATE"><?= date('d M Y', strtotime($plan['ACTIVITY_DATE'])) ?></td>
+						<td data-label="SALES"><?= $plan['SALES_NAME'] ?></td>
+						<td data-label="PLAN">
+							<?php foreach ($plan['customers'] as $cust): ?>
+								<p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
+							<?php endforeach; ?>
+						</td>
+						<td>
+							<a href="#" 
+                                onclick="openModal(this)" 
+                                class="btn btn-sm btn-show-detail"
+								data-activity-no="<?= $plan['ACTIVITY_NO'] ?>"
+                            >
+                                DETAIL
+                            </a>
+							<!-- <a href="<?= base_url('dashboard/sales/activity/delete/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a> -->
+						</td>
+					</tr>
+				<?php endforeach; ?>
 			</tbody>
 		</table>
 	</div>
 </div>
 
-<form id="form-cancel" action="<?= admin_url('confirm/do_cancel') ?>" method="POST">
-	<input type="hidden" id="request_no" name="req_no">
-</form>
+<!-- Modal Structure -->
+<div class="modal-wrapper" id="modalWrapper" onclick="closeModalOutside(event)" style="display:none;">
+  <div class="modal-punya">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <div id="modalContent">
+
+      <h4 style="line-height: 30px">SALES ACTIVITY : #<span id="modal_title_reqno" style="font-weight: bold;"></span></h4>
+	  
+      <input type="hidden" id="modal_req_no" name="req_no">
+      <input type="hidden" id="modal_seq" name="seq">
+      <input type="hidden" id="modal_app_level" name="approval_level">
+
+      <table class="table table-bordered" style="margin-bottom: 20px">
+        <thead>
+          <tr>
+            <th style="text-align: left">DATE</th>
+            <th style="text-align: left">SALES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="DATE">
+              <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_date" readonly />
+            </td>
+            <td data-label="SALES NAME">
+              <input type="hidden" name="sales_npk" />
+              <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" readonly />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Container Dinamis untuk Plan Activities -->
+      <div id="activities_container"></div>
+
+      <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER ACTUAL PLAN</h3>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>CUSTOMER</th>
+            <th>PHONE NUMBER</th>
+            <th>ALAMAT</th>
+            <th>REMARK</th>
+            <th>IMAGE</th>
+          </tr>
+        </thead>
+        <tbody id="farmersinfo">
+          <tr>
+            <td data-label="CUSTOMER" align="center">
+              <input type="hidden" name="other_id[]">
+              <input type="text" name="other_customer[]" class="form-control" placeholder="CTH: PT. SUPER UNGGAS JAYA" readonly />
+            </td>
+            <td data-label="PHONE NUMBER" align="center">
+              <input type="text" name="other_phone[]" class="form-control" placeholder="CTH: 08XXXXXXXXX" readonly />
+            </td>
+            <td data-label="ALAMAT" style="padding-top: 15px !important">
+              <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px"></textarea>
+            </td>
+            <td data-label="REMARK">
+              <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" rows="5" readonly></textarea>
+            </td>
+            <td data-label="UPLOAD">
+              <div style="margin-bottom: 10px;">
+                <img src="" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+	  <a href="javascript:void(0)" onclick="closeModal()" class="btn btn-sm btn-show-cancel">CLOSE</a>
+    </div>
+  </div>
+</div>
 
 <script src="<?= asset('vendor/select2/js/select2.min.js') ?>"></script>
 <script src="<?= asset('vendor/select2/js/en.js') ?>"></script>
@@ -537,25 +852,135 @@
       $('#example1').DataTable(
         {"language": {"paginate": { "previous": "&lt","next": "&gt",}}}
       );
-    })
+    });
 
-	function deleteRow(reqNo) {
-        Swal.fire({
-            type: "warning",
-            title: "CANCEL ORDER",
-            showCancelButton: true,
-            text: "ANDA YAKIN INGIN CANCEL ORDER ?"
-        }).then((result) => {
-            if (result.value) {
-							$("#request_no").val(reqNo);
-              $("#form-cancel").submit();
-            }
-        });
+	function openModal(el) {
+	const activityNo = el.getAttribute('data-activity-no');
+
+	fetch(`<?= base_url('dashboard/sales/activity/get_modal_detail/') ?>${activityNo}`)
+		.then(response => response.text())
+		.then(text => {
+		const data = JSON.parse(text);
+
+		document.getElementById('modal_title_reqno').textContent = data.plan.ACTIVITY_NO || '';
+
+		// Set tanggal dan sales name
+		document.querySelector('[name="activity_date"]').value = data.plan.ACTIVITY_DATE || '';
+		document.querySelector('[name="sales_npk"]').value = data.plan.SALES_NPK || '';
+		document.querySelector('[name="sales_name"]').value = data.plan.SALES_NAME || '';
+
+		// Render semua plan_activities secara dinamis
+		const activitiesContainer = document.getElementById('activities_container');
+		activitiesContainer.innerHTML = ''; // kosongkan dulu
+
+		data.plan_activities.forEach((activity, index) => {
+			// Parse koordinat
+			const coords = (activity.COORDINATE || '-6.2301638, 106.8311237').split(',');
+			const lat = coords[0].trim();
+			const long = coords[1].trim();
+
+			activitiesContainer.innerHTML += `
+			<h3 style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;" class="sub-title">
+				<strong>${activity.CUST || ''}</strong> &nbsp;-&nbsp; ${activity.CUST_NAME || ''}
+			</h3>
+			<table class="table table-bordered" style="margin-bottom: 0px">
+				<thead>
+				<tr class="mobile-space">
+					<th width="50%">CUSTOMER'S ADDRESS</th>
+					<th width="50%">ACTUAL COORDINATE</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr class="mobile-space">
+					<td data-label="CUSTOMER'S ADDRESS">
+						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.ADDRESS || ''}</textarea>
+					</td>
+					<td data-label="ACTUAL COORDINATE">
+						<iframe style="height: 170px; width: 100%; margin-top: 10px" class="maps-frame" 
+							src="https://maps.google.com/maps?q=${lat},${long}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+						<p style="text-transform: uppercase">${activity.ADDRESS_ACTUAL || ''}</p>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<table class="table table-bordered" style="margin-bottom: 0px">
+				<thead>
+				<tr class="mobile-space">
+					<th width="50%">TARGET PLAN</th>
+					<th width="50%">ACTUAL RESULT</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr class="mobile-space">
+					<td data-label="TARGET PLAN">
+					<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.TARGET_PLAN || ''}</textarea>
+					</td>
+					<td data-label="ACTUAL RESULT">
+					<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.REMARK || ''}</textarea>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<table class="table table-bordered" style="margin-bottom: 20px">
+				<thead>
+				<tr class="mobile-space"><th>IMAGE</th></tr>
+				</thead>
+				<tbody>
+				<tr class="mobile-space">
+					<td data-label="IMAGE">
+					<div style="margin-bottom: 10px; text-align: center; width: 100%">
+						<img class="img-top" src="<?= base_url('uploads/plan/') ?>${activity.IMAGE_PATH || ''}" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">
+					</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			`;
+		});
+
+		// Render other activities tetap seperti modal kamu
+		const tbody = document.getElementById('farmersinfo');
+		tbody.innerHTML = ''; // kosongkan dulu
+		data.other_activities.forEach(function(other) {
+			tbody.innerHTML += `
+			<tr>
+				<td data-label="CUSTOMER" align="center">
+				<input type="hidden" name="other_id[]" value="${other.ID || ''}">
+				<input type="text" name="other_customer[]" class="form-control" value="${other.CUSTOMER || ''}" readonly/>
+				</td>
+				<td data-label="PHONE NUMBER" align="center">
+				<input type="text" name="other_phone[]" class="form-control" value="${other.PHONE || ''}" readonly/>
+				</td>
+				<td data-label="ALAMAT" style="padding-top: 15px !important">
+				<textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px">${other.ADDRESS || ''}</textarea>
+				</td>
+				<td data-label="REMARK">
+				<textarea name="other_remark[]" class="form-control" readonly style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" rows="5">${other.REMARK || ''}</textarea>
+				</td>
+				<td data-label="UPLOAD">
+				<div style="margin-bottom: 10px; text-align: center; width: 100%">
+					<img class="img-top" src="<?= base_url('uploads/other/') ?>${other.IMAGE_PATH || ''}" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
+				</div>
+				</td>
+			</tr>
+			`;
+		});
+
+		// Tampilkan modal
+		document.getElementById('modalWrapper').style.display = 'block';
+		})
+		.catch(err => {
+		console.error("Gagal parsing JSON:", err);
+		});
+	}
+
+    function closeModal() {
+        document.getElementById('modalWrapper').style.display = 'none';
     }
 
-	$('#customer').select2({
-        theme: 'bootstrap4',
-        language: "en",
-        placeholder: "- SELECT CUSTOMER -",
-    });
+    function closeModalOutside(e) {
+        if (e.target.id === 'modalWrapper') {
+            closeModal();
+        }
+    }
 </script>

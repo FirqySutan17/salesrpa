@@ -145,7 +145,7 @@
             <?php endif ?>
 
             <li class="<?= ($this->uri->segment(2) == 'sales'  && empty($this->uri->segment(3))) ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/sales/plan-activity') ?>">
+                <a href="<?= route('dashboard/sales/activity') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"
@@ -173,7 +173,7 @@
             </li> -->
 
             <li class="<?= ($this->uri->segment(2) == 'sales' && $this->uri->segment(3) == 'report') ? 'active' : '' ?>">
-                <a href="<?= route('dashboard/sales/report') ?>">
+                <a href="<?= route('dashboard/sales/activity/report') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M14 14V6M14 14L20.1023 17.487C20.5023 17.7156 21 17.4268 21 16.9661V3.03391C21 2.57321 20.5023 2.28439 20.1023 2.51296L14 6M14 14H7C4.79086 14 3 12.2091 3 10V10C3 7.79086 4.79086 6 7 6H14"

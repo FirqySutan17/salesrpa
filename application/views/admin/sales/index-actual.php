@@ -457,7 +457,7 @@
                 
             </div>
             <div class="col-md-3 col-sm-12 btn-filter" style="display: flex;">
-                <!-- <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: auto; padding: 10px">CREATE</a>  -->
+                <!-- <a href="<?= admin_url('sales/activity/create') ?>"  class="btn btn-primary btn-block" style="height: auto; padding: 10px">CREATE</a>  -->
             </div>
         </div>
     </form>

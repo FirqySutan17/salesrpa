@@ -558,7 +558,7 @@ nav.close ~ .dashboard .top {
 }
 
 .page-wrapper .main-content {
-	min-height: calc(100vh - 76px);
+	min-height: auto;
 	margin-top: 64px;
 	padding: 0 15px 0 15px;
 	position: relative;

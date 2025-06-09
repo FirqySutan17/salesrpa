@@ -5,17 +5,18 @@ $route['default_controller'] 	= 'Home';
 $route['home'] 					= 'Home';
 
 /* ADMIN ROUTES */
-$route['login_dashboard'] 		= 'auth/login';
-$route['login'] 				= 'auth/login_dashboard';
-$route['logout'] 				= 'auth/logout';
-$route['dashboard'] 			= 'admin/dashboard';
-$route['dashboard/save'] 		= 'admin/dashboard/save';
-$route['dashboard/get_approval_history'] 		= 'admin/dashboard/get_approval_history';
-$route['profile'] 				= 'Home/profile';
-$route['profile/do_update'] 	= 'Home/profile_update';
-$route['survey/detail_mobile/(:any)'] 	= 'Home/detail_mobile/$1';
-$route['survey/entry_mobile/(:any)'] 	= 'Home/entry_mobile/$1';
-$route['survey/do_create_mobile'] 	= 'Home/do_create_mobile';
+	$route['login_dashboard'] 					= 'auth/login';
+	$route['login'] 							= 'auth/login_dashboard';
+	$route['logout'] 							= 'auth/logout';
+	$route['dashboard'] 						= 'admin/dashboard';
+	$route['dashboard/save'] 					= 'admin/dashboard/save';
+	$route['dashboard/get_approval_history'] 	= 'admin/dashboard/get_approval_history';
+	$route['profile'] 							= 'Home/profile';
+	$route['profile/do_update'] 				= 'Home/profile_update';
+	$route['survey/detail_mobile/(:any)'] 		= 'Home/detail_mobile/$1';
+	$route['survey/entry_mobile/(:any)'] 		= 'Home/entry_mobile/$1';
+	$route['survey/do_create_mobile'] 			= 'Home/do_create_mobile';
+/* ADMIN ROUTES */
 
 /* MASTER DATA ROUTES */
 	$route['dashboard/master/common_code'] 					= 'admin/master/CommonCode';
@@ -37,13 +38,16 @@ $route['survey/do_create_mobile'] 	= 'Home/do_create_mobile';
 	$route['dashboard/master/user/excel'] 				= 'admin/master/User/excel';
 /* MASTER DATA ROUTES */
 
-$route['dashboard/sales/plan-activity'] 					 = 'admin/Sales/index';
-$route['dashboard/sales/actual-activity'] 					 = 'admin/Sales/index_actual';
-$route['dashboard/sales/plan-activity/create'] 				 = 'admin/Sales/create_plan';
-$route['dashboard/sales/plan-activity/save-plan'] 			 = 'admin/Sales/save_plan';
-$route['dashboard/sales/plan-activity/edit/(:any)'] 		 = 'admin/Sales/edit_plan/$1';
-$route['dashboard/sales/plan-activity/update'] 				 = 'admin/Sales/update_plan';
-$route['dashboard/sales/plan-activity/delete/(:any)']        = 'admin/Sales/delete_plan/$1';
+/* SALES ACTIVITY ROUTES */
+	$route['dashboard/sales/activity'] 					 		= 'admin/Sales/index';
+	$route['dashboard/sales/activity/report'] 			 		= 'admin/Sales/report';
+	$route['dashboard/sales/activity/create'] 			 		= 'admin/Sales/create_plan';
+	$route['dashboard/sales/activity/save-plan'] 		 		= 'admin/Sales/save_plan';
+	$route['dashboard/sales/activity/edit/(:any)'] 		 		= 'admin/Sales/edit_plan/$1';
+	$route['dashboard/sales/activity/update'] 			 		= 'admin/Sales/update_plan';
+	$route['dashboard/sales/activity/delete/(:any)']     		= 'admin/Sales/delete_plan/$1';
+	$route['dashboard/sales/activity/get_modal_detail/(:any)']  = 'admin/Sales/get_modal_detail/$1';
+/* SALES ACTIVITY ROUTES */
 
 $route['404_override'] 					= '';
 $route['translate_uri_dashes'] 			= FALSE;

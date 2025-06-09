@@ -809,7 +809,7 @@
         <strong>PLAN ACTIVITY</strong>
     </h3>
     <div class="row">
-        <form action="<?= admin_url('sales/plan-activity/save-plan') ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= admin_url('sales/activity/save-plan') ?>" method="POST" enctype="multipart/form-data">
             <div class="content-task mt-5">
                     <div class="table-responsive">
                          <table class="table table-bordered" style="margin-bottom: 20px">
@@ -871,7 +871,7 @@
                                         <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
                                     </td>
                                     <td data-label="TARGET PLAN">
-                                        <textarea name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
+                                        <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
                                     </td>
                                     <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
                                 </tr>
@@ -883,7 +883,7 @@
 
             <div class="form-group row mt-5" style="margin: 20px 0px !important">
                 <div class="col-lg-12 col-sm-12" style="display: flex; padding: 0px">
-                    <a href="<?= admin_url('sales/plan-activity') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
+                    <a href="<?= admin_url('sales/activity') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
                     <span style="margin: 5px;"></span>
                     <button type="submit" class="btn btn-primary cust-btn-save" style="width: 50%; height: 50px">SAVE</button>
                 </div>
@@ -943,7 +943,7 @@
                 <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
             </td>
             <td data-label="TARGET PLAN">
-                <textarea name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" rows="3"></textarea>
+                <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" rows="3"></textarea>
             </td>
             <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
         </tr>

@@ -494,7 +494,7 @@
     <h3 class="card-title">
         <strong>ACTIVITY - SALES RPA</strong>
     </h3>
-	<form class="form-horizontal" action="<?= admin_url('sales/plan-activity') ?>" method="POST" style="margin-bottom: 20px">
+	<form class="form-horizontal" action="<?= admin_url('sales/activity') ?>" method="POST" style="margin-bottom: 20px">
         <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
 			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex;">
 				<span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
@@ -506,11 +506,16 @@
 				<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search" style="font-size: 20px"></i></button> 
 			</div>
             <div class="col-md-2 col-sm-12 btn-filter" style="display: flex;">
-                <a href="<?= admin_url('sales/plan-activity/create') ?>"  class="btn btn-primary btn-block" style="height: 36px; padding: 7px 10px 10px 10px; width: 100%">CREATE PLAN</a> 
+                <a href="<?= admin_url('sales/activity/create') ?>"  class="btn btn-primary btn-block" style="height: 36px; padding: 7px 10px 10px 10px; width: 100%">CREATE PLAN</a> 
             </div>
         </div>
     </form>
 	<div class="table-responsive table-container">
+		<?php if ($this->session->flashdata('success')): ?>
+			<div class="alert alert-success">
+				<?= $this->session->flashdata('success') ?>
+			</div>
+		<?php endif; ?>
 		<table class="table table-bordered table-hover" id="example1">
 			<thead>
 				<tr>
@@ -532,12 +537,12 @@
 						<td data-label="SALES"><?= $plan['SALES_NAME'] ?></td>
 						<td data-label="PLAN">
 							<?php foreach ($plan['customers'] as $cust): ?>
-								<p><?= $cust['CUST_NAME'] ?> (<?= $cust['CUST'] ?>)</p>
+								<p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
 							<?php endforeach; ?>
 						</td>
 						<td>
-							<a href="<?= base_url('dashboard/sales/plan-activity/edit/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
-							<a href="<?= base_url('dashboard/sales/plan-activity/delete?act_number=' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
+							<a href="<?= base_url('dashboard/sales/activity/edit/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
+							<a href="<?= base_url('dashboard/sales/activity/delete/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>

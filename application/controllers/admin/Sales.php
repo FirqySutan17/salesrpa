@@ -40,9 +40,11 @@ class Sales extends CI_Controller {
 			'edate' => $edate
 		];
 
+		$npk_user = $this->session_data['user']['EMPLOYEE_ID']; // ambil employee_id user login
+
 		$data['title'] = 'DAILY SALES RPA';
 		$data['user'] = $this->session_data['user'];
-		$data['plans'] = $this->datatable($filter);
+		$data['plans'] = $this->datatable($filter, $npk_user); // perbaikan: kirim 2 parameter
 		$data['filter'] = $filter;
 
 		$this->template->_v('sales/index', $data);
@@ -118,39 +120,62 @@ class Sales extends CI_Controller {
 					}
 				}
 
-				$this->session->set_flashdata('success', 'Data rencana berhasil disimpan.');
-				redirect('dashboard/sales/plan-activity');
+				$this->session->set_flashdata('success', 'DATA PLAN BERHASIL TERSIMPAN.');
+				redirect('dashboard/sales/activity');
 
 			} catch (Exception $e) {
 				log_message('error', $e->getMessage());
 				$this->session->set_flashdata('error', 'Terjadi kesalahan: ' . $e->getMessage());
-				redirect('dashboard/sales/plan-activity');
+				redirect('dashboard/sales/activity');
 			}
 		}
 
 		
 
-		$this->session->set_flashdata('error', 'Akses tidak valid.');
-		redirect('dashboard/sales/plan-activity');
+		$this->session->set_flashdata('error', 'AKSES TIDAK VALID.');
+		redirect('dashboard/sales/activity');
 	}
 
 	public function delete_plan($act_number)
-    {
-        $this->db->where('act_number', $act_number);
-        $this->db->delete('TB_PLAN_ACTIVITY');
+	{
+		// Hapus dari TB_PLAN_ACTIVITY_ORDER terlebih dahulu (jika tabel ini memiliki FOREIGN KEY ke ACTIVITY)
+		$this->db->where('ACTIVITY_NO', $act_number);
+		$this->db->delete('TB_PLAN_ACTIVITY_ORDER');
 
-        $this->db->where('act_number', $act_number);
-        $this->db->delete('TB_PLAN');
+		// Kemudian hapus dari TB_PLAN_ACTIVITY
+		$this->db->where('ACTIVITY_NO', $act_number);
+		$this->db->delete('TB_PLAN_ACTIVITY');
 
-        $this->session->set_flashdata('success', 'Data berhasil dihapus.');
-        redirect('dashboard/sales/plan-activity');
-    }
+		// Terakhir hapus dari TB_PLAN
+		$this->db->where('ACTIVITY_NO', $act_number);
+		$this->db->delete('TB_PLAN');
 
-	public function index_actual() {
-		$data['title'] 				= 'DAILY SALES RPA';
-		$data['user']				= $this->session_data['user'];
+		$this->session->set_flashdata('success', 'DATA BERHASIL TERHAPUS.');
+		redirect('dashboard/sales/activity');
+	}
 
-		$this->template->_v('sales/index-actual', $data);
+	public function report() {
+		$sdate = date('Y-m') . '-01';
+		$edate = date('Y-m-d');
+
+		if ($this->input->server('REQUEST_METHOD') === 'POST') {
+			$sdate = $this->input->post('sdate');
+			$edate = $this->input->post('edate');
+		}
+
+		$filter = [
+			'sdate' => $sdate,
+			'edate' => $edate
+		];
+
+		$npk_user = $this->session_data['user']['EMPLOYEE_ID']; // ambil employee_id user login
+
+		$data['title'] = 'DAILY SALES RPA';
+		$data['user'] = $this->session_data['user'];
+		$data['plans'] = $this->datatable($filter, $npk_user); // perbaikan: kirim 2 parameter
+		$data['filter'] = $filter;
+
+		$this->template->_v('sales/report', $data);
 	}
 
 	public function edit_plan($activity_no) {
@@ -176,13 +201,15 @@ class Sales extends CI_Controller {
 		$activity_nos = $this->input->post('activity_no');
 		$custs        = $this->input->post('cust');
 		$coordinates  = $this->input->post('coordinate');
+		$address  	  = $this->input->post('address');
 		$remarks      = $this->input->post('remark');
 		$images       = $_FILES['image'];
 
 		foreach ($activity_nos as $i => $activity_no) {
 			$data = [
-				'COORDINATE' => $coordinates[$i],
-				'REMARK'     => $remarks[$i]
+				'COORDINATE' 	 => $coordinates[$i],
+				'ADDRESS_ACTUAL' => $address[$i],
+				'REMARK'     	 => $remarks[$i]
 			];
 
 			if (!empty($images['name'][$i])) {
@@ -199,8 +226,8 @@ class Sales extends CI_Controller {
 
 				$this->upload->initialize($config);
 				if ( ! $this->upload->do_upload('file')) { // Ganti 'IMAGE_PATH' menjadi 'file'
-					$this->session->set_flashdata('error', "Create data failed");
-					redirect('dashboard/sales/plan-activity');
+					$this->session->set_flashdata('error', "TAMBAH DATA GAGAL. SILAHKAN COBA KEMBALI");
+					redirect('dashboard/sales/activity');
 				}
 
 				$uploadData = $this->upload->data();
@@ -255,15 +282,13 @@ class Sales extends CI_Controller {
 					$config['file_name']     = 'other_' . time() . '_' . $i;
 
 					$this->upload->initialize($config);
-					if ( ! $this->upload->do_upload('IMAGE_PATH'))
-					{
-						$this->session->set_flashdata('error', "Create data failed");
-						redirect('dashboard/sales/plan-activity');
+					if ( ! $this->upload->do_upload('file')) { // Ganti 'IMAGE_PATH' menjadi 'file'
+						$this->session->set_flashdata('error', "TAMBAH DATA GAGAL. SILAHKAN COBA KEMBALI");
+						redirect('dashboard/sales/activity');
 					}
 
 					$uploadData = $this->upload->data();
-
-					unset($config);
+					$data['IMAGE_PATH'] = $uploadData['file_name']; // <-- Tambahkan ini
 				}
 
 				$other_id = $other_ids[$i] ?? null;
@@ -279,14 +304,33 @@ class Sales extends CI_Controller {
 			}
 		}
 
-		$this->session->set_flashdata('success', 'Data berhasil diperbarui.');
-		redirect('dashboard/sales/plan-activity');
+		$this->session->set_flashdata('success', 'DATA BERHASIL DIPERBAHARUI.');
+		redirect('dashboard/sales/activity');
 	}
 
-	private function datatable($filter)
+	public function get_modal_detail($activity_no) {
+		error_reporting(0);  // matikan error reporting agar tidak muncul di output JSON
+		// ini_set('display_errors', 0);
+		// ini_set('log_errors', 1);
+
+		$data = [];
+
+		$data['plan'] = $this->db->where('ACTIVITY_NO', $activity_no)->get('TB_PLAN')->row_array();
+		$data['plan_activities'] = $this->db->where('ACTIVITY_NO', $activity_no)->get('TB_PLAN_ACTIVITY')->result_array();
+		$data['other_activities'] = $this->db->where('ACTIVITY_NO', $activity_no)->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
+
+		header('Content-Type: application/json');
+		echo trim(json_encode($data));
+		exit;
+	}
+
+	private function datatable($filter, $npk_user)
 	{
 		$sdate = date('d-m-Y', strtotime($filter['sdate']));
 		$edate = date('d-m-Y', strtotime($filter['edate']));
+
+		// Daftar NPK yang boleh lihat semua data
+    	$exception_ids = ['01220023', '999999', '01220014'];
 
 		$query = "
 			SELECT 
@@ -302,19 +346,22 @@ class Sales extends CI_Controller {
 			FROM TB_PLAN P
 			JOIN TB_PLAN_ACTIVITY A ON P.ACTIVITY_NO = A.ACTIVITY_NO
 			WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
-                  BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
-                  AND TO_DATE('$edate', 'DD-MM-YYYY')
-			ORDER BY P.ACTIVITY_DATE ASC, P.ACTIVITY_NO ASC
+				BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
+				AND TO_DATE('$edate', 'DD-MM-YYYY')
 		";
 		
+		 // Jika user bukan pengecualian, filter berdasarkan NPK
+		if (!in_array($npk_user, $exception_ids)) {
+			$query .= " AND P.SALES_NPK = '$npk_user'";
+		}
+
+		$query .= " ORDER BY P.ACTIVITY_DATE ASC, P.ACTIVITY_NO ASC";
+
 		$raw_data = $this->db->query($query)->result_array();
-		// dd($query);
-	
-		// Kelompokkan berdasarkan ACTIVITY_NO
+
 		$plans = [];
 		foreach ($raw_data as $row) {
 			$key = $row['ACTIVITY_NO'];
-
 			if (!isset($plans[$key])) {
 				$plans[$key] = [
 					'ACTIVITY_NO' => $row['ACTIVITY_NO'],
@@ -325,7 +372,6 @@ class Sales extends CI_Controller {
 				];
 			}
 
-			// Tambahkan data customer ke dalam list
 			$plans[$key]['customers'][] = [
 				'CUST' => $row['CUST'],
 				'CUST_NAME' => $row['CUST_NAME'],
@@ -334,12 +380,12 @@ class Sales extends CI_Controller {
 				'TARGET_PLAN' => $row['TARGET_PLAN'],
 			];
 		}
-		// dd($plans);
-		// Ubah menjadi array numerik
+
 		return array_values($plans);
 	}
 
-	private function datatable_cust() {
+	private function datatable_cust() 
+	{
 		$query = "
 			SELECT * FROM MOBILE.CD_CUSTOMER
 			WHERE CUST LIKE 'SH%'
@@ -361,8 +407,8 @@ class Sales extends CI_Controller {
 		return $customer;
 	}
 
-	// CHANGE NECESSARY POINT
-	private function cekLogin() {
+	private function cekLogin() 
+	{
 		$session = $this->session_data;
 		if (empty($session)) {
 			redirect('login_dashboard');

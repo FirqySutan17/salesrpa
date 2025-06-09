@@ -812,7 +812,7 @@
         <strong>ACTUAL ACTIVITY</strong>
     </h3>
     <div class="row">
-        <form action="<?= base_url('dashboard/sales/plan-activity/update') ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= base_url('dashboard/sales/activity/update') ?>" method="POST" enctype="multipart/form-data">
             <div class="content-task mt-5">
                     <div class="table-responsive">
                         <table class="table table-bordered" style="margin-bottom: 20px">
@@ -857,6 +857,7 @@
                                     <tr>
                                         <td>
                                             <input type="text" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="coordinate[]" class="form-control" value="<?= $activity['COORDINATE'] ?>" readonly>
+                                            <textarea name="address[]" class="form-control" rows="5" readonly style="margin-top:10px" id="address-info"><?= $activity['ADDRESS_ACTUAL'] ?></textarea>
                                             <br>
                                             <a href="javascript:void(0)" onclick="getLocation(this)" class="btn btn-sm" style="background: #00c0ff; color: #fff;">UPDATE LOCATION</a>
                                         </td>
@@ -926,14 +927,15 @@
                                         </td>
                                         <td data-label="UPLOAD">
                                             <?php if (!empty($other['IMAGE_PATH'])): ?>
-                                                <small>Existing: <?= $other['IMAGE_PATH'] ?></small>
+                                                <div style="margin-bottom: 10px;">
+                                                    <img src="<?= base_url('uploads/other/' . $other['IMAGE_PATH']) ?>" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
+                                                    <br>
+                                                    <small><?= $other['IMAGE_PATH'] ?></small>
+                                                </div>
                                             <?php endif; ?>
-                                            <input type="file" name="other_image[]" class="form-control" accept="image/*" hidden/>
-                                            <!-- our custom upload button -->
-                                            <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
-                                                <br>
-                                            <!-- name of file chosen -->
-                                            <span id="file-chosen">NO FILE CHOOSEN</span>
+                                            <input type="file" name="other_image[]" class="form-control file-input" accept="image/*" hidden />
+                                            <label class="actual-btn">CHOOSE FILE</label><br>
+                                            <span class="file-chosen"><?= $other['IMAGE_PATH'] ?: 'NO FILE CHOSEN' ?></span>
                                         </td>
                                         <td>
                                             <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
@@ -948,7 +950,7 @@
 
             <div class="form-group row mt-5" style="margin: 20px 0px !important">
                 <div class="col-lg-12 col-sm-12" style="display: flex; padding: 0px">
-                    <a href="<?= admin_url('sales/plan-activity') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
+                    <a href="<?= admin_url('sales/activity') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
                     <span style="margin: 5px;"></span>
                     <button type="submit" class="btn btn-primary cust-btn-save" style="width: 50%; height: 50px">SAVE</button>
                 </div>
@@ -958,12 +960,14 @@
 </div>
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLUc8QC0GYh5ozbMbGBcNUm1BBIjvmmg8&callback=myMap"></script> -->
 <script>
-    const actualBtn = document.getElementById('actual-btn');
-    const fileChosen = document.getElementById('file-chosen');
+    $(document).on('click', '.actual-btn', function () {
+        $(this).closest('td').find('.file-input').trigger('click');
+    });
 
-    actualBtn.addEventListener('change', function(){
-        fileChosen.textContent = this.files[0].name
-    })
+    $(document).on('change', '.file-input', function () {
+        const fileName = this.files.length > 0 ? this.files[0].name : 'NO FILE CHOSEN';
+        $(this).closest('td').find('.file-chosen').text(fileName);
+    });
 
     const lang = document.getElementById("coordinateText");
     let segmenIndex = 0;
@@ -971,8 +975,25 @@
     function getLocation(button) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-                let input = button.parentElement.querySelector('input[name="coordinate[]"]');
-                input.value = position.coords.latitude + ", " + position.coords.longitude;
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const coordinate = latitude + ", " + longitude;
+
+                // Ambil parent row dari tombol yang diklik
+                const row = button.closest('tr');
+
+                // Set nilai koordinat
+                const coordinateInput = row.querySelector('input[name="coordinate[]"]');
+                if (coordinateInput) coordinateInput.value = coordinate;
+
+                // Set nilai address (hasil reverse geocode)
+                detailPosition(latitude, longitude, function(address) {
+                    const addressTextarea = row.querySelector('textarea[name="address[]"]');
+                    if (addressTextarea) addressTextarea.value = address;
+                });
+
+            }, function(error) {
+                alert("Gagal mendapatkan lokasi: " + error.message);
             });
         } else {
             alert("Geolocation tidak didukung browser ini.");
@@ -1062,12 +1083,12 @@
                 <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"></textarea>
             </td>
             <td data-label="UPLOAD">
-                <input type="file" name="other_image[]" class="form-control" accept="image/*" hidden/>
+                <input type="file" name="other_image[]" class="form-control file-input" accept="image/*" hidden/>
                 <!-- our custom upload button -->
                 <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
                     <br>
                 <!-- name of file chosen -->
-                <span id="file-chosen">NO FILE CHOOSEN</span>
+                <span class="file-chosen">NO FILE CHOOSEN</span>
             </td>
             <td>
                 <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
@@ -1081,9 +1102,9 @@
     function deleteRow(e) {
         Swal.fire({
             icon: "warning",
-            title: "Delete Row",
+            title: "DELETE ROW",
             showCancelButton: true,
-            text: "Are you sure want to delete this data ?"
+            text: "ARE YOU SURE WANT TO DELETE THIS DATA ?"
         }).then((result) => {
             if (result.value) {
                 const row = $(e).closest('tr');
@@ -1100,4 +1121,14 @@
             }
         });
     }
+    document.querySelectorAll('.file-input').forEach(function(input){
+        input.addEventListener('change', function(){
+            const chosenText = input.closest('td').querySelector('.file-chosen');
+            chosenText.textContent = input.files.length > 0 ? input.files[0].name : 'NO FILE CHOSEN';
+        });
+    });
+</script>
+
+<script>
+
 </script>
