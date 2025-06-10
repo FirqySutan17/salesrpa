@@ -855,13 +855,13 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>
+                                        <td data-label="COORDINATE">
+                                            <a href="javascript:void(0)" onclick="getLocation(this)" class="btn btn-sm" style="background: #00c0ff; color: #fff;">UPDATE LOCATION</a>
+                                            <br>
                                             <input type="text" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="coordinate[]" class="form-control" value="<?= $activity['COORDINATE'] ?>" readonly>
                                             <textarea name="address[]" class="form-control" rows="5" readonly style="margin-top:10px" id="address-info"><?= $activity['ADDRESS_ACTUAL'] ?></textarea>
-                                            <br>
-                                            <a href="javascript:void(0)" onclick="getLocation(this)" class="btn btn-sm" style="background: #00c0ff; color: #fff;">UPDATE LOCATION</a>
                                         </td>
-                                        <td>
+                                        <td data-label="ACTUAL REMARK">
                                             <textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control"><?= $activity['REMARK'] ?></textarea>
                                         </td>
                                     </tr>
@@ -874,7 +874,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>
+                                        <td data-label="UPLOAD IMAGE">
                                             <?php if (!empty($activity['IMAGE_PATH'])): ?>
                                                 <div style="margin-bottom: 10px;">
                                                     <img src="<?= base_url('uploads/plan/' . $activity['IMAGE_PATH']) ?>" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">

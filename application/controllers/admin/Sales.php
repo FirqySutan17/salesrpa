@@ -324,6 +324,31 @@ class Sales extends CI_Controller {
 		exit;
 	}
 
+	public function market()
+	{
+		$sdate = date('Y-m') . '-01';
+		$edate = date('Y-m-d');
+
+		if ($this->input->server('REQUEST_METHOD') === 'POST') {
+			$sdate = $this->input->post('sdate');
+			$edate = $this->input->post('edate');
+		}
+
+		$filter = [
+			'sdate' => $sdate,
+			'edate' => $edate
+		];
+
+		$npk_user = $this->session_data['user']['EMPLOYEE_ID']; // ambil employee_id user login
+
+		$data['title'] = 'DAILY SALES RPA';
+		$data['user'] = $this->session_data['user'];
+		$data['markets'] = $this->datatable($filter, $npk_user); // perbaikan: kirim 2 parameter
+		$data['filter'] = $filter;
+
+		$this->template->_v('sales/market', $data);
+	}
+
 	private function datatable($filter, $npk_user)
 	{
 		$sdate = date('d-m-Y', strtotime($filter['sdate']));

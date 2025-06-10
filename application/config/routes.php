@@ -49,5 +49,16 @@ $route['home'] 					= 'Home';
 	$route['dashboard/sales/activity/get_modal_detail/(:any)']  = 'admin/Sales/get_modal_detail/$1';
 /* SALES ACTIVITY ROUTES */
 
+/* SALES SURVEY MARKET ROUTES */
+	$route['dashboard/sales/survey-market'] 					 	= 'admin/Sales/market';
+	$route['dashboard/sales/survey-market/report'] 			 		= 'admin/Sales/market_report';
+	$route['dashboard/sales/survey-market/create'] 			 		= 'admin/Sales/create_market';
+	$route['dashboard/sales/survey-market/save-market'] 		 	= 'admin/Sales/save_market';
+	$route['dashboard/sales/survey-market/edit/(:any)'] 		 	= 'admin/Sales/edit_market/$1';
+	$route['dashboard/sales/survey-market/update'] 			 		= 'admin/Sales/update_market';
+	$route['dashboard/sales/survey-market/delete/(:any)']     		= 'admin/Sales/delete_market/$1';
+	$route['dashboard/sales/survey-market/get_modal_detail/(:any)'] = 'admin/Sales/get_modal_detail/$1';
+/* SALES SURYVEY MARKET ROUTES */
+
 $route['404_override'] 					= '';
 $route['translate_uri_dashes'] 			= FALSE;
