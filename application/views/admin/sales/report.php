@@ -803,7 +803,7 @@
       <!-- Container Dinamis untuk Plan Activities -->
       <div id="activities_container"></div>
 
-      <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER ACTUAL PLAN</h3>
+      <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #00cdb0; border: 1px solid #ddd; margin-bottom: 0px !important; color: #fff">OTHER ACTUAL PLAN</h3>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -880,7 +880,7 @@
 			const long = coords[1].trim();
 
 			activitiesContainer.innerHTML += `
-			<h3 style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;" class="sub-title">
+			<h3 style="margin-top: 20px; padding: 20px; background:#00cdb0; border: 1px solid #ddd; margin-bottom: 0px !important; color: #fff" class="sub-title">
 				<strong>${activity.CUST || ''}</strong> &nbsp;-&nbsp; ${activity.CUST_NAME || ''}
 			</h3>
 			<table class="table table-bordered" style="margin-bottom: 0px">
