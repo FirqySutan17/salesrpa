@@ -703,7 +703,7 @@
 
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>REPORT ACTIVITY - SALES RPA</strong>
+        <strong>REPORT MARKET - SALES RPA</strong>
     </h3>
 	<form class="form-horizontal" action="<?= admin_url('sales/activity') ?>" method="POST" style="margin-bottom: 20px">
         <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
@@ -734,32 +734,32 @@
 					<th>PLAN NUMBER</th>
 					<th>DATE</th>
 					<th>SALES</th>
-                    <th>PLAN</th>
+                    <th>TITLE</th>
+					<th>JENIS MARKET</th>
+					<th>ADDRESS</th>
 					<th>ACTION</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php $no = 1; ?>
-				<?php foreach ($plans as $plan): ?>
+				<?php foreach ($markets as $market): ?>
 					<tr>
 						<td data-label="NO"><?= $no++ ?></td>
-						<td data-label="PLAN NUMBER"><strong>#<?= $plan['ACTIVITY_NO'] ?></strong> </td>
-						<td data-label="DATE"><?= date('d M Y', strtotime($plan['ACTIVITY_DATE'])) ?></td>
-						<td data-label="SALES"><?= $plan['SALES_NAME'] ?></td>
-						<td data-label="PLAN">
-							<?php foreach ($plan['customers'] as $cust): ?>
-								<p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
-							<?php endforeach; ?>
-						</td>
+						<td data-label="MARKET NUMBER"><strong>#<?= $market['SURVEY_NO'] ?></strong> </td>
+						<td data-label="DATE"><?= date('d M Y', strtotime($market['SURVEY_DATE'])) ?></td>
+						<td data-label="SALES"><?= $market['SALES_NAME'] ?></td>
+						<td data-label="TITLE"><?= $market['TITLE'] ?></td>
+						<td data-label="JENIS"><?= $market['JENIS_MARKET'] ?></td>
+						<td width="35%" data-label="ADDRESS"><?= $market['ADDRESS'] ?></td>
 						<td>
 							<a href="#" 
                                 onclick="openModal(this)" 
                                 class="btn btn-sm btn-show-detail"
-								data-activity-no="<?= $plan['ACTIVITY_NO'] ?>"
+								data-survey-no="<?= $market['SURVEY_NO'] ?>"
                             >
                                 DETAIL
                             </a>
-							<!-- <a href="<?= base_url('dashboard/sales/activity/delete/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a> -->
+							<!-- <a href="<?= base_url('dashboard/sales/survey-market/delete/' . $market['SURVEY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a> -->
 						</td>
 					</tr>
 				<?php endforeach; ?>
@@ -774,69 +774,124 @@
     <span class="close-btn" onclick="closeModal()">&times;</span>
     <div id="modalContent">
 
-      <h4 style="line-height: 30px">SALES ACTIVITY : #<span id="modal_title_reqno" style="font-weight: bold;"></span></h4>
-	  
-      <input type="hidden" id="modal_req_no" name="req_no">
-      <input type="hidden" id="modal_seq" name="seq">
-      <input type="hidden" id="modal_app_level" name="approval_level">
+      <h4 style="line-height: 30px">SURVEY MARKET : #<span id="modal_title_reqno" style="font-weight: bold;"></span></h4>
+	
+		<table class="table table-bordered" style="margin-bottom: 20px">
+			<thead>
+				<tr>
+					<th style="text-align: left" width="50%">DATE</th>
+					<th style="text-align: left" width="50%">SALES</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="DATE">
+						<input type="text" class="form-control" style="font-size: 13px; width: 100%" name="survey_date" value="<?php echo date('d-m-Y') ?>" readonly>
+					</td> 
+					<td data-label="SALES NAME">
+						<input type="hidden" name="sales_npk" value="<?= $user['EMPLOYEE_ID'] ?>">
+						<input type="text" name="sales_name" class="form-control" style="font-size: 13px; width: 100%" value="<?= $user['FULL_NAME'] ?>" readonly>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
-      <table class="table table-bordered" style="margin-bottom: 20px">
-        <thead>
-          <tr>
-            <th style="text-align: left">DATE</th>
-            <th style="text-align: left">SALES</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td data-label="DATE">
-              <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_date" readonly />
-            </td>
-            <td data-label="SALES NAME">
-              <input type="hidden" name="sales_npk" />
-              <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" readonly />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+		<table class="table table-bordered" style="margin-bottom: 0px">
+			<thead>
+				<tr>
+					<th style="text-align: left" width="50%">TITLE</th>
+					<th style="text-align: left" width="50%">MARKET TYPE</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="TITLE">
+						<input type="text" class="form-control" style="font-size: 13px; width: 100%; text-transform: uppercase" name="title" placeholder="INPUT TITLE.." readonly />
+					</td> 
+					<td data-label="MARKET TYPE">
+						<input type="text" class="form-control" style="font-size: 13px; width: 100%; text-transform: uppercase" name="jenis_market" placeholder="INPUT TITLE.." readonly />
+					</td> 
+				</tr>
+				
+			</tbody>
+		</table>
 
-      <!-- Container Dinamis untuk Plan Activities -->
-      <div id="activities_container"></div>
+		<table class="table table-bordered" style="margin-bottom: 0px">
+			<thead>
+				<tr>
+					<th style="text-align: left" width="100%">TARGET SURVEY</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="TARGET SURVEY">
+						<textarea type="text" class="form-control" style=" font-size: 13px; width: 100%; padding: 10px; text-transform: uppercase; text-align: left" placeholder="INPUT TARGET SURVEY..." name="target_survey" rows="5" readonly></textarea>
+					</td>  
+				</tr>
+			</tbody>
+		</table>
 
-      <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER ACTUAL PLAN</h3>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>CUSTOMER</th>
-            <th>PHONE NUMBER</th>
-            <th>ALAMAT</th>
-            <th>REMARK</th>
-            <th>IMAGE</th>
-          </tr>
-        </thead>
-        <tbody id="farmersinfo">
-          <tr>
-            <td data-label="CUSTOMER" align="center">
-              <input type="hidden" name="other_id[]">
-              <input type="text" name="other_customer[]" class="form-control" placeholder="CTH: PT. SUPER UNGGAS JAYA" readonly />
-            </td>
-            <td data-label="PHONE NUMBER" align="center">
-              <input type="text" name="other_phone[]" class="form-control" placeholder="CTH: 08XXXXXXXXX" readonly />
-            </td>
-            <td data-label="ALAMAT" style="padding-top: 15px !important">
-              <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px"></textarea>
-            </td>
-            <td data-label="REMARK">
-              <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" rows="5" readonly></textarea>
-            </td>
-            <td data-label="UPLOAD">
-              <div style="margin-bottom: 10px;">
-                <img src="" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+		<table class="table table-bordered" style="margin-bottom: 0px">
+			<thead>
+				<tr>
+					<th width="50%">ADDRESS</th>
+					<th width="50%">RESULT SURVEY</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="COORDINATE">
+						<textarea name="addresscoor" class="form-control" rows="5" readonly style="margin-top:10px; text-transform: uppercase; font-size: 13px; text-align: left" id="address-info"></textarea>
+					</td>
+					<td data-label="RESULT SURVEY">
+						<textarea name="hasil_survey" style="padding: 10px; text-transform: uppercase; font-size: 13px; text-align: left" placeholder="INPUT RESULT SURVEY.." rows="6" class="form-control" readonly></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="table table-bordered" style="margin-bottom: 20px">
+			<thead>
+				<tr>
+					<th colspan="2" style="text-align: left" width="100%">CONTACT PERSON</th>
+				</tr>
+				<tr>
+					<th style="text-align: left" width="50%">NAME</th>
+					<th style="text-align: left" width="50%">PHONE</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="NAME">
+						<input type="text" class="form-control" style="font-size: 13px; width: 100%; text-transform: uppercase" name="contact_name" placeholder="INPUT NAME.." readonly />
+					</td> 
+					<td data-label="PHONE">
+						<input type="number" class="form-control" style="font-size: 13px; width: 100%; text-transform: uppercase" name="contact_phone" placeholder="INPUT PHONE.." readonly />
+					</td> 
+				</tr>
+				
+			</tbody>
+		</table>
+
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th colspan="5" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addCustomers()">+</button></th>
+				</tr>
+				<tr>
+					<th colspan="2">UPLOAD IMAGE</th>
+				</tr>
+			</thead>
+			<tbody id="farmersinfo">
+				<tr>
+					<td data-label ="UPLOAD IMAGE">
+						<div style="margin-bottom: 10px; display: flex; align-item: center; justify-content: center">
+							<img src="" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	  <a href="javascript:void(0)" onclick="closeModal()" class="btn btn-sm btn-show-cancel">CLOSE</a>
     </div>
   </div>
@@ -855,112 +910,37 @@
     });
 
 	function openModal(el) {
-	const activityNo = el.getAttribute('data-activity-no');
+	const surveyNo = el.getAttribute('data-survey-no');
 
-	fetch(`<?= base_url('dashboard/sales/activity/get_modal_detail/') ?>${activityNo}`)
+	fetch(`<?= base_url('dashboard/sales/survey-market/get_modal_survey_detail/') ?>${surveyNo}`)
 		.then(response => response.text())
 		.then(text => {
 		const data = JSON.parse(text);
 
-		document.getElementById('modal_title_reqno').textContent = data.plan.ACTIVITY_NO || '';
+		document.getElementById('modal_title_reqno').textContent = data.survey.SURVEY_NO || '';
 
 		// Set tanggal dan sales name
-		document.querySelector('[name="activity_date"]').value = data.plan.ACTIVITY_DATE || '';
-		document.querySelector('[name="sales_npk"]').value = data.plan.SALES_NPK || '';
-		document.querySelector('[name="sales_name"]').value = data.plan.SALES_NAME || '';
-
-		// Render semua plan_activities secara dinamis
-		const activitiesContainer = document.getElementById('activities_container');
-		activitiesContainer.innerHTML = ''; // kosongkan dulu
-
-		data.plan_activities.forEach((activity, index) => {
-			// Parse koordinat
-			const coords = (activity.COORDINATE || '-6.2301638, 106.8311237').split(',');
-			const lat = coords[0].trim();
-			const long = coords[1].trim();
-
-			activitiesContainer.innerHTML += `
-			<h3 style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;" class="sub-title">
-				<strong>${activity.CUST || ''}</strong> &nbsp;-&nbsp; ${activity.CUST_NAME || ''}
-			</h3>
-			<table class="table table-bordered" style="margin-bottom: 0px">
-				<thead>
-				<tr class="mobile-space">
-					<th width="50%">CUSTOMER'S ADDRESS</th>
-					<th width="50%">ACTUAL COORDINATE</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr class="mobile-space">
-					<td data-label="CUSTOMER'S ADDRESS">
-						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.ADDRESS || ''}</textarea>
-					</td>
-					<td data-label="ACTUAL COORDINATE">
-						<iframe style="height: 170px; width: 100%; margin-top: 10px" class="maps-frame" 
-							src="https://maps.google.com/maps?q=${lat},${long}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-						<p style="text-transform: uppercase">${activity.ADDRESS_ACTUAL || ''}</p>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-			<table class="table table-bordered" style="margin-bottom: 0px">
-				<thead>
-				<tr class="mobile-space">
-					<th width="50%">TARGET PLAN</th>
-					<th width="50%">ACTUAL RESULT</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr class="mobile-space">
-					<td data-label="TARGET PLAN">
-					<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.TARGET_PLAN || ''}</textarea>
-					</td>
-					<td data-label="ACTUAL RESULT">
-					<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.REMARK || ''}</textarea>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-			<table class="table table-bordered" style="margin-bottom: 20px">
-				<thead>
-				<tr class="mobile-space"><th>IMAGE</th></tr>
-				</thead>
-				<tbody>
-				<tr class="mobile-space">
-					<td data-label="IMAGE">
-					<div style="margin-bottom: 10px; text-align: center; width: 100%">
-						<img class="img-top" src="<?= base_url('uploads/plan/') ?>${activity.IMAGE_PATH || ''}" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">
-					</div>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-			`;
-		});
+		document.querySelector('[name="survey_date"]').value = data.survey.SURVEY_DATE || '';
+		document.querySelector('[name="title"]').value = data.survey.TITLE || '';
+		document.querySelector('[name="jenis_market"]').value = data.survey.JENIS_MARKET || '';
+		document.querySelector('[name="target_survey"]').value = data.survey.TARGET_SURVEY || '';
+		document.querySelector('[name="hasil_survey"]').value = data.survey.HASIL_SURVEY || '';
+		document.querySelector('[name="contact_name"]').value = data.survey.CONTACT_NAME || '';
+		document.querySelector('[name="contact_phone"]').value = data.survey.CONTACT_PHONE || '';
+		document.querySelector('[name="addresscoor"]').value = data.survey.ADDRESS || '';
+		document.querySelector('[name="sales_npk"]').value = data.survey.SALES_NPK || '';
+		document.querySelector('[name="sales_name"]').value = data.survey.SALES_NAME || '';
 
 		// Render other activities tetap seperti modal kamu
 		const tbody = document.getElementById('farmersinfo');
 		tbody.innerHTML = ''; // kosongkan dulu
-		data.other_activities.forEach(function(other) {
+		data.other_images.forEach(function(other) {
 			tbody.innerHTML += `
 			<tr>
-				<td data-label="CUSTOMER" align="center">
-				<input type="hidden" name="other_id[]" value="${other.ID || ''}">
-				<input type="text" name="other_customer[]" class="form-control" value="${other.CUSTOMER || ''}" readonly/>
-				</td>
-				<td data-label="PHONE NUMBER" align="center">
-				<input type="text" name="other_phone[]" class="form-control" value="${other.PHONE || ''}" readonly/>
-				</td>
-				<td data-label="ALAMAT" style="padding-top: 15px !important">
-				<textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px">${other.ADDRESS || ''}</textarea>
-				</td>
-				<td data-label="REMARK">
-				<textarea name="other_remark[]" class="form-control" readonly style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" rows="5">${other.REMARK || ''}</textarea>
-				</td>
 				<td data-label="UPLOAD">
-				<div style="margin-bottom: 10px; text-align: center; width: 100%">
-					<img class="img-top" src="<?= base_url('uploads/other/') ?>${other.IMAGE_PATH || ''}" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
-				</div>
+					<div style="margin-bottom: 10px; text-align: center; width: 100%; display: flex; align-item: center; justify-content: center">
+						<img class="img-top" src="<?= base_url('uploads/market/') ?>${other.IMAGE_PATH || ''}" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
+					</div>
 				</td>
 			</tr>
 			`;

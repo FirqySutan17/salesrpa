@@ -343,10 +343,247 @@ class Sales extends CI_Controller {
 
 		$data['title'] = 'DAILY SALES RPA';
 		$data['user'] = $this->session_data['user'];
-		$data['markets'] = $this->datatable($filter, $npk_user); // perbaikan: kirim 2 parameter
+		$data['markets'] = $this->datatable_survey($filter, $npk_user); // perbaikan: kirim 2 parameter
 		$data['filter'] = $filter;
 
 		$this->template->_v('sales/market', $data);
+	}
+
+	public function create_survey() {
+		$data['title'] 				= 'DAILY SALES RPA';
+		$data['user']				= $this->session_data['user'];
+
+		$this->template->_v('sales/create-survey', $data);
+	}
+
+	public function save_survey()
+	{
+		if ($this->input->server('REQUEST_METHOD') === 'POST') {
+			$post = $this->input->post();
+			$this->load->helper('date'); // jika kamu butuh bantuan waktu
+			$now  = date('Y-m-d H:i:s');
+			$user = $this->session_data['user']['EMPLOYEE_ID'];
+
+			try {
+				// Insert ke TB_PLAN
+				$data_survey = [
+					'SURVEY_NO' 	=> $post['survey_no'],
+					'SURVEY_DATE' 	=> $post['survey_date'],
+					'TITLE' 		=> $post['title'],
+					'JENIS_MARKET' 	=> $post['jenis_market'],
+					'TARGET_SURVEY' => $post['target_survey'],
+					'HASIL_SURVEY'  => $post['hasil_survey'],
+					'CONTACT_NAME'  => $post['contact_name'],
+					'CONTACT_PHONE' => $post['contact_phone'],
+					'COORDINATE'    => $post['coordinate'],
+					'ADDRESS' 		=> $post['addresscoor'],
+					'SALES_NPK' 	=> $post['sales_npk'],
+					'SALES_NAME' 	=> $post['sales_name'],
+					'CREATED_BY' 	=> $user,
+					'CREATED_AT' 	=> $now,
+					'UPDATED_BY' 	=> $user,
+					'UPDATED_AT' 	=> $now
+				];
+
+				$save_survey = $this->Dbhelper->insertData('TB_SURVEY_MARKET', $data_survey);
+
+				if (!$save_survey) {
+					throw new Exception("Gagal menyimpan data ke TB_SURVEY_MARKET");
+				}
+
+				// Bagian untuk TB_PLAN_ACTIVITY_OTHER
+				if (!empty($_FILES['other_image']['name'][0])) {
+					$other_images = $_FILES['other_image'];
+
+					for ($i = 0; $i < count($other_images['name']); $i++) {
+						if (!empty($other_images['name'][$i])) {
+							$_FILES['file']['name']     = $other_images['name'][$i];
+							$_FILES['file']['type']     = $other_images['type'][$i];
+							$_FILES['file']['tmp_name'] = $other_images['tmp_name'][$i];
+							$_FILES['file']['error']    = $other_images['error'][$i];
+							$_FILES['file']['size']     = $other_images['size'][$i];
+
+							$config['upload_path']   = './uploads/market/';
+							$config['allowed_types'] = 'jpg|jpeg|png';
+							$config['file_name']     = 'market_' . time() . '_' . $i;
+
+							$this->upload->initialize($config);
+
+							if (!$this->upload->do_upload('file')) {
+								$this->session->set_flashdata('error', "TAMBAH DATA GAGAL. SILAHKAN COBA KEMBALI");
+								redirect('dashboard/sales/survey-market');
+							}
+
+							$uploadData = $this->upload->data();
+							$data_image = [
+								'IMAGE_PATH'  => $uploadData['file_name'],
+								'SEQUENCE'    => $i + 1,
+								'SURVEY_NO'   => $post['survey_no'] // atau field relasi yang sesuai
+							];
+
+							$this->db->insert('TB_SURVEY_MARKET_IMAGE', $data_image);
+						}
+					}
+				}
+				
+			$this->session->set_flashdata('success', 'DATA SURVEY MARKET BERHASIL TERSIMPAN.');
+			redirect('dashboard/sales/survey-market');
+
+			} catch (Exception $e) {
+				log_message('error', $e->getMessage());
+				$this->session->set_flashdata('error', 'Terjadi kesalahan: ' . $e->getMessage());
+				redirect('dashboard/sales/survey-market');
+			}
+		}
+
+		$this->session->set_flashdata('error', 'AKSES TIDAK VALID.');
+		redirect('dashboard/sales/survey-market');
+	}
+
+	public function edit_survey($survey_no) {
+		$data['title'] = 'DAILY SALES RPA';
+		$data['user'] = $this->session_data['user'];
+
+		// Ambil data TB_SURVEY_MARKET berdasarkan SURVEY_NO
+		$this->db->where('SURVEY_NO', $survey_no);
+		$data['survey'] = $this->db->get('TB_SURVEY_MARKET')->row_array();
+
+		$data['other_images'] = $this->db->where('SURVEY_NO', $survey_no)->get('TB_SURVEY_MARKET_IMAGE')->result_array();
+		// dd($data['other_activities']);
+
+		$this->template->_v('sales/update-survey', $data);
+	}
+
+	public function update_survey()
+	{
+		if ($this->input->server('REQUEST_METHOD') === 'POST') {
+			$post = $this->input->post();
+			$this->load->helper('date');
+			$now  = date('Y-m-d H:i:s');
+			$user = $this->session_data['user']['EMPLOYEE_ID'];
+
+			try {
+				// Data utama untuk TB_SURVEY_MARKET
+				$data_survey = [
+					'SURVEY_DATE' 	=> $post['survey_date'],
+					'TITLE' 		=> $post['title'],
+					'JENIS_MARKET' 	=> $post['jenis_market'],
+					'TARGET_SURVEY' => $post['target_survey'],
+					'HASIL_SURVEY'  => $post['hasil_survey'],
+					'CONTACT_NAME'  => $post['contact_name'],
+					'CONTACT_PHONE' => $post['contact_phone'],
+					'COORDINATE'    => $post['coordinate'],
+					'ADDRESS' 		=> $post['addresscoor'],
+					'SALES_NPK' 	=> $post['sales_npk'],
+					'SALES_NAME' 	=> $post['sales_name'],
+					'UPDATED_BY' 	=> $user,
+					'UPDATED_AT' 	=> $now
+				];
+
+				$this->db->where('SURVEY_NO', $post['survey_no']);
+				$updated = $this->db->update('TB_SURVEY_MARKET', $data_survey);
+
+				if (!$updated) {
+					throw new Exception("Gagal mengupdate data TB_SURVEY_MARKET");
+				}
+
+				// Hapus gambar sebelumnya jika ada
+				if (isset($post['deleted_ids']) && is_array($post['deleted_ids'])) {
+					foreach ($post['deleted_ids'] as $id) {
+						$image = $this->db->get_where('TB_SURVEY_MARKET_IMAGE', ['ID' => $id])->row();
+						if ($image) {
+							@unlink('./uploads/market/' . $image->IMAGE_PATH);
+							$this->db->where('ID', $id)->delete('TB_SURVEY_MARKET_IMAGE');
+						}
+					}
+				}
+
+				// Simpan gambar baru jika ada upload
+				if (!empty($_FILES['other_image']['name'][0])) {
+					$other_images = $_FILES['other_image'];
+
+					for ($i = 0; $i < count($other_images['name']); $i++) {
+						if (!empty($other_images['name'][$i])) {
+							$_FILES['file']['name']     = $other_images['name'][$i];
+							$_FILES['file']['type']     = $other_images['type'][$i];
+							$_FILES['file']['tmp_name'] = $other_images['tmp_name'][$i];
+							$_FILES['file']['error']    = $other_images['error'][$i];
+							$_FILES['file']['size']     = $other_images['size'][$i];
+
+							$config['upload_path']   = './uploads/market/';
+							$config['allowed_types'] = 'jpg|jpeg|png';
+							$config['file_name']     = 'market_' . time() . '_' . $i;
+
+							$this->upload->initialize($config);
+
+							if (!$this->upload->do_upload('file')) {
+								$this->session->set_flashdata('error', "UPLOAD GAGAL. SILAHKAN COBA KEMBALI");
+								redirect('dashboard/sales/survey-market');
+							}
+
+							$uploadData = $this->upload->data();
+							$data_image = [
+								'IMAGE_PATH'  => $uploadData['file_name'],
+								'SEQUENCE'    => $i + 1,
+								'SURVEY_NO'   => $post['survey_no']
+							];
+
+							$this->db->insert('TB_SURVEY_MARKET_IMAGE', $data_image);
+						}
+					}
+				}
+
+				$this->session->set_flashdata('success', 'DATA BERHASIL DIUPDATE.');
+				redirect('dashboard/sales/survey-market');
+
+			} catch (Exception $e) {
+				log_message('error', $e->getMessage());
+				$this->session->set_flashdata('error', 'Terjadi kesalahan: ' . $e->getMessage());
+				redirect('dashboard/sales/survey-market');
+			}
+		}
+
+		$this->session->set_flashdata('error', 'AKSES TIDAK VALID.');
+		redirect('dashboard/sales/survey-market');
+	}
+
+	public function market_report() {
+		$sdate = date('Y-m') . '-01';
+		$edate = date('Y-m-d');
+
+		if ($this->input->server('REQUEST_METHOD') === 'POST') {
+			$sdate = $this->input->post('sdate');
+			$edate = $this->input->post('edate');
+		}
+
+		$filter = [
+			'sdate' => $sdate,
+			'edate' => $edate
+		];
+
+		$npk_user = $this->session_data['user']['EMPLOYEE_ID']; // ambil employee_id user login
+
+		$data['title'] = 'DAILY SALES RPA';
+		$data['user'] = $this->session_data['user'];
+		$data['markets'] = $this->datatable_survey($filter, $npk_user); // perbaikan: kirim 2 parameter
+		$data['filter'] = $filter;
+
+		$this->template->_v('sales/market-report', $data);
+	}
+
+	public function get_modal_survey_detail($survey_no) {
+		error_reporting(0);  // matikan error reporting agar tidak muncul di output JSON
+		// ini_set('display_errors', 0);
+		// ini_set('log_errors', 1);
+
+		$data = [];
+
+		$data['survey'] = $this->db->where('SURVEY_NO', $survey_no)->get('TB_SURVEY_MARKET')->row_array();
+		$data['other_images'] = $this->db->where('SURVEY_NO', $survey_no)->get('TB_SURVEY_MARKET_IMAGE')->result_array();
+
+		header('Content-Type: application/json');
+		echo trim(json_encode($data));
+		exit;
 	}
 
 	private function datatable($filter, $npk_user)
@@ -407,6 +644,35 @@ class Sales extends CI_Controller {
 		}
 
 		return array_values($plans);
+	}
+
+	private function datatable_survey($filter, $npk_user)
+	{
+		$sdate = date('d-m-Y', strtotime($filter['sdate']));
+		$edate = date('d-m-Y', strtotime($filter['edate']));
+
+		// NPK yang dapat akses semua data
+		$exception_ids = ['01220023', '999999', '01220014'];
+
+		$query = "
+			SELECT *
+			FROM TB_SURVEY_MARKET
+			WHERE TO_DATE(SURVEY_DATE, 'DD-MM-YYYY') 
+				BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
+				AND TO_DATE('$edate', 'DD-MM-YYYY')
+		";
+
+		// Tambahkan filter jika bukan user pengecualian
+		if (!in_array($npk_user, $exception_ids)) {
+			$query .= " AND SALES_NPK = '$npk_user'";
+		}
+
+		$query .= " ORDER BY SURVEY_DATE ASC, SURVEY_NO ASC";
+
+		// Eksekusi query
+		$result = $this->db->query($query)->result_array();
+
+		return $result;
 	}
 
 	private function datatable_cust() 

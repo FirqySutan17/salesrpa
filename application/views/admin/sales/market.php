@@ -532,17 +532,13 @@
 				<?php foreach ($markets as $market): ?>
 					<tr>
 						<td data-label="NO"><?= $no++ ?></td>
-						<td data-label="MARKET NUMBER"><strong>#<?= $market['ACTIVITY_NO'] ?></strong> </td>
-						<td data-label="DATE"><?= date('d M Y', strtotime($market['ACTIVITY_DATE'])) ?></td>
+						<td data-label="MARKET NUMBER"><strong>#<?= $market['SURVEY_NO'] ?></strong> </td>
+						<td data-label="DATE"><?= date('d M Y', strtotime($market['SURVEY_DATE'])) ?></td>
 						<td data-label="SALES"><?= $market['SALES_NAME'] ?></td>
-						<td data-label="MARKET">
-							<?php foreach ($market['customers'] as $cust): ?>
-								<p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
-							<?php endforeach; ?>
-						</td>
+						<td data-label="TITLE"><?= $market['TITLE'] ?></td>
 						<td>
-							<a href="<?= base_url('dashboard/sales/survey-market/edit/' . $market['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
-							<a href="<?= base_url('dashboard/sales/survey-market/delete/' . $market['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
+							<a href="<?= base_url('dashboard/sales/survey-market/edit/' . $market['SURVEY_NO']) ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
+							<a href="<?= base_url('dashboard/sales/survey-market/delete/' . $market['SURVEY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>

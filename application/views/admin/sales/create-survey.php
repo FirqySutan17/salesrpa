@@ -260,8 +260,7 @@
         font-size: 11px;
     }
     .table-responsive {
-        width: 100%;
-        border: none !important; 
+        width: 100%
     }
     .table-w-message {
         width: 1330px;
@@ -317,7 +316,7 @@
         border: 1px solid green;
     }
     .select2-container .select2-selection--single .select2-selection__rendered {
-        font-size: 10px !important;
+        font-size: 13px !important;
         margin-top: 3px !important;
     }
     .select2-container--bootstrap4 .select2-results__option {
@@ -444,6 +443,9 @@
 </style>
 
 <style>
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 15px !important;
+    }
     table.dataTable th {
         position: relative;
         text-align: center
@@ -647,14 +649,14 @@
         border: 1px solid green;
     }
     .select2-container .select2-selection--single .select2-selection__rendered {
-        font-size: 10px !important;
+        font-size: 12px !important;
         margin-top: 3px !important;
     }
     .select2-container--bootstrap4 .select2-results__option {
         font-size: 12px
     }
 
-    #farmersinfo .cust-btn-add {
+    #customersinfo .cust-btn-add {
         display: none;
     }
     #segment .cust-btn-add {
@@ -666,27 +668,16 @@
     #visitimages .cust-btn-add {
         display: none;
     }
-
-    th, td {
-        border: 2px solid #ddd !important;
+    .w-25 {
+        width: 25% !important;
+    }
+    textarea {
+        min-height: 115px;
+        overflow: auto;
     }
 
-    .upload-img {
-        width: 10%
-    }
-
-    label.actual-btn {
-        background-color: red;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 0.3rem;
-        cursor: pointer;
-        margin-top: 1rem;
-    }
-
-    textarea, input, button {
-        font-size: 12px !important;
-        text-transform: uppercase;
+    .select2-container--bootstrap4 .select2-selection--single {
+        height: 34px !important;
     }
 
     @media (max-width: 1024px) {
@@ -702,6 +693,13 @@
     }
 
     @media(max-width: 600px) {
+        .w-25 {
+            width: 100% !important;
+        }
+        .w-25 textarea {
+            min-height: 115px;
+            overflow: auto;
+        }
         .answer {
             margin-left: 0px
         }
@@ -743,7 +741,7 @@
 
         }
         input {
-            font-size: 12px !important;
+            font-size: 14px !important;
         }
         select {
             font-size: 12px !important;
@@ -781,7 +779,7 @@
             height: auto !important;
             padding: 15px !important;
         }
-        #farmersinfo .cust-btn-add {
+        #customersinfo .cust-btn-add {
             display: block;
         }
         #segment .cust-btn-add {
@@ -793,8 +791,14 @@
         #visitimages .cust-btn-add {
             display: block;
         }
-        .upload-img {
-            width: 100%
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            font-size: 14px !important;
+        }
+        .select2-container--bootstrap4 .select2-selection--single {
+            height: calc(2.5em + .75rem + 2px) !important;
+        }
+        .btn-group-sm>.btn, .btn-sm {
+            font-size: 14px !important;
         }
         .btn.cust-btn-add {
             width: 100%;
@@ -809,140 +813,140 @@
 
 <div class="main-content pre-posttest">
     <h3 class="card-title">
-        <strong>ACTUAL ACTIVITY</strong>
+        <strong>SURVEY MARKET</strong>
     </h3>
     <div class="row">
-        <form action="<?= base_url('dashboard/sales/activity/update') ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= admin_url('sales/survey-market/save-survey') ?>" method="POST" enctype="multipart/form-data">
             <div class="content-task mt-5">
                     <div class="table-responsive">
                         <table class="table table-bordered" style="margin-bottom: 20px">
                             <thead>
                                 <tr>
-                                    <th style="text-align: left" width="20%">ACTIVITY NUMBER</th>
+                                    <th style="text-align: left" width="20%">SURVEY NUMBER</th>
                                     <th style="text-align: left" width="30%">DATE</th>
                                     <th style="text-align: left" width="50%">SALES</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td data-label="ACTIVITY NUMBER">
-                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_no" value="#<?= $plan['ACTIVITY_NO'] ?>" readonly>
+                                    <td data-label="SURVEY NUMBER">
+                                        <input type="text" class="form-control" style="font-size: 13px; width: 100%" name="survey_no" value="SM<?php echo date('YmdHis'); ?>" readonly>
                                     </td> 
                                     <td data-label="DATE">
-                                        <input type="text" class="form-control" style="font-size: 14px; width: 100%" name="activity_date" value="<?= $plan['ACTIVITY_DATE'] ?>" readonly>
+                                        <input type="text" class="form-control" style="font-size: 13px; width: 100%" name="survey_date" value="<?php echo date('d-m-Y') ?>" readonly>
                                     </td> 
                                     <td data-label="SALES NAME">
-                                        <input type="hidden" name="sales_npk" value="<?= $plan['SALES_NPK'] ?>">
-                                        <input type="text" name="sales_name" class="form-control" style="font-size: 14px; width: 100%" value="<?= $plan['SALES_NAME'] ?>" readonly>
+                                        <input type="hidden" name="sales_npk" value="<?= $user['EMPLOYEE_ID'] ?>">
+                                        <input type="text" name="sales_name" class="form-control" style="font-size: 13px; width: 100%" value="<?= $user['FULL_NAME'] ?>" readonly>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <?php foreach ($plan_activities as $i => $activity): ?>
-                            <!-- Hidden untuk identifikasi record unik -->
-                            <input type="hidden" name="activity_no[]" value="<?= $activity['ACTIVITY_NO'] ?>">
-                            <input type="hidden" name="cust[]" value="<?= $activity['CUST'] ?>">
-                            
-                            <h3 style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;" class="sub-title"><STRONG><?= $activity['CUST'] ?></STRONG>&nbsp;-&nbsp;<?= $activity['CUST_NAME'] ?></h3>
+                        <table class="table table-bordered" style="margin-bottom: 0px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left" width="50%">TITLE</th>
+                                    <th style="text-align: left" width="50%">MARKET TYPE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="TITLE">
+                                        <input type="text" class="form-control" style="font-size: 13px; width: 100%; text-transform: uppercase" name="title" placeholder="INPUT TITLE.." required />
+                                    </td> 
+                                    <td data-label="MARKET TYPE">
+                                        <select id="type" class="form-control type-select" style="width: 100%; text-transform: uppercase" name="jenis_market" required>
+                                            <option value="" selected>- PILIH JENIS MARKET -</option>
+                                            <option value="MARKET BASAH">MARKET BASAH</option>
+                                            <option value="MARKET KERING">MARKET KERING</option>
+                                            <option value="RESTORAN">RESTORAN</option>
+                                        </select>
+                                    </td> 
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
-                            <table class="table table-bordered" style="margin-bottom: 0px">
-                                <thead>
-                                    <tr>
-                                        <th width="30%">COORDINATE</th>
-                                        <th width="70%">REMARK</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td data-label="COORDINATE">
-                                            <a href="javascript:void(0)" onclick="getLocation(this)" class="btn btn-sm" style="background: #00c0ff; color: #fff;">UPDATE LOCATION</a>
-                                            <br>
-                                            <input type="text" style="margin-top: 10px !important" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="coordinate[]" class="form-control" value="<?= $activity['COORDINATE'] ?>" readonly>
-                                            <textarea name="address[]" class="form-control" rows="5" readonly style="margin-top:10px" id="address-info"><?= $activity['ADDRESS_ACTUAL'] ?></textarea>
-                                        </td>
-                                        <td data-label="ACTUAL REMARK">
-                                            <textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control"><?= $activity['REMARK'] ?></textarea>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <table class="table table-bordered" style="margin-bottom: 0px">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left" width="100%">TARGET SURVEY</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="TARGET SURVEY">
+                                        <textarea type="text" class="form-control" style=" font-size: 13px; width: 100%; padding: 10px; text-transform: uppercase" placeholder="INPUT TARGET SURVEY..." name="target_survey" rows="5"></textarea>
+                                    </td>  
+                                </tr>
+                            </tbody>
+                        </table>
 
-                            <table class="table table-bordered" style="margin-bottom: 20px">
-                                <thead>
-                                    <tr><th>UPLOAD IMAGE</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td data-label="UPLOAD IMAGE">
-                                            <?php if (!empty($activity['IMAGE_PATH'])): ?>
-                                                <div style="margin-bottom: 10px;">
-                                                    <img src="<?= base_url('uploads/plan/' . $activity['IMAGE_PATH']) ?>" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">
-                                                </div>
-                                            <?php endif; ?>
-                                            
-                                            <input type="file" name="image[]" class="form-control" accept="image/*">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        <?php endforeach; ?>
+                        <table class="table table-bordered" style="margin-bottom: 0px">
+                            <thead>
+                                <tr>
+                                    <th width="30%">COORDINATE</th>
+                                    <th width="70%">RESULT SURVEY</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="COORDINATE">
+                                        <a href="javascript:void(0)" onclick="getLocation(this)" class="btn btn-sm" style="background: #00c0ff; color: #fff;">UPDATE LOCATION</a>
+                                        <input type="text" style="margin-top: 10px !important" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="coordinate" class="form-control" value="" readonly>
+                                        <textarea name="addresscoor" class="form-control" rows="5" readonly style="margin-top:10px; text-transform: uppercase; font-size: 13px" id="address-info"></textarea>
+                                    </td>
+                                    <td data-label="RESULT SURVEY">
+                                        <textarea name="hasil_survey" style="padding: 10px; text-transform: uppercase; font-size: 13px" placeholder="INPUT RESULT SURVEY.." rows="6" class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER ACTUAL PLAN</h3>
+                        <table class="table table-bordered" style="margin-bottom: 20px">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" style="text-align: left" width="100%">CONTACT PERSON</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: left" width="50%">NAME</th>
+                                    <th style="text-align: left" width="50%">PHONE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="NAME">
+                                        <input type="text" class="form-control" style="font-size: 13px; width: 100%; text-transform: uppercase" name="contact_name" placeholder="INPUT NAME.." required />
+                                    </td> 
+                                    <td data-label="PHONE">
+                                        <input type="number" class="form-control" style="font-size: 13px; width: 100%; text-transform: uppercase" name="contact_phone" placeholder="INPUT PHONE.." required />
+                                    </td> 
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th colspan="6" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                    <th colspan="5" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addCustomers()">+</button></th>
                                 </tr>
                                 <tr>
-                                    <th>CUSTOMER</th>
-                                    <th>PHONE NUMBER</th>
-                                    <th>ALAMAT</th>
-                                    <th>REMARK</th>
-                                    <th>UPLOAD</th>
-                                    <th></th>
+                                    <th colspan="2">UPLOAD IMAGE</th>
                                 </tr>
                             </thead>
-                            <tbody id="farmersinfo">
+                            <tbody id="customersinfo">
                                 <tr style="align-items: flex-end">
-                                    <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addFarmers()">+</button></th>
+                                    <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addCustomers()">+</button></th>
                                 </tr>
-                                <?php if (!empty($other_activities)): ?>
-                                    <?php foreach ($other_activities as $i => $other): ?>
-                                    <tr>
-                                        <td data-label="CUSTOMER">
-                                            <input type="hidden" name="other_id[]" value="<?= $other['ID'] ?>">
-                                            <input type="text" name="other_customer[]" class="form-control" value="<?= $other['CUSTOMER'] ?>" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
-                                        </td>
-                                        <td data-label="PHONE NUMBER">
-                                            <input type="text" name="other_phone[]" class="form-control" value="<?= $other['PHONE'] ?>" placeholder="CTH: 08XXXXXXXXX" />
-                                        </td>
-                                        <td data-label="ALAMAT" style="padding-top: 15px !important">
-                                            <a href="javascript:void(0)" onclick="getLoc(this)" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 10px">UPDATE LOCATION</a>
-                                            <input type="text" name="other_coordinate[]" class="form-control" readonly  style="font-size: 14px; width: 100%; margin: 15px 0px !important" value="<?= $other['COORDINATE'] ?>" />
-                                            <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px"><?= $other['ADDRESS'] ?></textarea>
-                                        </td>
-                                        <td data-label="REMARK">
-                                            <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"><?= $other['REMARK'] ?></textarea>
-                                        </td>
-                                        <td data-label="UPLOAD">
-                                            <?php if (!empty($other['IMAGE_PATH'])): ?>
-                                                <div style="margin-bottom: 10px;">
-                                                    <img src="<?= base_url('uploads/other/' . $other['IMAGE_PATH']) ?>" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
-                                                    <br>
-                                                    <small><?= $other['IMAGE_PATH'] ?></small>
-                                                </div>
-                                            <?php endif; ?>
-                                            <input type="file" name="other_image[]" class="form-control file-input" accept="image/*" hidden />
-                                            <label class="actual-btn">CHOOSE FILE</label><br>
-                                            <span class="file-chosen"><?= $other['IMAGE_PATH'] ?: 'NO FILE CHOSEN' ?></span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <tr>
+                                    <td data-label ="UPLOAD IMAGE">
+                                        <input type="hidden" name="other_id[]" value="">
+                                        <input type="file" accept="image/png, image/jpeg, image/jpg" name="other_image[]" class="form-control">
+                                    </td>
+                                    <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger"></i></a></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -950,7 +954,7 @@
 
             <div class="form-group row mt-5" style="margin: 20px 0px !important">
                 <div class="col-lg-12 col-sm-12" style="display: flex; padding: 0px">
-                    <a href="<?= admin_url('sales/activity') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
+                    <a href="<?= admin_url('sales/survey-market') ?>" class="btn btn-primary cust-btn-back" style="width: 50%; height: 50px; display: flex; align-items: center; justify-content: center;">CANCEL</a>
                     <span style="margin: 5px;"></span>
                     <button type="submit" class="btn btn-primary cust-btn-save" style="width: 50%; height: 50px">SAVE</button>
                 </div>
@@ -960,17 +964,23 @@
 </div>
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLUc8QC0GYh5ozbMbGBcNUm1BBIjvmmg8&callback=myMap"></script> -->
 <script>
-    $(document).on('click', '.actual-btn', function () {
-        $(this).closest('td').find('.file-input').trigger('click');
-    });
+    // Auto isi telepon & alamat saat pilih customer
+    $(document).on('change', '.customer-select', function () {
+        const selectedVal = $(this).val();
+        const selectedRow = $(this).closest('tr');
 
-    $(document).on('change', '.file-input', function () {
-        const fileName = this.files.length > 0 ? this.files[0].name : 'NO FILE CHOSEN';
-        $(this).closest('td').find('.file-chosen').text(fileName);
-    });
+        const customer = customerData.find(c => c.CUST === selectedVal);
 
-    const lang = document.getElementById("coordinateText");
-    let segmenIndex = 0;
+        if (customer) {
+            selectedRow.find('.phone-field').val(customer.MOBILE_PHONE);
+            selectedRow.find('.address-field').val(customer.ADDRESS);
+            selectedRow.find('.name-field').val(customer.FULL_NAME);
+        } else {
+            selectedRow.find('.phone-field').val('');
+            selectedRow.find('.address-field').val('');
+            selectedRow.find('.name-field').val('');
+        }
+    });
 
     function getLocation(button) {
         if (navigator.geolocation) {
@@ -979,43 +989,14 @@
                 const longitude = position.coords.longitude;
                 const coordinate = latitude + ", " + longitude;
 
-                // Ambil parent row dari tombol yang diklik
+                // Pastikan 'button' tidak undefined di sini
                 const row = button.closest('tr');
 
-                // Set nilai koordinat
-                const coordinateInput = row.querySelector('input[name="coordinate[]"]');
+                const coordinateInput = row.querySelector('input[name="coordinate"]');
                 if (coordinateInput) coordinateInput.value = coordinate;
 
-                // Set nilai address (hasil reverse geocode)
                 detailPosition(latitude, longitude, function(address) {
-                    const addressTextarea = row.querySelector('textarea[name="address[]"]');
-                    if (addressTextarea) addressTextarea.value = address;
-                });
-
-            }, function(error) {
-                alert("Gagal mendapatkan lokasi: " + error.message);
-            });
-        } else {
-            alert("Geolocation tidak didukung browser ini.");
-        }
-    }
-    function getLoc(button) {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                const coordinate = latitude + ", " + longitude;
-
-                // Ambil parent row dari tombol yang diklik
-                const row = button.closest('tr');
-
-                // Set nilai koordinat
-                const coordinateInput = row.querySelector('input[name="other_coordinate[]"]');
-                if (coordinateInput) coordinateInput.value = coordinate;
-
-                // Set nilai address (hasil reverse geocode)
-                detailPosition(latitude, longitude, function(address) {
-                    const addressTextarea = row.querySelector('textarea[name="other_address[]"]');
+                    const addressTextarea = row.querySelector('textarea[name="addresscoor"]');
                     if (addressTextarea) addressTextarea.value = address;
                 });
 
@@ -1028,8 +1009,12 @@
     }
 
     $(document).ready(function() {
+        $('#type').select2({
+            tags: true,
+            placeholder: "- PILIH JENIS MARKET -",
+            allowClear: true
+        });
         getLocation();
-        getLoc();
     });
         
     function showPosition(position) {
@@ -1058,77 +1043,51 @@
         });
     }
 
-    $('#customer').select2({
-        theme: 'bootstrap4',
-        language: "en",
-        placeholder: "- SELECT PHASE -",
-    });
-
-    function addFarmers() {
+    function addCustomers() {
         let tabledata = `
         <tr>
-            <td data-label="CUSTOMER">
+        
+            <td data-label ="UPLOAD IMAGE">
                 <input type="hidden" name="other_id[]" value="">
-                <input type="text" name="other_customer[]" class="form-control" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
+                <input type="file" accept="image/png, image/jpeg, image/jpg" name="other_image[]" class="form-control">
             </td>
-            <td data-label="PHONE NUMBER">
-                <input type="text" name="other_phone[]" class="form-control" placeholder="CTH: 08XXXXXXXXX" />
-            </td>
-            <td data-label="ALAMAT" style="padding-top: 15px !important">
-                <a href="javascript:void(0)" onclick="getLoc(this)" style="background: #00c0ff; border-radius: 10px; color: #fff; font-weight: 600; padding: 10px;margin-top: 15px;">UPDATE LOCATION</a>
-                <input type="text" name="other_coordinate[]" class="form-control" readonly  style="font-size: 14px; width: 100%; margin: 15px 0px !important" />
-                <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px" id="address-info"></textarea>
-            </td>
-            <td data-label="REMARK">
-                <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"></textarea>
-            </td>
-            <td data-label="UPLOAD">
-                <input type="file" name="other_image[]" class="form-control file-input" accept="image/*" hidden/>
-                <!-- our custom upload button -->
-                <label for="actual-btn" class="actual-btn">CHOOSE FILE</label>
-                    <br>
-                <!-- name of file chosen -->
-                <span class="file-chosen">NO FILE CHOOSEN</span>
-            </td>
-            <td>
-                <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
-            </td>
+            <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger"></i></a></td>
         </tr>
         `;
 
-        $("#farmersinfo").append(tabledata);
+        $("#customersinfo").append(tabledata);
+
+        // Inisialisasi ulang Select2 hanya untuk elemen baru
+        $("#customersinfo .customer-select").last().select2({
+            theme: 'bootstrap4',
+            language: "en",
+            placeholder: "- SELECT CUSTOMER -"
+        });
     }
 
     function deleteRow(e) {
         Swal.fire({
-            icon: "warning",
-            title: "DELETE ROW",
+            type: "warning",
+            title: "Delete Row",
             showCancelButton: true,
-            text: "ARE YOU SURE WANT TO DELETE THIS DATA ?"
+            text: "Are you sure want to delete this data ?"
         }).then((result) => {
             if (result.value) {
-                const row = $(e).closest('tr');
-                
-                // Cek apakah baris ini punya ID dari database
-                const hiddenInput = row.find('input[name="other_id[]"]');
-                if (hiddenInput.length > 0 && hiddenInput.val() !== '') {
-                    // Buatkan input untuk menandai ID yang perlu dihapus
-                    const deletedInput = `<input type="hidden" name="deleted_other_id[]" value="${hiddenInput.val()}">`;
-                    $("form").append(deletedInput);
-                }
-
-                row.remove();
+                $(e).parent().parent().remove();
             }
         });
     }
-    document.querySelectorAll('.file-input').forEach(function(input){
-        input.addEventListener('change', function(){
-            const chosenText = input.closest('td').querySelector('.file-chosen');
-            chosenText.textContent = input.files.length > 0 ? input.files[0].name : 'NO FILE CHOSEN';
+
+    function deleteRowSegment(e) {
+        Swal.fire({
+            type: "warning",
+            title: "Delete Row",
+            showCancelButton: true,
+            text: "Are you sure want to delete this cycle ?"
+        }).then((result) => {
+            if (result.value) {
+                $("#segment-" + e).remove();
+            }
         });
-    });
-</script>
-
-<script>
-
+    }
 </script>

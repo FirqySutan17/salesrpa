@@ -50,14 +50,14 @@ $route['home'] 					= 'Home';
 /* SALES ACTIVITY ROUTES */
 
 /* SALES SURVEY MARKET ROUTES */
-	$route['dashboard/sales/survey-market'] 					 	= 'admin/Sales/market';
-	$route['dashboard/sales/survey-market/report'] 			 		= 'admin/Sales/market_report';
-	$route['dashboard/sales/survey-market/create'] 			 		= 'admin/Sales/create_market';
-	$route['dashboard/sales/survey-market/save-market'] 		 	= 'admin/Sales/save_market';
-	$route['dashboard/sales/survey-market/edit/(:any)'] 		 	= 'admin/Sales/edit_market/$1';
-	$route['dashboard/sales/survey-market/update'] 			 		= 'admin/Sales/update_market';
-	$route['dashboard/sales/survey-market/delete/(:any)']     		= 'admin/Sales/delete_market/$1';
-	$route['dashboard/sales/survey-market/get_modal_detail/(:any)'] = 'admin/Sales/get_modal_detail/$1';
+	$route['dashboard/sales/survey-market'] 					 			= 'admin/Sales/market';
+	$route['dashboard/sales/survey-market/report'] 			 				= 'admin/Sales/market_report';
+	$route['dashboard/sales/survey-market/create'] 			 				= 'admin/Sales/create_survey';
+	$route['dashboard/sales/survey-market/save-survey'] 		 			= 'admin/Sales/save_survey';
+	$route['dashboard/sales/survey-market/edit/(:any)'] 		 			= 'admin/Sales/edit_survey/$1';
+	$route['dashboard/sales/survey-market/update'] 			 				= 'admin/Sales/update_survey';
+	$route['dashboard/sales/survey-market/delete/(:any)']     				= 'admin/Sales/delete_market/$1';
+	$route['dashboard/sales/survey-market/get_modal_survey_detail/(:any)'] = 'admin/Sales/get_modal_survey_detail/$1';
 /* SALES SURYVEY MARKET ROUTES */
 
 $route['404_override'] 					= '';
