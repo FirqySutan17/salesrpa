@@ -672,6 +672,9 @@
         min-height: 115px;
         overflow: auto;
     }
+    .th-mobile {
+        display: none;
+    }
 
     @media (max-width: 1024px) {
         #region_entry {
@@ -686,6 +689,9 @@
     }
 
     @media(max-width: 600px) {
+        .th-mobile {
+            display: block;
+        }
         .w-25 {
             width: 100% !important;
         }
@@ -871,11 +877,42 @@
                                         <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
                                     </td>
                                     <td data-label="TARGET PLAN">
-                                        <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
+                                        <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3" required></textarea>
                                     </td>
                                     <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
                                 </tr>
                                 
+                            </tbody>
+                        </table>
+
+                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER CUSTOMER</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="6" style="text-align: right; background: #fff; border: 0px"><button type="button" class="btn cust-btn-add" onclick="addOthers()">+</button></th>
+                                </tr>
+                                <tr>
+                                    <th>CUSTOMER</th>
+                                    <th>TARGET PLAN</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="othersinfo">
+                                <tr style="align-items: flex-end">
+                                    <th class="th-mobile" style="text-align: left; background: #fff; border: 0px;"><button type="button" class="btn cust-btn-add" onclick="addOthers()">+</button></th>
+                                </tr>
+                                <tr>
+                                    <td data-label="CUSTOMER">
+                                        <input type="hidden" name="other_id[]" value="">
+                                        <input type="text" name="other_customer[]" class="form-control" value="" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
+                                    </td>
+                                    <td data-label="TARGET PLAN">
+                                        <textarea name="other_target[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"></textarea>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -943,7 +980,7 @@
                 <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
             </td>
             <td data-label="TARGET PLAN">
-                <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" rows="3"></textarea>
+                <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" rows="3" required></textarea>
             </td>
             <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
         </tr>
@@ -958,6 +995,33 @@
             placeholder: "- SELECT CUSTOMER -"
         });
     }
+
+    function addOthers() {
+        let tabledata = `
+        <tr>
+            <td data-label="CUSTOMER">
+                <input type="hidden" name="other_id[]" value="">
+                <input type="text" name="other_customer[]" class="form-control" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
+            </td>
+            <td data-label="REMARK">
+                <textarea name="other_target[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5" required></textarea>
+            </td>
+            <td>
+                <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
+            </td>
+        </tr>
+        `;
+
+        $("#othersinfo").append(tabledata);
+    }
+
+    $(document).ready(function() {
+        $('.cust-btn-save').on('click', function() {
+        $(this).prop('disabled', true);
+        $(this).text('Saving...'); // opsional, ganti teks
+        $(this).closest('form').submit(); // pastikan form tetap disubmit
+        });
+    });
 
     function deleteRow(e) {
         Swal.fire({

@@ -506,7 +506,7 @@
 				<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search" style="font-size: 20px"></i></button> 
 			</div>
             <div class="col-md-2 col-sm-12 btn-filter" style="display: flex;">
-                <a href="<?= admin_url('sales/activity/create') ?>"  class="btn btn-primary btn-block" style="height: 36px; padding: 7px 10px 10px 10px; width: 100%">CREATE PLAN</a> 
+                <a href="javascript:void(0)" id="createPlanBtn" class="btn btn-primary btn-block" style="height: 36px; padding: 7px 10px 10px 10px; width: 100%">CREATE PLAN</a> 
             </div>
         </div>
     </form>
@@ -541,7 +541,7 @@
 							<?php endforeach; ?>
 						</td>
 						<td>
-							<a href="<?= base_url('dashboard/sales/activity/edit/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">DETAIL</a>
+							<a href="<?= base_url('dashboard/sales/activity/edit/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">ACTUAL</a>
 							<a href="<?= base_url('dashboard/sales/activity/delete/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
 						</td>
 					</tr>
@@ -561,6 +561,18 @@
 <script src="<?= asset('vendor/datatables.net-bs/js/dataTables.bootstrap.min.js') ?>"></script>
 
 <script>
+    document.getElementById('createPlanBtn').addEventListener('click', function () {
+        const isPlannedToday = <?= $is_planned_today ? 'true' : 'false' ?>;
+
+        if (isPlannedToday) {
+            alert("ANDA SUDAH TIDAK BISA MELAKUKAN PLAN KARENA SUDAH TERDAFTAR PLAN UNTUK HARI INI");
+        } else {
+            window.location.href = "<?= admin_url('sales/activity/create') ?>";
+        }
+    });
+</script>
+
+<script>
     $(function () {
       $('#example1').DataTable(
         {"language": {"paginate": { "previous": "&lt","next": "&gt",}}}
@@ -575,7 +587,7 @@
             text: "ANDA YAKIN INGIN CANCEL ORDER ?"
         }).then((result) => {
             if (result.value) {
-							$("#request_no").val(reqNo);
+			  $("#request_no").val(reqNo);
               $("#form-cancel").submit();
             }
         });

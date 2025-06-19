@@ -309,6 +309,9 @@
 	span.label-span {
 		width: 48%
 	}
+	span.label-span.sales-span {
+		width: 15% !important;
+	}
     .btn.btn-primary.btn-block:hover {
         background: #000;
         color: #fff
@@ -512,7 +515,11 @@
 			display: block;
 		}
 		.filter-style .label-span {
-			margin-bottom: 5px
+			margin-bottom: 5px;
+			
+		}
+		span.label-span.sales-span {
+			width: 100% !important;
 		}
 		.btn-filter {
 			margin: 10px 0px
@@ -705,20 +712,26 @@
     <h3 class="card-title">
         <strong>REPORT ACTIVITY - SALES RPA</strong>
     </h3>
-	<form class="form-horizontal" action="<?= admin_url('sales/activity') ?>" method="POST" style="margin-bottom: 20px">
+	<form class="form-horizontal" action="<?= admin_url('sales/activity/report') ?>" method="POST" style="margin-bottom: 20px">
         <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
-			<div class="col-md-6 col-sm-12 filter-style"  style="display: flex;">
+			<div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
 				<span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
 				<input type="date" name="sdate" value="<?= $filter['sdate'] ?>" class="form-control" required> 
 				<span style="margin-top: 9px; font-weight: 600">-</span> 
 				<input type="date" name="edate" value="<?= $filter['edate'] ?>" class="form-control" required>
 			</div>
+			<div class="col-md-4 col-sm-12 filter-style" style="display: flex;">
+                <span class="label-span sales-span" style="display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">SALES : </span> 
+                <select id="sales" class="form-control" name="sales" style="width: 78%">
+                    <option value="*" selected>- ALL SALES -</option>
+                     <?php foreach ($sales as $field): ?>
+                        <option <?= $filter['sales'] == $field['EMPLOYEE_ID'] ? 'selected' : '' ?> value="<?= $field['EMPLOYEE_ID'] ?>"><?= $field['EMPLOYEE_ID'] ?> - <?= $field['FULL_NAME'] ?></option>
+                     <?php endforeach ?>
+                </select>
+            </div>
 			<div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
 				<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search" style="font-size: 20px"></i></button> 
 			</div>
-            <div class="col-md-2 col-sm-12 btn-filter" style="display: flex;">
-                <!-- <a href="<?= admin_url('sales/activity/create') ?>"  class="btn btn-primary btn-block" style="height: 36px; padding: 7px 10px 10px 10px; width: 100%">CREATE PLAN</a>  -->
-            </div>
         </div>
     </form>
 	<div class="table-responsive table-container">
@@ -887,7 +900,7 @@
 				<thead>
 				<tr class="mobile-space">
 					<th width="50%">CUSTOMER'S ADDRESS</th>
-					<th width="50%">ACTUAL COORDINATE</th>
+					<th width="50%">ACTUAL LOCATION</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -895,7 +908,7 @@
 					<td data-label="CUSTOMER'S ADDRESS">
 						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.ADDRESS || ''}</textarea>
 					</td>
-					<td data-label="ACTUAL COORDINATE">
+					<td data-label="ACTUAL LOCATION">
 						<iframe style="height: 170px; width: 100%; margin-top: 10px" class="maps-frame" 
 							src="https://maps.google.com/maps?q=${lat},${long}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 						<p style="text-transform: uppercase">${activity.ADDRESS_ACTUAL || ''}</p>
@@ -973,6 +986,12 @@
 		console.error("Gagal parsing JSON:", err);
 		});
 	}
+
+	$('#sales').select2({
+        theme: 'bootstrap4',
+        language: "en",
+        placeholder: "- SELECT SALES -",
+    });
 
     function closeModal() {
         document.getElementById('modalWrapper').style.display = 'none';
