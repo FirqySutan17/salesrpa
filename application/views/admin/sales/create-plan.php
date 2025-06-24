@@ -842,7 +842,7 @@
                             </tbody>
                         </table>
 
-                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px 10px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">CUSTOMER PLAN</h3>
+                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px 10px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">CUSTOMER CJ</h3>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -885,7 +885,7 @@
                             </tbody>
                         </table>
 
-                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER CUSTOMER</h3>
+                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #eee; border: 1px solid #ddd; margin-bottom: 0px !important;">NEW CUSTOMER</h3>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -893,6 +893,8 @@
                                 </tr>
                                 <tr>
                                     <th>CUSTOMER</th>
+                                    <th>PHONE</th>
+                                    <th>ADDRESS</th>
                                     <th>TARGET PLAN</th>
                                     <th></th>
                                 </tr>
@@ -906,8 +908,14 @@
                                         <input type="hidden" name="other_id[]" value="">
                                         <input type="text" name="other_customer[]" class="form-control" value="" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
                                     </td>
+                                    <td data-label="CONTACT PHONE">
+                                        <input type="text" name="other_phone[]" placeholder="CTH : 08XXXXXX" class="form-control" style="font-size: 14px;" >
+                                    </td>
+                                    <td data-label="ADDRESS">
+                                        <textarea name="other_address_plan[]" placeholder="CTH : MENARA JAMSOSTEK, JAKARTA SELATAN" style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" ></textarea>
+                                    </td>
                                     <td data-label="TARGET PLAN">
-                                        <textarea name="other_target[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"></textarea>
+                                        <textarea name="other_target[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
                                     </td>
                                     <td>
                                         <a href="javascript:void(0)" onclick="deleteRow(this)" class="btn btn-sm"><i class="fas fa-trash text-danger"></i></a>
@@ -1002,6 +1010,12 @@
             <td data-label="CUSTOMER">
                 <input type="hidden" name="other_id[]" value="">
                 <input type="text" name="other_customer[]" class="form-control" placeholder="CTH: PT. SUPER UNGGAS JAYA" />
+            </td>
+            <td data-label="CONTACT PHONE">
+                <input type="text" name="other_phone[]" placeholder="CTH : 08XXXXXX" class="form-control" style="font-size: 14px;" >
+            </td>
+            <td data-label="ADDRESS">
+                <textarea name="other_address_plan[]" placeholder="CTH : MENARA JAMSOSTEK, JAKARTA SELATAN" style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" ></textarea>
             </td>
             <td data-label="REMARK">
                 <textarea name="other_target[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5" required></textarea>

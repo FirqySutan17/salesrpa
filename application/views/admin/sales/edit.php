@@ -960,7 +960,7 @@
                             </table>
                         <?php endforeach; ?>
 
-                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background:rgb(0, 190, 238); color: #fff; border: 1px solid #ddd; margin-bottom: 0px !important;">OTHER CUSTOMER</h3>
+                        <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background:rgb(0, 190, 238); color: #fff; border: 1px solid #ddd; margin-bottom: 0px !important;">CUSTOMER CJ</h3>
                         <table class="table table-bordered" style="margin-bottom: 20px">
                             <thead>
                                 <tr>

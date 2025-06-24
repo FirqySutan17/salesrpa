@@ -99,36 +99,40 @@ class Sales extends CI_Controller {
 				$addresses     = $post['address'];
 				$target_plans  = $post['target_plan'];
 
-				if (!empty($customers)) {
-					foreach ($customers as $i => $cust) {
-						$data_activity = [
-							'ACTIVITY_NO'  => $post['activity_no'],
-							'SEQUENCE'     => $i + 1,
-							'CUST'         => $cust,
-							'CUST_NAME'    => $cust_names[$i],
-							'PHONE'        => $phones[$i],
-							'ADDRESS'      => $addresses[$i],
-							'TARGET_PLAN'  => $target_plans[$i],
-						];
+				$this->db->select('MAX(SEQUENCE) AS MAX_SEQ');
+				$this->db->where('ACTIVITY_NO', $post['activity_no']);
+				$query = $this->db->get('TB_PLAN_ACTIVITY');
+				$row = $query->row();
+				$max_sequence = $row && $row->MAX_SEQ ? (int) $row->MAX_SEQ : 0;
 
-						echo "<pre>Data Activity ke-" . ($i+1) . ":\n";
-						print_r($data_activity);
-						echo "</pre>";
+				foreach ($customers as $i => $cust) {
+					$sequence = $max_sequence + $i + 1;
 
-						$save_activity = $this->Dbhelper->insertData('TB_PLAN_ACTIVITY', $data_activity);
+					$data_activity = [
+						'ACTIVITY_NO'  => $post['activity_no'],
+						'SEQUENCE'     => $sequence,
+						'CUST'         => $cust,
+						'CUST_NAME'    => $cust_names[$i],
+						'PHONE'        => $phones[$i],
+						'ADDRESS'      => $addresses[$i],
+						'TARGET_PLAN'  => $target_plans[$i],
+					];
 
-						if (!$save_activity) {
-							echo "<pre>Gagal Insert Activity ke-" . ($i+1) . "</pre>";
-							echo $this->db->last_query(); // Tampilkan query terakhir
-							print_r($this->db->error());  // Jika pakai CI versi 3.1.10 ke atas
-							exit;
-						}
+					$save_activity = $this->Dbhelper->insertData('TB_PLAN_ACTIVITY', $data_activity);
+
+					if (!$save_activity) {
+						echo "<pre>Gagal Insert Activity ke-" . ($i+1) . "</pre>";
+						echo $this->db->last_query();
+						print_r($this->db->error());
+						exit;
 					}
 				}
 
 				// Bagian untuk TB_PLAN_ACTIVITY_OTHER
 				$other_ids         = $this->input->post('other_id');
 				$other_customers   = $this->input->post('other_customer');
+				$other_phones      = $this->input->post('other_phone');
+				$other_address_plans      = $this->input->post('other_address_plan');
 				$target_plans      = $this->input->post('other_target');
 				$deleted_ids       = $this->input->post('deleted_other_id');
 
@@ -145,6 +149,8 @@ class Sales extends CI_Controller {
 
 						$data = [
 							'CUSTOMER'   	  => $cust,
+							'PHONE'     	  => $other_phones[$i] ?? '',
+							'ADDRESS_PLAN'     => $other_address_plans[$i] ?? '',
 							'TARGET_PLAN'     => $target_plans[$i] ?? '',
 							'STATUS'   	  	  => 'Y',
 							'ACTIVITY_NO'	  => $post['activity_no']
@@ -725,7 +731,7 @@ class Sales extends CI_Controller {
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
 		// Daftar NPK yang boleh lihat semua data
-    	$exception_ids = ['01220023', '999999', '01220014'];
+    	$exception_ids = ['01220023', '999999', '01220014', '07050009'];
 
 		$query = "
 			SELECT 
@@ -785,7 +791,7 @@ class Sales extends CI_Controller {
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
 		// Daftar NPK yang boleh lihat semua data
-    	$exception_ids = ['01220023', '999999', '01220014'];
+    	$exception_ids = ['01220023', '999999', '01220014', '07050009'];
 
 		$query = "
 			SELECT 
@@ -848,7 +854,7 @@ class Sales extends CI_Controller {
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
 		// NPK yang dapat akses semua data
-		$exception_ids = ['01220023', '999999', '01220014'];
+		$exception_ids = ['01220023', '999999', '01220014', '07050009'];
 
 		$query = "
 			SELECT *
@@ -893,6 +899,8 @@ class Sales extends CI_Controller {
 
 		return $customer;
 	}
+
+	
 
 	private function cekLogin() 
 	{
