@@ -143,7 +143,8 @@
                 </ul>
             </li>
             <?php endif ?>
-
+            
+            <?php if (in_array('SA001', $user_access) || in_array('*', $user_access)): ?>
             <li class="<?= ($this->uri->segment(2) == 'sales' && $this->uri->segment(3) == 'activity' && $this->uri->segment(4) == '') ? 'active' : '' ?>">
                 <a href="<?= route('dashboard/sales/activity') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -157,7 +158,9 @@
                     <span class="link-name">SALES ACTIVITY</span>
                 </a>
             </li>
+            <?php endif ?>
 
+            <?php if (in_array('SA002', $user_access) || in_array('*', $user_access)): ?>
             <li class="<?= ($this->uri->segment(2) == 'sales' && $this->uri->segment(3) == 'activity' && $this->uri->segment(4) == 'report') ? 'active' : '' ?>">
                 <a href="<?= route('dashboard/sales/activity/report') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -171,7 +174,7 @@
                     <span class="link-name">REPORT ACTIVITY</span>
                 </a>
             </li>
-
+            <?php endif ?>
             <!-- <li class="<?= ($this->uri->segment(2) == 'sales' && $this->uri->segment(3) == 'survey-market') ? 'active' : '' ?>">
                 <a href="<?= route('dashboard/sales/survey-market') ?>">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -9,15 +9,13 @@ use Dompdf\Options;
 class Sales extends CI_Controller {
 	var $menu_id 	= "";
 	var $menu_id2 	= "";
-	var $menu_id3 	= "";
 	var $session_data = "";
 	var $menu_ids = [];
 	public function __Construct() {
 		parent::__construct();
-		$this->menu_id 		= 'S001';
-		$this->menu_id2 	= 'S002';
-		$this->menu_id3 	= 'S003';
-		$this->menu_ids = ['S001', 'S002', 'S003'];
+		$this->menu_id 		= 'SA001';
+		$this->menu_id2 	= 'SA002';
+		$this->menu_ids = ['SA001', 'SA002'];
 		$this->session_data = $this->session->userdata('user_dashboard');
 
 		$this->cekLogin();
@@ -47,13 +45,36 @@ class Sales extends CI_Controller {
 		$data['user'] = $this->session_data['user'];
 		$data['plans'] = $this->datatable($filter, $npk_user); // perbaikan: kirim 2 parameter
 		$data['filter'] = $filter;
+		// Buat array untuk simpan flag modify per ACTIVITY_NO
+		$can_modify = [];
+
+		foreach ($data['plans'] as $plan) {
+			$activity_no = $plan['ACTIVITY_NO'];
+
+			// Query cek remark di TB_PLAN_ACTIVITY
+			$this->db->select('REMARK');
+			$this->db->where('ACTIVITY_NO', $activity_no);
+			$activities = $this->db->get('TB_PLAN_ACTIVITY')->result_array();
+
+			$hasRemark = false;
+			foreach ($activities as $act) {
+				if (!empty(trim($act['REMARK']))) {
+					$hasRemark = true;
+					break;
+				}
+			}
+
+			$can_modify[$activity_no] = !$hasRemark; // true kalau semua remark kosong
+		}
+
+		$data['can_modify'] = $can_modify;
 		$this->db->from('TB_PLAN');
 		$this->db->where('SALES_NPK', $npk_user);
 		$this->db->where('ACTIVITY_DATE', $today);
 		$is_planned_today = $this->db->count_all_results() > 0;
 
 		$data['is_planned_today'] = $is_planned_today;
-
+		// dd($data['plans']);
 		$this->template->_v('sales/index', $data);
 	}
 
@@ -69,91 +90,99 @@ class Sales extends CI_Controller {
 	{
 		if ($this->input->server('REQUEST_METHOD') === 'POST') {
 			$post = $this->input->post();
-			$this->load->helper('date'); // jika kamu butuh bantuan waktu
+			$this->load->helper('date');
 			$now  = date('Y-m-d H:i:s');
 			$user = $this->session_data['user']['EMPLOYEE_ID'];
 
 			try {
-				// Insert ke TB_PLAN
+				// Cek apakah ACTIVITY_NO sudah ada di TB_PLAN
+				$this->db->where('ACTIVITY_NO', $post['activity_no']);
+				$existing_plan = $this->db->get('TB_PLAN')->row();
+
 				$data_plan = [
-					'ACTIVITY_NO' => $post['activity_no'],
 					'ACTIVITY_DATE' => $post['activity_date'],
-					'SALES_NPK' => $post['sales_npk'],
-					'SALES_NAME' => $post['sales_name'],
-					'CREATED_BY' => $user,
-					'CREATED_AT' => $now,
-					'UPDATED_BY' => $user,
-					'UPDATED_AT' => $now
+					'SALES_NPK'     => $post['sales_npk'],
+					'SALES_NAME'    => $post['sales_name'],
+					'UPDATED_BY'    => $user,
+					'UPDATED_AT'    => $now
 				];
 
-				$save_plan = $this->Dbhelper->insertData('TB_PLAN', $data_plan);
+				if ($existing_plan) {
+					// Update data plan
+					$this->db->where('ACTIVITY_NO', $post['activity_no']);
+					$update_plan = $this->db->update('TB_PLAN', $data_plan);
 
-				if (!$save_plan) {
-					throw new Exception("Gagal menyimpan data ke TB_PLAN");
+					if (!$update_plan) {
+						throw new Exception("Gagal update data di TB_PLAN");
+					}
+				} else {
+					// Insert baru data plan
+					$data_plan['ACTIVITY_NO'] = $post['activity_no'];
+					$data_plan['CREATED_BY']  = $user;
+					$data_plan['CREATED_AT']  = $now;
+
+					$insert_plan = $this->db->insert('TB_PLAN', $data_plan);
+					if (!$insert_plan) {
+						throw new Exception("Gagal insert data di TB_PLAN");
+					}
 				}
 
-				// Insert ke TB_PLAN_ACTIVITY
+				// Hapus data lama TB_PLAN_ACTIVITY untuk ACTIVITY_NO ini
+				$this->db->where('ACTIVITY_NO', $post['activity_no']);
+				$this->db->delete('TB_PLAN_ACTIVITY');
+
+				// Insert ulang TB_PLAN_ACTIVITY
 				$customers     = $post['cust'];
 				$cust_names    = $post['cust_name'];
 				$phones        = $post['phone'];
 				$addresses     = $post['address'];
 				$target_plans  = $post['target_plan'];
 
-				$this->db->select('MAX(SEQUENCE) AS MAX_SEQ');
-				$this->db->where('ACTIVITY_NO', $post['activity_no']);
-				$query = $this->db->get('TB_PLAN_ACTIVITY');
-				$row = $query->row();
-				$max_sequence = $row && $row->MAX_SEQ ? (int) $row->MAX_SEQ : 0;
-
 				foreach ($customers as $i => $cust) {
-					$sequence = $max_sequence + $i + 1;
-
 					$data_activity = [
-						'ACTIVITY_NO'  => $post['activity_no'],
-						'SEQUENCE'     => $sequence,
-						'CUST'         => $cust,
-						'CUST_NAME'    => $cust_names[$i],
-						'PHONE'        => $phones[$i],
-						'ADDRESS'      => $addresses[$i],
-						'TARGET_PLAN'  => $target_plans[$i],
+						'ACTIVITY_NO' => $post['activity_no'],
+						'SEQUENCE'    => $i + 1,
+						'CUST'        => $cust,
+						'CUST_NAME'   => $cust_names[$i],
+						'PHONE'       => $phones[$i],
+						'ADDRESS'     => $addresses[$i],
+						'TARGET_PLAN' => $target_plans[$i],
 					];
 
-					$save_activity = $this->Dbhelper->insertData('TB_PLAN_ACTIVITY', $data_activity);
+					$insert_activity = $this->db->insert('TB_PLAN_ACTIVITY', $data_activity);
 
-					if (!$save_activity) {
-						echo "<pre>Gagal Insert Activity ke-" . ($i+1) . "</pre>";
-						echo $this->db->last_query();
-						print_r($this->db->error());
-						exit;
+					if (!$insert_activity) {
+						throw new Exception("Gagal insert TB_PLAN_ACTIVITY ke index " . $i);
 					}
 				}
 
-				// Bagian untuk TB_PLAN_ACTIVITY_OTHER
-				$other_ids         = $this->input->post('other_id');
-				$other_customers   = $this->input->post('other_customer');
-				$other_phones      = $this->input->post('other_phone');
-				$other_address_plans      = $this->input->post('other_address_plan');
-				$target_plans      = $this->input->post('other_target');
-				$deleted_ids       = $this->input->post('deleted_other_id');
+				// Proses TB_PLAN_ACTIVITY_OTHER: update, insert, delete
+				$other_ids           = $this->input->post('other_id');
+				$other_customers     = $this->input->post('other_customer');
+				$other_phones        = $this->input->post('other_phone');
+				$other_address_plans = $this->input->post('other_address_plan');
+				$other_target_plans  = $this->input->post('other_target');
+				$deleted_ids         = $this->input->post('deleted_other_id');
 
-				// Hapus data berdasarkan ID yang ditandai
+				// Hapus data yang ditandai di deleted_other_id
 				if (!empty($deleted_ids)) {
 					foreach ($deleted_ids as $id) {
 						$this->db->where('ID', $id)->delete('TB_PLAN_ACTIVITY_OTHER');
 					}
 				}
 
+				// Insert / update data TB_PLAN_ACTIVITY_OTHER
 				if ($other_customers && count($other_customers) > 0) {
 					foreach ($other_customers as $i => $cust) {
 						if (empty($cust)) continue;
 
-						$data = [
-							'CUSTOMER'   	  => $cust,
-							'PHONE'     	  => $other_phones[$i] ?? '',
-							'ADDRESS_PLAN'     => $other_address_plans[$i] ?? '',
-							'TARGET_PLAN'     => $target_plans[$i] ?? '',
-							'STATUS'   	  	  => 'Y',
-							'ACTIVITY_NO'	  => $post['activity_no']
+						$data_other = [
+							'CUSTOMER'    => $cust,
+							'PHONE'       => $other_phones[$i] ?? '',
+							'ADDRESS_PLAN'=> $other_address_plans[$i] ?? '',
+							'TARGET_PLAN' => $other_target_plans[$i] ?? '',
+							'STATUS'      => 'Y',
+							'ACTIVITY_NO' => $post['activity_no']
 						];
 
 						$other_id = $other_ids[$i] ?? null;
@@ -161,15 +190,15 @@ class Sales extends CI_Controller {
 						if (!empty($other_id)) {
 							// Update existing
 							$this->db->where('ID', $other_id);
-							$this->db->update('TB_PLAN_ACTIVITY_OTHER', $data);
+							$this->db->update('TB_PLAN_ACTIVITY_OTHER', $data_other);
 						} else {
-							// Insert new
-							$this->db->insert('TB_PLAN_ACTIVITY_OTHER', $data);
+							// Insert baru
+							$this->db->insert('TB_PLAN_ACTIVITY_OTHER', $data_other);
 						}
 					}
 				}
 
-				$this->session->set_flashdata('success', 'DATA PLAN BERHASIL TERSIMPAN.');
+				$this->session->set_flashdata('success', 'DATA PLAN BERHASIL DISIMPAN.');
 				redirect('dashboard/sales/activity');
 
 			} catch (Exception $e) {
@@ -179,10 +208,149 @@ class Sales extends CI_Controller {
 			}
 		}
 
-		
-
 		$this->session->set_flashdata('error', 'AKSES TIDAK VALID.');
 		redirect('dashboard/sales/activity');
+	}
+
+
+	// public function save_plan()
+	// {
+	// 	if ($this->input->server('REQUEST_METHOD') === 'POST') {
+	// 		$post = $this->input->post();
+	// 		$this->load->helper('date'); // jika kamu butuh bantuan waktu
+	// 		$now  = date('Y-m-d H:i:s');
+	// 		$user = $this->session_data['user']['EMPLOYEE_ID'];
+
+	// 		try {
+	// 			// Insert ke TB_PLAN
+	// 			$data_plan = [
+	// 				'ACTIVITY_NO' => $post['activity_no'],
+	// 				'ACTIVITY_DATE' => $post['activity_date'],
+	// 				'SALES_NPK' => $post['sales_npk'],
+	// 				'SALES_NAME' => $post['sales_name'],
+	// 				'CREATED_BY' => $user,
+	// 				'CREATED_AT' => $now,
+	// 				'UPDATED_BY' => $user,
+	// 				'UPDATED_AT' => $now
+	// 			];
+
+	// 			$save_plan = $this->Dbhelper->insertData('TB_PLAN', $data_plan);
+
+	// 			if (!$save_plan) {
+	// 				throw new Exception("Gagal menyimpan data ke TB_PLAN");
+	// 			}
+
+	// 			// Insert ke TB_PLAN_ACTIVITY
+	// 			$customers     = $post['cust'];
+	// 			$cust_names    = $post['cust_name'];
+	// 			$phones        = $post['phone'];
+	// 			$addresses     = $post['address'];
+	// 			$target_plans  = $post['target_plan'];
+
+	// 			$this->db->select('MAX(SEQUENCE) AS MAX_SEQ');
+	// 			$this->db->where('ACTIVITY_NO', $post['activity_no']);
+	// 			$query = $this->db->get('TB_PLAN_ACTIVITY');
+	// 			$row = $query->row();
+	// 			$max_sequence = $row && $row->MAX_SEQ ? (int) $row->MAX_SEQ : 0;
+
+	// 			foreach ($customers as $i => $cust) {
+	// 				$sequence = $max_sequence + $i + 1;
+
+	// 				$data_activity = [
+	// 					'ACTIVITY_NO'  => $post['activity_no'],
+	// 					'SEQUENCE'     => $sequence,
+	// 					'CUST'         => $cust,
+	// 					'CUST_NAME'    => $cust_names[$i],
+	// 					'PHONE'        => $phones[$i],
+	// 					'ADDRESS'      => $addresses[$i],
+	// 					'TARGET_PLAN'  => $target_plans[$i],
+	// 				];
+
+	// 				$save_activity = $this->Dbhelper->insertData('TB_PLAN_ACTIVITY', $data_activity);
+
+	// 				if (!$save_activity) {
+	// 					echo "<pre>Gagal Insert Activity ke-" . ($i+1) . "</pre>";
+	// 					echo $this->db->last_query();
+	// 					print_r($this->db->error());
+	// 					exit;
+	// 				}
+	// 			}
+
+	// 			// Bagian untuk TB_PLAN_ACTIVITY_OTHER
+	// 			$other_ids         = $this->input->post('other_id');
+	// 			$other_customers   = $this->input->post('other_customer');
+	// 			$other_phones      = $this->input->post('other_phone');
+	// 			$other_address_plans      = $this->input->post('other_address_plan');
+	// 			$target_plans      = $this->input->post('other_target');
+	// 			$deleted_ids       = $this->input->post('deleted_other_id');
+
+	// 			// Hapus data berdasarkan ID yang ditandai
+	// 			if (!empty($deleted_ids)) {
+	// 				foreach ($deleted_ids as $id) {
+	// 					$this->db->where('ID', $id)->delete('TB_PLAN_ACTIVITY_OTHER');
+	// 				}
+	// 			}
+
+	// 			if ($other_customers && count($other_customers) > 0) {
+	// 				foreach ($other_customers as $i => $cust) {
+	// 					if (empty($cust)) continue;
+
+	// 					$data = [
+	// 						'CUSTOMER'   	  => $cust,
+	// 						'PHONE'     	  => $other_phones[$i] ?? '',
+	// 						'ADDRESS_PLAN'     => $other_address_plans[$i] ?? '',
+	// 						'TARGET_PLAN'     => $target_plans[$i] ?? '',
+	// 						'STATUS'   	  	  => 'Y',
+	// 						'ACTIVITY_NO'	  => $post['activity_no']
+	// 					];
+
+	// 					$other_id = $other_ids[$i] ?? null;
+
+	// 					if (!empty($other_id)) {
+	// 						// Update existing
+	// 						$this->db->where('ID', $other_id);
+	// 						$this->db->update('TB_PLAN_ACTIVITY_OTHER', $data);
+	// 					} else {
+	// 						// Insert new
+	// 						$this->db->insert('TB_PLAN_ACTIVITY_OTHER', $data);
+	// 					}
+	// 				}
+	// 			}
+
+	// 			$this->session->set_flashdata('success', 'DATA PLAN BERHASIL TERSIMPAN.');
+	// 			redirect('dashboard/sales/activity');
+
+	// 		} catch (Exception $e) {
+	// 			log_message('error', $e->getMessage());
+	// 			$this->session->set_flashdata('error', 'Terjadi kesalahan: ' . $e->getMessage());
+	// 			redirect('dashboard/sales/activity');
+	// 		}
+	// 	}
+
+	// 	$this->session->set_flashdata('error', 'AKSES TIDAK VALID.');
+	// 	redirect('dashboard/sales/activity');
+	// }
+
+	public function modify_plan($activity_no) {
+		$data['title']       = 'DAILY SALES RPA';
+		$data['user']        = $this->session_data['user'];
+		$data['customer']    = $this->datatable_cust();
+
+		// Ambil data TB_PLAN berdasarkan ACTIVITY_NO
+		$this->db->where('ACTIVITY_NO', $activity_no);
+		$data['plan'] = $this->db->get('TB_PLAN')->row_array();
+
+		// Ambil data TB_PLAN_ACTIVITY berdasarkan ACTIVITY_NO
+		$this->db->where('ACTIVITY_NO', $activity_no);
+		$data['plan_activities'] = $this->db->get('TB_PLAN_ACTIVITY')->result_array();
+		
+		$data['other_activities'] = $this->db->where('ACTIVITY_NO', $activity_no)->where('STATUS', 'Y')->order_by('ID', 'ASC')->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
+
+		// dd($data['plan']);
+		// dd($data['plan_activities']);
+		// dd($data['other_activities']);
+
+		$this->template->_v('sales/edit-plan', $data);
 	}
 
 	public function delete_plan($act_number)
@@ -233,9 +401,9 @@ class Sales extends CI_Controller {
 	}
 
 	public function edit_plan($activity_no) {
-		$data['title'] 		= 'DAILY SALES RPA';
-		$data['user'] 		= $this->session_data['user'];
-		$data['customer'] 	= $this->datatable_cust();
+		$data['title']       = 'DAILY SALES RPA';
+		$data['user']        = $this->session_data['user'];
+		$data['customer']    = $this->datatable_cust();
 
 		// Ambil data TB_PLAN berdasarkan ACTIVITY_NO
 		$this->db->where('ACTIVITY_NO', $activity_no);
@@ -244,9 +412,20 @@ class Sales extends CI_Controller {
 		// Ambil data TB_PLAN_ACTIVITY berdasarkan ACTIVITY_NO
 		$this->db->where('ACTIVITY_NO', $activity_no);
 		$data['plan_activities'] = $this->db->get('TB_PLAN_ACTIVITY')->result_array();
+
+		// Tambahkan data gambar ke tiap aktivitas
+		foreach ($data['plan_activities'] as &$activity) {
+			$activity['IMAGES'] = $this->db->get_where('TB_PLAN_ACTIVITY_IMAGES', [
+				'ACTIVITY_NO' => $activity['ACTIVITY_NO'],
+				'CUST'        => $activity['CUST']
+			])->result_array();
+		}
+		
 		$data['other_activities_fix'] = $this->db->where('ACTIVITY_NO', $activity_no)->where('STATUS', 'Y')->order_by('ID', 'ASC')->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
-		$data['other_activities'] = $this->db->where('ACTIVITY_NO', $activity_no)->where('STATUS IS NULL', null, false)->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
-		// dd($data['other_activities_fix']);
+		foreach ($data['other_activities_fix'] as &$other) {
+			$other['IMAGES'] = $this->db->get_where('TB_PLAN_ACTIVITY_OTHER_IMAGES', ['ID' => $other['ID']])->result_array();
+		}
+		$data['other_activities']     = $this->db->where('ACTIVITY_NO', $activity_no)->where('STATUS IS NULL', null, false)->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
 
 		$this->template->_v('sales/edit', $data);
 	}
@@ -262,36 +441,124 @@ class Sales extends CI_Controller {
 
 		foreach ($activity_nos as $i => $activity_no) {
 			$data = [
-				'COORDINATE' 	 => isset($coordinates[$i]) ? $coordinates[$i] : '',
-				'ADDRESS_ACTUAL' => isset($address[$i]) ? $address[$i] : '',
-				'REMARK'     	 => isset($remarks[$i]) ? $remarks[$i] : ''
+				'COORDINATE'     => $coordinates[$i] ?? '',
+				'ADDRESS_ACTUAL' => $address[$i] ?? '',
+				'REMARK'         => $remarks[$i] ?? ''
 			];
 
-			if (!empty($images['name'][$i])) {
-				$_FILES['file']['name']     = $images['name'][$i];
-				$_FILES['file']['type']     = $images['type'][$i];
-				$_FILES['file']['tmp_name'] = $images['tmp_name'][$i];
-				$_FILES['file']['error']    = $images['error'][$i];
-				$_FILES['file']['size']     = $images['size'][$i];
-
-				$config['upload_path']   = './uploads/plan/';
-				$config['allowed_types'] = 'jpg|jpeg|png';
-				$config['file_name']     = 'plan_'.$activity_no.'_'.$custs[$i].'_'.time();
-				$config['overwrite']     = true;
-
-				$this->upload->initialize($config);
-				if ( ! $this->upload->do_upload('file')) { // Ganti 'IMAGE_PATH' menjadi 'file'
-					$this->session->set_flashdata('error', "TAMBAH DATA GAGAL. SILAHKAN COBA KEMBALI");
-					redirect('dashboard/sales/activity');
-				}
-
-				$uploadData = $this->upload->data();
-				$data['IMAGE_PATH'] = $uploadData['file_name']; // <-- Tambahkan ini
-			}
-
+			// Update data utama
 			$this->db->where('ACTIVITY_NO', $activity_no);
 			$this->db->where('CUST', $custs[$i]);
 			$this->db->update('TB_PLAN_ACTIVITY', $data);
+
+			// Upload multiple image
+			if (isset($_FILES['image']['name'][$i]) && is_array($_FILES['image']['name'][$i])) {
+				foreach ($_FILES['image']['name'][$i] as $j => $filename) {
+					if (empty($filename)) continue;
+
+					$_FILES['file']['name']     = $filename;
+					$_FILES['file']['type']     = $_FILES['image']['type'][$i][$j];
+					$_FILES['file']['tmp_name'] = $_FILES['image']['tmp_name'][$i][$j];
+					$_FILES['file']['error']    = $_FILES['image']['error'][$i][$j];
+					$_FILES['file']['size']     = $_FILES['image']['size'][$i][$j];
+
+					$config['upload_path']   = './uploads/plan/';
+					$config['allowed_types'] = 'jpg|jpeg|png';
+					$config['file_name']     = 'plan_' . $activity_no . '_' . $custs[$i] . '_' . time() . '_' . $j;
+					$config['overwrite']     = false;
+
+					$this->upload->initialize($config);
+					if (!$this->upload->do_upload('file')) {
+						$this->session->set_flashdata('error', $this->upload->display_errors());
+						redirect('dashboard/sales/activity');
+					}
+
+					$uploadData = $this->upload->data();
+					$image_path = $uploadData['file_name'];
+
+					// Simpan ke tabel TB_PLAN_ACTIVITY_IMAGES
+					$this->db->insert('TB_PLAN_ACTIVITY_IMAGES', [
+						'ACTIVITY_NO' => $activity_no,
+						'CUST'        => $custs[$i],
+						'IMAGE_PATH'  => $image_path
+					]);
+				}
+			}
+		}
+
+		$activity_nos       = $this->input->post('activity_no'); // Array of ACTIVITY_NO
+		$ids                = $this->input->post('id');          // Array of ID (primary key of TB_PLAN_ACTIVITY_OTHER)
+		$coordinates        = $this->input->post('coordinatecust');
+		$addresses          = $this->input->post('addresscust');
+		$remarks            = $this->input->post('remark_cust');
+		$phones             = $this->input->post('phone_cust');
+		$image_ups             = $_FILES['image_cust'];             // Multi-upload format: image_cust[0][], image_cust[1][]...
+
+		foreach ($ids as $i => $id_val) {
+			$activity_no = $activity_nos[$i] ?? '';
+			$coordinate  = $coordinates[$i] ?? '';
+			$address     = $addresses[$i] ?? '';
+			$remark      = $remarks[$i] ?? '';
+			$phone       = $phones[$i] ?? '';
+
+			// Ambil CUST berdasarkan ID
+			$customer = $this->db->select('CUSTOMER')
+				->from('TB_PLAN_ACTIVITY_OTHER')
+				->where('ID', $id_val)
+				->get()
+				->row('CUSTOMER');
+
+			// Update data utama
+			$this->db->where('ID', $id_val);
+			$this->db->update('TB_PLAN_ACTIVITY_OTHER', [
+				'COORDINATE' => $coordinate,
+				'ADDRESS'    => $address,
+				'REMARK'     => $remark,
+				'PHONE'      => $phone
+			]);
+
+			// Upload multiple image jika ada
+			if (isset($image_ups['name'][$i]) && is_array($image_ups['name'][$i])) {
+				foreach ($image_ups['name'][$i] as $j => $filename) {
+					if (empty($filename)) continue;
+
+					$_FILES['file']['name']     = $filename;
+					$_FILES['file']['type']     = $image_ups['type'][$i][$j];
+					$_FILES['file']['tmp_name'] = $image_ups['tmp_name'][$i][$j];
+					$_FILES['file']['error']    = $image_ups['error'][$i][$j];
+					$_FILES['file']['size']     = $image_ups['size'][$i][$j];
+
+					$config['upload_path']   = './uploads/other/';
+					$config['allowed_types'] = '*'; 
+					$config['file_name']     = 'other_' . $activity_no . '_' . $customer . '_' . time() . '_' . $j;
+					$config['overwrite']     = false;
+
+					$this->upload->initialize($config);
+
+					if (!$this->upload->do_upload('file')) {
+						$error = $this->upload->display_errors();
+						echo "Upload gagal: " . $error;
+						echo "MIME Type file: " . $_FILES['file']['type'];
+						exit;
+					}
+
+					$uploadData = $this->upload->data();
+					$image_path = $uploadData['file_name'];
+
+					$insert_data = [
+						'ACTIVITY_NO' => $activity_no,
+						'CUST'        => $customer,
+						'IMAGE_PATH'  => $image_path,
+						'ID_DATA'     => $id_val
+					];
+
+					if (!$this->db->insert('TB_PLAN_ACTIVITY_OTHER_IMAGES', $insert_data)) {
+						$error = $this->db->error();
+						echo "DB Insert gagal: " . print_r($error, true);
+						exit;
+					}
+				}
+			}
 		}
 
 		// Insert ke TB_PLAN_ACTIVITY
@@ -445,6 +712,50 @@ class Sales extends CI_Controller {
 		}
 		$this->session->set_flashdata('success', 'DATA BERHASIL DIPERBAHARUI.');
 		redirect('dashboard/sales/activity');
+	}
+
+	public function delete_image($image_id)
+	{
+		// Ambil data gambar dulu
+		$image = $this->db->get_where('TB_PLAN_ACTIVITY_IMAGES', ['ID' => $image_id])->row();
+
+		if (!$image) {
+			$this->session->set_flashdata('error', 'Gambar tidak ditemukan.');
+			redirect('dashboard/sales/activity');
+		}
+
+		// Hapus file fisik gambar dari server (jika ada)
+		$file_path = './uploads/plan/' . $image->IMAGE_PATH;
+		if (file_exists($file_path)) {
+			unlink($file_path);
+		}
+
+		// Hapus data gambar dari database
+		$this->db->where('ID', $image_id);
+		$this->db->delete('TB_PLAN_ACTIVITY_IMAGES');
+
+		$this->session->set_flashdata('success', 'Gambar berhasil dihapus.');
+		redirect($_SERVER['HTTP_REFERER']); // Kembali ke halaman sebelumnya
+	}
+
+	public function delete_other_image($image_id)
+	{
+		$img = $this->db->get_where('TB_PLAN_ACTIVITY_OTHER_IMAGES', ['ID' => $image_id])->row();
+		if (!$img) {
+			$this->session->set_flashdata('error', 'Gambar tidak ditemukan.');
+			redirect($_SERVER['HTTP_REFERER']);
+		}
+
+		$file_path = './uploads/other/' . $img->IMAGE_PATH;
+		if (file_exists($file_path)) {
+			unlink($file_path);
+		}
+
+		$this->db->where('ID', $image_id);
+		$this->db->delete('TB_PLAN_ACTIVITY_OTHER_IMAGES');
+
+		$this->session->set_flashdata('success', 'Gambar berhasil dihapus.');
+		redirect($_SERVER['HTTP_REFERER']);
 	}
 
 	public function get_modal_detail($activity_no) {
@@ -731,9 +1042,15 @@ class Sales extends CI_Controller {
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
 		// Daftar NPK yang boleh lihat semua data
-    	$exception_ids = ['01220023', '999999', '01220014', '07050009'];
+		$exception_ids = ['01220023', '999999', '01220014', '07050009'];
 
-		$query = "
+		$where_npk = "";
+		if (!in_array($npk_user, $exception_ids)) {
+			$where_npk = " AND P.SALES_NPK = '$npk_user'";
+		}
+
+		// Query utama: TB_PLAN + TB_PLAN_ACTIVITY
+		$query_main = "
 			SELECT 
 				P.ACTIVITY_NO,
 				P.ACTIVITY_DATE,
@@ -749,19 +1066,35 @@ class Sales extends CI_Controller {
 			WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
 				BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
 				AND TO_DATE('$edate', 'DD-MM-YYYY')
+				$where_npk
+			ORDER BY P.ACTIVITY_DATE DESC
 		";
-		
-		 // Jika user bukan pengecualian, filter berdasarkan NPK
-		if (!in_array($npk_user, $exception_ids)) {
-			$query .= " AND P.SALES_NPK = '$npk_user'";
-		}
 
-		$query .= " ORDER BY P.ACTIVITY_DATE ASC, P.ACTIVITY_NO ASC";
+		$main_data = $this->db->query($query_main)->result_array();
 
-		$raw_data = $this->db->query($query)->result_array();
+		// Query tambahan: TB_PLAN + TB_PLAN_ACTIVITY_OTHER
+		$query_other = "
+			SELECT 
+				P.ACTIVITY_NO,
+				B.CUSTOMER,
+				B.PHONE,
+				B.ADDRESS,
+				B.REMARK
+			FROM TB_PLAN P
+			JOIN TB_PLAN_ACTIVITY_OTHER B ON P.ACTIVITY_NO = B.ACTIVITY_NO
+			WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
+				BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
+				AND TO_DATE('$edate', 'DD-MM-YYYY')
+				$where_npk
+		";
 
+		$other_data = $this->db->query($query_other)->result_array();
+
+		// Format hasil
 		$plans = [];
-		foreach ($raw_data as $row) {
+
+		// Data dari TB_PLAN_ACTIVITY
+		foreach ($main_data as $row) {
 			$key = $row['ACTIVITY_NO'];
 			if (!isset($plans[$key])) {
 				$plans[$key] = [
@@ -769,7 +1102,8 @@ class Sales extends CI_Controller {
 					'ACTIVITY_DATE' => $row['ACTIVITY_DATE'],
 					'SALES_NPK' => $row['SALES_NPK'],
 					'SALES_NAME' => $row['SALES_NAME'],
-					'customers' => []
+					'customers' => [],
+					'other_customers' => []
 				];
 			}
 
@@ -781,7 +1115,30 @@ class Sales extends CI_Controller {
 				'TARGET_PLAN' => $row['TARGET_PLAN'],
 			];
 		}
-		// dd($query);
+
+		// Data dari TB_PLAN_ACTIVITY_OTHER
+		foreach ($other_data as $row) {
+			$key = $row['ACTIVITY_NO'];
+			if (!isset($plans[$key])) {
+				// Jika tidak ada dari main_data, inisialisasi dasar
+				$plans[$key] = [
+					'ACTIVITY_NO' => $row['ACTIVITY_NO'],
+					'ACTIVITY_DATE' => null,
+					'SALES_NPK' => null,
+					'SALES_NAME' => null,
+					'customers' => [],
+					'other_customers' => []
+				];
+			}
+
+			$plans[$key]['other_customers'][] = [
+				'CUSTOMER' => $row['CUSTOMER'],
+				'PHONE' => $row['PHONE'],
+				'ADDRESS' => $row['ADDRESS'],
+				'REMARK' => $row['REMARK']
+			];
+		}
+
 		return array_values($plans);
 	}
 
@@ -790,62 +1147,69 @@ class Sales extends CI_Controller {
 		$sdate = date('d-m-Y', strtotime($filter['sdate']));
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
-		// Daftar NPK yang boleh lihat semua data
-    	$exception_ids = ['01220023', '999999', '01220014', '07050009'];
+		// NPK pengecualian (bisa lihat semua data)
+		$exception_ids = ['01220023', '999999', '01220014', '07050009'];
+		$where_npk = "";
+		$sales_filter = "";
 
-		$query = "
+		if (!in_array($npk_user, $exception_ids)) {
+			$where_npk = " AND P.SALES_NPK = '$npk_user'";
+		}
+
+		if ($filter['sales'] != '*') {
+			$sales_filter = " and P.SALES_NPK = '".$filter['sales']."'";
+		}
+
+		// Query dari TB_PLAN_ACTIVITY
+		$query_1 = "
 			SELECT 
 				P.ACTIVITY_NO,
 				P.ACTIVITY_DATE,
 				P.SALES_NPK,
 				P.SALES_NAME,
-				A.CUST,
-				A.CUST_NAME,
-				A.PHONE,
-				A.ADDRESS,
-				A.TARGET_PLAN
+				A.CUST AS CUSTOMER_CODE,
+				A.CUST_NAME AS CUSTOMER_NAME,
+				A.TARGET_PLAN,
+				A.REMARK
 			FROM TB_PLAN P
 			JOIN TB_PLAN_ACTIVITY A ON P.ACTIVITY_NO = A.ACTIVITY_NO
 			WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
 				BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
 				AND TO_DATE('$edate', 'DD-MM-YYYY')
+				$where_npk
+				$sales_filter
+			ORDER BY P.ACTIVITY_DATE DESC
 		";
-		
-		 // Jika user bukan pengecualian, filter berdasarkan NPK
-		if (!in_array($npk_user, $exception_ids)) {
-			$query .= " AND P.SALES_NPK = '$npk_user'";
-		}
-		if ($filter['sales'] != '*') {
-			$query .= " and P.SALES_NPK = '".$filter['sales']."'";
-		}
 
-		$query .= " ORDER BY P.ACTIVITY_DATE ASC, P.ACTIVITY_NO ASC";
+		// Query dari TB_PLAN_ACTIVITY_OTHER
+		$query_2 = "
+			SELECT 
+				P.ACTIVITY_NO,
+				P.ACTIVITY_DATE,
+				P.SALES_NPK,
+				P.SALES_NAME,
+				B.CUSTOMER AS CUSTOMER_CODE,
+				B.CUSTOMER AS CUSTOMER_NAME,
+				B.TARGET_PLAN,
+				B.REMARK
+			FROM TB_PLAN P
+			JOIN TB_PLAN_ACTIVITY_OTHER B ON P.ACTIVITY_NO = B.ACTIVITY_NO
+			WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
+				BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
+				AND TO_DATE('$edate', 'DD-MM-YYYY')
+				$where_npk
+				$sales_filter
+			ORDER BY P.ACTIVITY_DATE DESC
+		";
 
-		$raw_data = $this->db->query($query)->result_array();
+		// Gabungkan hasil dari kedua query
+		$data_1 = $this->db->query($query_1)->result_array();
+		$data_2 = $this->db->query($query_2)->result_array();
 
-		$plans = [];
-		foreach ($raw_data as $row) {
-			$key = $row['ACTIVITY_NO'];
-			if (!isset($plans[$key])) {
-				$plans[$key] = [
-					'ACTIVITY_NO' => $row['ACTIVITY_NO'],
-					'ACTIVITY_DATE' => $row['ACTIVITY_DATE'],
-					'SALES_NPK' => $row['SALES_NPK'],
-					'SALES_NAME' => $row['SALES_NAME'],
-					'customers' => []
-				];
-			}
+		// Gabung dua hasil ke dalam satu array
+		$result = array_merge($data_1, $data_2);
 
-			$plans[$key]['customers'][] = [
-				'CUST' => $row['CUST'],
-				'CUST_NAME' => $row['CUST_NAME'],
-				'PHONE' => $row['PHONE'],
-				'ADDRESS' => $row['ADDRESS'],
-				'TARGET_PLAN' => $row['TARGET_PLAN'],
-			];
-		}
-		// dd($query);
-		return array_values($plans);
+		return $result;
 	}
 
 	private function datatable_survey($filter, $npk_user)
@@ -869,7 +1233,7 @@ class Sales extends CI_Controller {
 			$query .= " AND SALES_NPK = '$npk_user'";
 		}
 
-		$query .= " ORDER BY SURVEY_DATE ASC, SURVEY_NO ASC";
+		$query .= " ORDER BY SURVEY_DATE ASC";
 
 		// Eksekusi query
 		$result = $this->db->query($query)->result_array();

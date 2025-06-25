@@ -277,8 +277,6 @@
         <thead>
             <tr>
                 <th style="text-align: center;">NO</th>
-                <th style="text-align: center;">COMPANY</th>
-                <th style="text-align: center;">REGION</th>
                 <th style="text-align: center;">EMPLOYEE ID</th>
                 <th style="text-align: center;">FULL NAME</th>
                 <th style="text-align: center;">EMAIL</th>
@@ -290,20 +288,6 @@
             <?php foreach ($datatable as $i => $v): ?>
                 <tr>
                     <td style="text-align: center; vertical-align: middle"><?= $i + 1 ?></td>
-                    <td style="text-align: center; vertical-align: middle">
-                        <?php if ($v['COMPANY_NAME'] == 'PLANT'): ?>
-                            * - ALL PLANT
-                        <?php else : ?>
-                            <?= $v['COMPANY_NAME'] ?>
-                        <?php endif ?>
-                    </td>
-                    <td style="text-align: center; vertical-align: middle">
-                        <?php if ($v['COMPANY_NAME'] == 'PLANT'): ?>
-                            * - ALL REGION
-                        <?php else : ?>
-                            <?= $v['REGION_NAME'] ?>
-                        <?php endif ?>  
-                    </td>
                     <td style="text-align: center; vertical-align: middle"><?= $v['EMPLOYEE_ID'] ?></td>
                     <td style="text-align: center; vertical-align: middle"><?= $v['FULL_NAME'] ?></td>
                     <td style="text-align: center; vertical-align: middle"><?= $v['EMAIL'] ?></td>

@@ -523,7 +523,7 @@
 					<th>PLAN NUMBER</th>
 					<th>DATE</th>
 					<th>SALES</th>
-                    <th>PLAN</th>
+                    <th>CUSTOMER</th>
 					<th>ACTION</th>
 				</tr>
 			</thead>
@@ -539,10 +539,25 @@
 							<?php foreach ($plan['customers'] as $cust): ?>
 								<p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
 							<?php endforeach; ?>
+							<?php foreach ($plan['other_customers'] as $cust): ?>
+								<p><strong>CANDIDATE - <?= $cust['CUSTOMER'] ?></p>
+							<?php endforeach; ?>
 						</td>
 						<td>
-							<a href="<?= base_url('dashboard/sales/activity/edit/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">ACTUAL</a>
-							<a href="<?= base_url('dashboard/sales/activity/delete/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
+							 <?php if (isset($can_modify[$plan['ACTIVITY_NO']]) && $can_modify[$plan['ACTIVITY_NO']]): ?>
+								<a href="<?= base_url('dashboard/sales/activity/modify-plan/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail" style="background: #00c4ff; color: #fff">MODIFY</a>
+							<?php endif; ?>
+							<?php
+								$activityDate = new DateTime($plan['ACTIVITY_DATE']);
+								$now = new DateTime();
+								$interval = $activityDate->diff($now);
+							?>
+
+							<?php if ($now <= $activityDate || $interval->days <= 1): ?>
+								<a href="<?= base_url('dashboard/sales/activity/edit/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail">ACTUAL</a>
+								<a href="<?= base_url('dashboard/sales/activity/delete/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a>
+							<?php endif; ?>
+							
 						</td>
 					</tr>
 				<?php endforeach; ?>

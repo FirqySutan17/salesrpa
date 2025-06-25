@@ -318,17 +318,13 @@ class User extends CI_Controller {
 	private function datatable() {
 		$this->db->select('
 			CD_USER.PLANT as COMPANY_CODE,
-			COMPANY.CODE_NAME as COMPANY_NAME,  
 			CD_USER.EMPLOYEE_ID as EMPLOYEE_ID,
 			CD_USER.FULL_NAME as FULL_NAME,
 			CD_USER.REGION as REGION_CODE,
-			REGION.CODE_NAME as REGION_NAME,
 			CD_USER.EMAIL,
 			CD_USER.ROLE
 		');
         $this->db->from('CD_USER');
-        $this->db->join('CD_CODE COMPANY', "CD_USER.PLANT = COMPANY.CODE AND COMPANY.HEAD_CODE = 'AB'");
-        $this->db->join('CD_CODE REGION', "CD_USER.REGION = REGION.CODE AND REGION.HEAD_CODE = 'CS02'", "left");
         $this->db->where('CD_USER.EMPLOYEE_ID !=', '999999');
         $this->db->where('CD_USER.IS_ACTIVE', 'Y');
         $data = $this->db->get()->result_array();
@@ -364,16 +360,8 @@ class User extends CI_Controller {
 			'*' 	=> 'ALL MENU',
 			'M001'	=> 'Master - Data Common Code',
 			'M004'	=> 'Master - Data User',
-			'O001'	=> 'ORDER BROILER',
-			'O002'	=> 'REPORT ORDER',
-			'O003'	=> 'CONFIRM ORDER',
-			'O004'	=> 'ORDER LIST',
-			'O005'	=> 'CREDIT LIMIT LIST',
-			'O006'	=> 'SETTING USER CUSTOMER',
-			'O007'	=> 'SETTING SALES APPROVAL',
-			'O008'	=> 'SETTING SALES OPEN PRICE',
-			'C001'	=> 'CONFIRM ORDER',
-			'C002'	=> 'ORDER LIST',
+			'SA001'	=> 'SALES ACTIVITY',
+			'SA002'	=> 'REPORT ACTIVITY',
 		];
 	}
 

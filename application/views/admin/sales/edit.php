@@ -845,11 +845,12 @@
                         </table>
 
                         <?php foreach ($plan_activities as $i => $activity): ?>
-                            <!-- Hidden untuk identifikasi record unik -->
                             <input type="hidden" name="activity_no[]" value="<?= $activity['ACTIVITY_NO'] ?>">
                             <input type="hidden" name="cust[]" value="<?= $activity['CUST'] ?>">
                             
-                            <h3 style="margin-top: 20px; padding: 20px; background: #00cdb0; color: #fff; border: 1px solid #ddd; margin-bottom: 0px !important;" class="sub-title"><STRONG><?= $activity['CUST'] ?></STRONG>&nbsp;-&nbsp;<?= $activity['CUST_NAME'] ?></h3>
+                            <h3 style="margin-top: 20px; padding: 20px; background: #00cdb0; color: #fff; border: 1px solid #ddd; margin-bottom: 0px !important;" class="sub-title">
+                                <strong><?= $activity['CUST'] ?></strong>&nbsp;-&nbsp;<?= $activity['CUST_NAME'] ?>
+                            </h3>
 
                             <table class="table table-bordered" style="margin-bottom: 0px">
                                 <thead>
@@ -880,27 +881,33 @@
                                 <thead>
                                     <tr>
                                         <th width="50%">PHONE NUMBER</th>
-                                        <th width="50%">UPLOAD IMAGE</th>
+                                        <th width="50%">UPLOAD IMAGES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td data-label="PHONE NUMBER">
-                                            <input type="text" style="margin-top: 10px !important" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="phone[]" class="form-control" value="<?= $activity['PHONE'] ?>" readonly>
+                                            <input type="text" style="margin-top: 10px !important" name="phone[]" class="form-control" value="<?= $activity['PHONE'] ?>" readonly>
                                         </td>
-                                        <td data-label="UPLOAD IMAGE">
-                                            <?php if (!empty($activity['IMAGE_PATH'])): ?>
-                                                <div style="margin-bottom: 10px;">
-                                                    <img src="<?= base_url('uploads/plan/' . $activity['IMAGE_PATH']) ?>" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">
-                                                </div>
+                                        <td data-label="UPLOAD IMAGES">
+                                            <?php if (!empty($activity['IMAGES'])): ?>
+                                               <?php foreach ($activity['IMAGES'] as $img): ?>
+                                                    <div style="display:inline-block; margin:5px;">
+                                                        <img src="<?= base_url('uploads/plan/' . $img['IMAGE_PATH']) ?>" width="100" alt="Image">
+                                                        <br>
+                                                        <a style="color: red; font-weight: bold" href="<?= base_url('dashboard/sales/activity/delete_image/' . $img['ID']) ?>" onclick="return confirm('Yakin ingin hapus gambar ini?')">HAPUS GAMBAR</a>
+                                                    </div>
+                                                <?php endforeach; ?>
                                             <?php endif; ?>
-                                            
-                                            <input type="file" name="image[]" class="form-control" accept="image/*">
+
+                                            <input type="file" name="image[<?= $i ?>][]" class="form-control" accept="image/*" multiple>
+                                            <small class="text-muted" style="font-weight: bold">BISA UPLOAD LEBIH DARI 1 GAMBAR</small>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         <?php endforeach; ?>
+
 
                         <?php foreach ($other_activities_fix as $i => $activity_cust): ?>
                             <!-- Hidden untuk identifikasi record unik -->
@@ -946,14 +953,24 @@
                                         <td data-label="PHONE NUMBER">
                                             <input type="number" style="margin-top: 10px !important" placeholder="CTH : 08XXXXXXX" name="phone_cust[]" class="form-control" value="<?= $activity_cust['PHONE'] ?>">
                                         </td>
-                                        <td data-label="UPLOAD IMAGE">
-                                            <?php if (!empty($activity_cust['IMAGE_PATH'])): ?>
-                                                <div style="margin-bottom: 10px;">
-                                                    <img src="<?= base_url('uploads/plan/' . $activity_cust['IMAGE_PATH']) ?>" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">
+                                        <td data-label="UPLOAD IMAGES">
+                                            <?php
+                                            $other_images = $this->db->get_where('TB_PLAN_ACTIVITY_OTHER_IMAGES', ['ID_DATA' => $activity_cust['ID']])->result_array();
+                                            if (!empty($other_images)):
+                                                foreach ($other_images as $img):
+                                            ?>
+                                                <div style="display:inline-block; margin:5px;">
+                                                    <img src="<?= base_url('uploads/other/' . $img['IMAGE_PATH']) ?>" width="100" alt="Image">
+                                                    <br>
+                                                    <a style="color: red; font-weight: bold" href="<?= base_url('dashboard/sales/activity/delete_other_image/' . $img['ID']) ?>" onclick="return confirm('Yakin ingin hapus gambar ini?')">HAPUS GAMBAR</a>
                                                 </div>
-                                            <?php endif; ?>
-                                            
-                                            <input type="file" name="image_cust[]" class="form-control" accept="image/*">
+                                            <?php
+                                                endforeach;
+                                            endif;
+                                            ?>
+
+                                            <input type="file" name="image_cust[<?= $i ?>][]" multiple class="form-control" accept="image/*">
+                                            <small class="text-muted" style="font-weight: bold">BISA UPLOAD LEBIH DARI 1 GAMBAR</small>
                                         </td>
                                     </tr>
                                 </tbody>

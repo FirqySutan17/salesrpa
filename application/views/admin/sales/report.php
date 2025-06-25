@@ -487,6 +487,23 @@
     input, textarea {
         text-transform: uppercase !important;
     }
+	.paging-style {
+		display: flex;
+		flex-direction: row;
+		align-content: center;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	th {
+		font-size: 12px !important;
+    	text-transform: uppercase !important;
+		text-align: center !important;
+	}
+	td {
+		font-size: 11px !important;
+    	text-transform: uppercase !important;
+	}
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
@@ -629,9 +646,6 @@
 		.btn-show-detail svg {
 			font-size: 25px
 		}
-		table td:last-child:before {
-			width: 0%;
-		}
 		.dataTables_length {
 			display: none;
 		}
@@ -714,22 +728,22 @@
     </h3>
 	<form class="form-horizontal" action="<?= admin_url('sales/activity/report') ?>" method="POST" style="margin-bottom: 20px">
         <div class="row" style="padding: 0px 10px; border-bottom: 2px solid #000; padding-bottom: 8px;margin: 0px 0px;  ">
-			<div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
-				<span class="label-span" style="width: 35%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
+			<div class="col-md-5 col-sm-12 filter-style"  style="display: flex;">
+				<span class="label-span" style="width: 40%; display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">DATE : </span> 
 				<input type="date" name="sdate" value="<?= $filter['sdate'] ?>" class="form-control" required> 
 				<span style="margin-top: 9px; font-weight: 600">-</span> 
 				<input type="date" name="edate" value="<?= $filter['edate'] ?>" class="form-control" required>
 			</div>
 			<div class="col-md-4 col-sm-12 filter-style" style="display: flex;">
-                <span class="label-span sales-span" style="display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600">SALES : </span> 
-                <select id="sales" class="form-control" name="sales" style="width: 78%">
+                <span class="label-span sales-span" style="display: inline-block; vertical-align: middle; margin-top: 9px; font-weight: 600; width: 40%">SALES : </span> 
+                <select id="sales" class="form-control" name="sales" style="width: 100%">
                     <option value="*" selected>- ALL SALES -</option>
                      <?php foreach ($sales as $field): ?>
                         <option <?= $filter['sales'] == $field['EMPLOYEE_ID'] ? 'selected' : '' ?> value="<?= $field['EMPLOYEE_ID'] ?>"><?= $field['EMPLOYEE_ID'] ?> - <?= $field['FULL_NAME'] ?></option>
                      <?php endforeach ?>
                 </select>
             </div>
-			<div class="col-md-4 col-sm-12 filter-style"  style="display: flex;">
+			<div class="col-md-3 col-sm-12 filter-style"  style="display: flex;">
 				<button type="submit" class="btn btn-primary btn-block"><i class="fas fa-search" style="font-size: 20px"></i></button> 
 			</div>
         </div>
@@ -740,44 +754,106 @@
 				<?= $this->session->flashdata('success') ?>
 			</div>
 		<?php endif; ?>
-		<table class="table table-bordered table-hover" id="example1">
-			<thead>
-				<tr>
-					<th>NO</th>
-					<th>PLAN NUMBER</th>
-					<th>DATE</th>
-					<th>SALES</th>
-                    <th>PLAN</th>
-					<th>ACTION</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php $no = 1; ?>
-				<?php foreach ($plans as $plan): ?>
+		<?php
+			$groupedPlans = [];
+			foreach ($plans as $row) {
+				$key = $row['ACTIVITY_NO'];
+				if (!isset($groupedPlans[$key])) {
+					$groupedPlans[$key] = [
+						'ACTIVITY_DATE' => $row['ACTIVITY_DATE'],
+						'SALES_NAME' => $row['SALES_NAME'],
+						'SALES_NPK' => $row['SALES_NPK'],
+						'customers' => []
+					];
+				}
+				$groupedPlans[$key]['customers'][] = [
+					'CUSTOMER_CODE' => $row['CUSTOMER_CODE'],
+					'CUSTOMER_NAME' => $row['CUSTOMER_NAME'],
+					'TARGET_PLAN' => $row['TARGET_PLAN'],
+					'REMARK' => $row['REMARK'],
+				];
+			}
+
+			// Pagination setup (contoh 5 group per halaman)
+			$perPage = 5;
+			$totalGroups = count($groupedPlans);
+			$totalPages = ceil($totalGroups / $perPage);
+			$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+			$start = ($page - 1) * $perPage;
+			$groupedPlansPage = array_slice($groupedPlans, $start, $perPage, true);
+
+			?>
+
+			<table class="table table-bordered table-hover" style="margin-bottom: 0px">
+				<thead>
 					<tr>
-						<td data-label="NO"><?= $no++ ?></td>
-						<td data-label="PLAN NUMBER"><strong>#<?= $plan['ACTIVITY_NO'] ?></strong> </td>
-						<td data-label="DATE"><?= date('d M Y', strtotime($plan['ACTIVITY_DATE'])) ?></td>
-						<td data-label="SALES"><?= $plan['SALES_NAME'] ?></td>
-						<td data-label="PLAN">
-							<?php foreach ($plan['customers'] as $cust): ?>
-								<p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
-							<?php endforeach; ?>
-						</td>
-						<td>
-							<a href="#" 
-                                onclick="openModal(this)" 
-                                class="btn btn-sm btn-show-detail"
-								data-activity-no="<?= $plan['ACTIVITY_NO'] ?>"
-                            >
-                                DETAIL
-                            </a>
-							<!-- <a href="<?= base_url('dashboard/sales/activity/delete/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-cancel" onclick="return confirm('Yakin ingin menghapus data ini?')">DELETE</a> -->
-						</td>
+						<th>NO</th>
+						<th>PLAN NUMBER</th>
+						<th>DATE</th>
+						<th>SALES</th>
+						<th>CUSTOMER NAME</th>
+						<th>TARGET PLAN</th>
+						<th>ACTUAL</th>
 					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+				<?php $no = $start + 1; ?>
+				<?php if (empty($groupedPlansPage)): ?>
+					<tr>
+						<td colspan="8" class="text-center"><strong>DATA TIDAK ADA</strong></td>
+					</tr>
+				<?php else: ?>
+					<?php foreach ($groupedPlansPage as $activityNo => $data): ?>
+						<?php $customerCount = count($data['customers']); ?>
+						<?php foreach ($data['customers'] as $index => $cust): ?>
+							<tr>
+								<?php if ($index === 0): ?>
+									<td data-label="NO" rowspan="<?= $customerCount ?>"><?= $no ?></td>
+									<td data-label="PLAN NUMBER" rowspan="<?= $customerCount ?>"><strong>
+										<a href="#" 
+										onclick="openModal(this)" 
+										class="btn btn-sm btn-show-detail"
+										data-activity-no="<?= $activityNo ?>"
+										>#<?= $activityNo ?></a></strong></td>
+									<td data-label="ACTIVITY DATE" rowspan="<?= $customerCount ?>"><strong><?= date('d M Y', strtotime($data['ACTIVITY_DATE'])) ?></strong></td>
+									<td data-label="SALES" rowspan="<?= $customerCount ?>"><?= $data['SALES_NAME'] ?> (<?= $data['SALES_NPK'] ?>)</td>
+								<?php endif; ?>
+								<td data-label="CUSTOMER"><?= htmlspecialchars($cust['CUSTOMER_NAME']) ?> (<?= htmlspecialchars($cust['CUSTOMER_CODE']) ?>)</td>
+								<td data-label="TARGET PLAN">
+									<?php if ($cust['TARGET_PLAN'] == null): ?>
+										ON SITE
+									<?php else: ?>
+										<?= htmlspecialchars($cust['TARGET_PLAN']) ?>
+									<?php endif; ?>
+									
+								</td>
+								<td data-label="ACTUAL"><?= htmlspecialchars($cust['REMARK']) ?></td>
+							</tr>
+						<?php endforeach; ?>
+						<?php $no++; ?>
+					<?php endforeach; ?>
+				<?php endif; ?>
+				</tbody>
+			</table>
+
+			<!-- Pagination simple -->
+			<div class="paging-style">
+				<ul class="pagination">
+					<?php if ($page > 1): ?>
+						<li class="page-item"><a class="page-link" href="?page=<?= $page - 1 ?>">PREV</a></li>
+					<?php endif; ?>
+
+					<?php for ($p = 1; $p <= $totalPages; $p++): ?>
+						<li class="page-item <?= $p == $page ? 'active' : '' ?>">
+							<a class="page-link" href="?page=<?= $p ?>"><?= $p ?></a>
+						</li>
+					<?php endfor; ?>
+
+					<?php if ($page < $totalPages): ?>
+						<li class="page-item"><a class="page-link" href="?page=<?= $page + 1 ?>">NEXT</a></li>
+					<?php endif; ?>
+				</ul>
+			</div>
 	</div>
 </div>
 
