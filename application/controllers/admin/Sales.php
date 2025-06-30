@@ -759,18 +759,40 @@ class Sales extends CI_Controller {
 	}
 
 	public function get_modal_detail($activity_no) {
-		error_reporting(0);  // matikan error reporting agar tidak muncul di output JSON
-		// ini_set('display_errors', 0);
-		// ini_set('log_errors', 1);
+		ini_set('display_errors', 0);
+		ini_set('log_errors', 1);
+		error_reporting(E_ALL);
 
 		$data = [];
 
 		$data['plan'] = $this->db->where('ACTIVITY_NO', $activity_no)->get('TB_PLAN')->row_array();
-		$data['plan_activities'] = $this->db->where('ACTIVITY_NO', $activity_no)->order_by('ID', 'ASC')->get('TB_PLAN_ACTIVITY')->result_array();
-		$data['other_activities'] = $this->db->where('ACTIVITY_NO', $activity_no)->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
+		$plan_activities = $this->db->where('ACTIVITY_NO', $activity_no)->order_by('CUST', 'ASC')->get('TB_PLAN_ACTIVITY')->result_array();
 
+		foreach ($plan_activities as &$activity) {
+			if (!isset($activity['ACTIVITY_NO']) || !isset($activity['CUST'])) {
+				continue;
+			}
+
+			$images = $this->db
+				->where('ACTIVITY_NO', $activity['ACTIVITY_NO'])
+				->where('CUST', $activity['CUST'])
+				->get('TB_PLAN_ACTIVITY_IMAGES')
+				->result_array();
+
+			$activity['IMAGES'] = $images;
+		}
+
+		$data['plan_activities'] = $plan_activities;
+
+		$data['other_activities'] = $this->db
+			->where('ACTIVITY_NO', $activity_no)
+			->get('TB_PLAN_ACTIVITY_OTHER')
+			->result_array();
+
+		// dd($data);
 		header('Content-Type: application/json');
-		echo trim(json_encode($data));
+		$json = json_encode($data);
+		echo $json;
 		exit;
 	}
 
@@ -1042,7 +1064,7 @@ class Sales extends CI_Controller {
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
 		// Daftar NPK yang boleh lihat semua data
-		$exception_ids = ['01220023', '999999', '01220014', '07050009'];
+		$exception_ids = ['01220023', '999999', '01220014', '07050009', 'jwchoi', 'kimkh', 'hjkang'];
 
 		$where_npk = "";
 		if (!in_array($npk_user, $exception_ids)) {
@@ -1051,27 +1073,47 @@ class Sales extends CI_Controller {
 
 		// Query utama: TB_PLAN + TB_PLAN_ACTIVITY
 		$query_main = "
-			SELECT 
-				P.ACTIVITY_NO,
-				P.ACTIVITY_DATE,
-				P.SALES_NPK,
-				P.SALES_NAME,
-				A.CUST,
-				A.CUST_NAME,
-				A.PHONE,
-				A.ADDRESS,
-				A.TARGET_PLAN
-			FROM TB_PLAN P
-			JOIN TB_PLAN_ACTIVITY A ON P.ACTIVITY_NO = A.ACTIVITY_NO
-			WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
+		SELECT 
+            P.ACTIVITY_NO,
+            P.ACTIVITY_DATE,
+            P.SALES_NPK,
+            P.SALES_NAME,
+            A.CUST,
+            A.CUST_NAME,
+            A.PHONE,
+            A.ADDRESS,
+            A.TARGET_PLAN,
+            NULL AS REMARK_OTHER -- Kosong karena ini baris dari ACTIVITY
+        FROM TB_PLAN P
+        JOIN TB_PLAN_ACTIVITY A ON P.ACTIVITY_NO = A.ACTIVITY_NO
+        WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
+			BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
+			AND TO_DATE('$edate', 'DD-MM-YYYY')
+        
+        UNION ALL
+        
+        SELECT 
+            P.ACTIVITY_NO,
+            P.ACTIVITY_DATE,
+            P.SALES_NPK,
+            P.SALES_NAME,
+            NULL AS CUST,
+            NULL AS CUST_NAME,
+            NULL AS PHONE,
+            NULL AS ADDRESS,
+            NULL AS TARGET_PLAN,
+            O.REMARK AS REMARK_OTHER -- Diisi karena ini baris dari ACTIVITY_OTHER
+        FROM TB_PLAN P
+        JOIN TB_PLAN_ACTIVITY_OTHER O ON P.ACTIVITY_NO = O.ACTIVITY_NO
+        WHERE TO_DATE(P.ACTIVITY_DATE, 'DD-MM-YYYY') 
 				BETWEEN TO_DATE('$sdate', 'DD-MM-YYYY') 
 				AND TO_DATE('$edate', 'DD-MM-YYYY')
-				$where_npk
-			ORDER BY P.ACTIVITY_DATE DESC
+			$where_npk
+        ORDER BY ACTIVITY_DATE DESC
 		";
 
 		$main_data = $this->db->query($query_main)->result_array();
-
+        // dd($query_main);
 		// Query tambahan: TB_PLAN + TB_PLAN_ACTIVITY_OTHER
 		$query_other = "
 			SELECT 
@@ -1148,7 +1190,7 @@ class Sales extends CI_Controller {
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
 		// NPK pengecualian (bisa lihat semua data)
-		$exception_ids = ['01220023', '999999', '01220014', '07050009'];
+		$exception_ids = ['01220023', '999999', '01220014', '07050009', 'jwchoi', 'kimkh', 'hjkang'];
 		$where_npk = "";
 		$sales_filter = "";
 
@@ -1218,7 +1260,7 @@ class Sales extends CI_Controller {
 		$edate = date('d-m-Y', strtotime($filter['edate']));
 
 		// NPK yang dapat akses semua data
-		$exception_ids = ['01220023', '999999', '01220014', '07050009'];
+		$exception_ids = ['01220023', '999999', '01220014', '07050009', 'jwchoi', 'kimkh', 'hjkang'];
 
 		$query = "
 			SELECT *

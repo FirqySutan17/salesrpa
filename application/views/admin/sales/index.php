@@ -520,7 +520,7 @@
 			<thead>
 				<tr>
 					<th>NO</th>
-					<th>PLAN NUMBER</th>
+					<th>ACTIVITY NUMBER</th>
 					<th>DATE</th>
 					<th>SALES</th>
                     <th>CUSTOMER</th>
@@ -532,12 +532,15 @@
 				<?php foreach ($plans as $plan): ?>
 					<tr>
 						<td data-label="NO"><?= $no++ ?></td>
-						<td data-label="PLAN NUMBER"><strong>#<?= $plan['ACTIVITY_NO'] ?></strong> </td>
+						<td data-label="ACTIVITY NUMBER"><strong>#<?= $plan['ACTIVITY_NO'] ?></strong> </td>
 						<td data-label="DATE"><?= date('d M Y', strtotime($plan['ACTIVITY_DATE'])) ?></td>
 						<td data-label="SALES"><?= $plan['SALES_NAME'] ?></td>
-						<td data-label="PLAN">
+						<td data-label="CUSTOMER">
 							<?php foreach ($plan['customers'] as $cust): ?>
-								<p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
+							    <?php if ($cust['CUST'] == null || $cust['CUST_NAME'] == null): ?>
+							    <?php else: ?>
+							        <p><strong><?= $cust['CUST'] ?></strong> - <?= $cust['CUST_NAME'] ?></p>
+							    <?php endif; ?>
 							<?php endforeach; ?>
 							<?php foreach ($plan['other_customers'] as $cust): ?>
 								<p><strong>CANDIDATE - <?= $cust['CUSTOMER'] ?></p>

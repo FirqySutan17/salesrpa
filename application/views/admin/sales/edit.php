@@ -856,8 +856,8 @@
                                 <thead>
                                     <tr>
                                         <th width="33.333%">COORDINATE</th>
-                                        <th width="33.333%">TARGET PLAN</th>
-                                        <th width="33.333%">ACTUAL REMARK</th>
+                                        <th width="33.333%">PLAN</th>
+                                        <th width="33.333%">ACTUAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -867,10 +867,10 @@
                                             <input type="text" style="font-size: 14px; width: 100%;margin-top: 15px !important" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="coordinate[]" class="form-control" value="<?= $activity['COORDINATE'] ?>" readonly>
                                             <textarea name="address[]" class="form-control" rows="5" readonly style="margin-top:10px" id="address-info"><?= $activity['ADDRESS_ACTUAL'] ?></textarea>
                                         </td>
-                                        <td data-label="TARGET PLAN">
-                                            <textarea name="target_plan[]" placeholder="CTH : TULIS TARGET PLAN DISINI.." rows="5" class="form-control" readonly><?= $activity['TARGET_PLAN'] ?></textarea>
+                                        <td data-label="PLAN">
+                                            <textarea name="target_plan[]" placeholder="CTH : TULIS PLAN DISINI.." rows="5" class="form-control" readonly><?= $activity['TARGET_PLAN'] ?></textarea>
                                         </td>
-                                        <td data-label="ACTUAL REMARK">
+                                        <td data-label="ACTUAL">
                                             <textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control"><?= $activity['REMARK'] ?></textarea>
                                         </td>
                                     </tr>
@@ -920,8 +920,8 @@
                                 <thead>
                                     <tr>
                                         <th width="33.333%">COORDINATE</th>
-                                        <th width="33.333%">TARGET PLAN</th>
-                                        <th width="33.333%">ACTUAL REMARK</th>
+                                        <th width="33.333%">PLAN</th>
+                                        <th width="33.333%">ACTUAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -931,10 +931,10 @@
                                             <input type="text" style="font-size: 14px; width: 100%;margin-top: 15px !important" placeholder="KLIK TOMBOL DIBAWAH UNTUK DAPAT KOORDINATE" name="coordinatecust[]" class="form-control" value="<?= $activity_cust['COORDINATE'] ?>" readonly>
                                             <textarea name="addresscust[]" class="form-control" rows="5" readonly style="margin-top:10px" id="address-info"><?= $activity_cust['ADDRESS'] ?></textarea>
                                         </td>
-                                        <td data-label="TARGET PLAN">
+                                        <td data-label="PLAN">
                                             <textarea name="target_plan_cust[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly><?= $activity_cust['TARGET_PLAN'] ?></textarea>
                                         </td>
-                                        <td data-label="ACTUAL REMARK">
+                                        <td data-label="ACTUAL">
                                             <textarea name="remark_cust[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control"><?= $activity_cust['REMARK'] ?></textarea>
                                         </td>
                                     </tr>
@@ -1041,7 +1041,7 @@
                                     <th>CUSTOMER</th>
                                     <th>PHONE NUMBER</th>
                                     <th>ALAMAT</th>
-                                    <th>ACTUAL REMARK</th>
+                                    <th>ACTUAL</th>
                                     <th>UPLOAD</th>
                                     <th></th>
                                 </tr>
@@ -1065,7 +1065,7 @@
                                             <input type="text" name="other_coordinate[]" class="form-control" readonly  style="font-size: 14px; width: 100%;margin-top:15px !important" value="<?= $other['COORDINATE'] ?>" />
                                             <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px !important"><?= $other['ADDRESS'] ?></textarea>
                                         </td>
-                                        <td data-label="ACTUAL REMARK">
+                                        <td data-label="ACTUAL">
                                             <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" id="" rows="5"><?= $other['REMARK'] ?></textarea>
                                         </td>
                                         <td data-label="UPLOAD">

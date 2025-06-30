@@ -504,6 +504,12 @@
 		font-size: 11px !important;
     	text-transform: uppercase !important;
 	}
+	.select2-container--bootstrap4 .select2-selection--single {
+		height: 35px;
+	}
+	.select2-container .select2-selection--single .select2-selection__rendered {
+		margin-top: 3px !important;
+	}
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
@@ -567,8 +573,8 @@
         } 
 		tr {
 			padding: 15px;
-			border-radius: 10px;
-			margin: 10px 0px !important;
+			border-radius: 0px;
+			margin: 0px 0px !important;
 			background: #f5f5f5;
 		}
         th, td {
@@ -711,6 +717,11 @@
 			margin: 0px 0px !important;
 			padding: 10px 5px;
 		}
+		.mobile-bg {
+			background: rgb(0, 190, 238) !important;
+			color: #fff !important;
+			border-radius: 8px
+		}
 	}
 
 	@media (max-width: 480px) {
@@ -788,11 +799,11 @@
 				<thead>
 					<tr>
 						<th>NO</th>
-						<th>PLAN NUMBER</th>
+						<th>ACTIVITY NUMBER</th>
 						<th>DATE</th>
 						<th>SALES</th>
 						<th>CUSTOMER NAME</th>
-						<th>TARGET PLAN</th>
+						<th>PLAN</th>
 						<th>ACTUAL</th>
 					</tr>
 				</thead>
@@ -808,8 +819,8 @@
 						<?php foreach ($data['customers'] as $index => $cust): ?>
 							<tr>
 								<?php if ($index === 0): ?>
-									<td data-label="NO" rowspan="<?= $customerCount ?>"><?= $no ?></td>
-									<td data-label="PLAN NUMBER" rowspan="<?= $customerCount ?>"><strong>
+									<td class="mobile-bg" data-label="NO" rowspan="<?= $customerCount ?>"><?= $no ?></td>
+									<td data-label="ACTIVITY NUMBER" rowspan="<?= $customerCount ?>"><strong>
 										<a href="#" 
 										onclick="openModal(this)" 
 										class="btn btn-sm btn-show-detail"
@@ -819,7 +830,7 @@
 									<td data-label="SALES" rowspan="<?= $customerCount ?>"><?= $data['SALES_NAME'] ?> (<?= $data['SALES_NPK'] ?>)</td>
 								<?php endif; ?>
 								<td data-label="CUSTOMER"><?= htmlspecialchars($cust['CUSTOMER_NAME']) ?> (<?= htmlspecialchars($cust['CUSTOMER_CODE']) ?>)</td>
-								<td data-label="TARGET PLAN">
+								<td data-label="PLAN">
 									<?php if ($cust['TARGET_PLAN'] == null): ?>
 										ON SITE
 									<?php else: ?>
@@ -935,6 +946,7 @@
 <script src="<?= asset('vendor/select2/js/en.js') ?>"></script>
 <script src="<?= asset('vendor/datatables.net/js/jquery.dataTables.min.js') ?>"></script>
 <script src="<?= asset('vendor/datatables.net-bs/js/dataTables.bootstrap.min.js') ?>"></script>
+<script src="<?= asset('vendor/lightbox2/dist/js/lightbox-plus-jquery.min.js') ?>"></script>
 
 <script>
     $(function () {
@@ -950,82 +962,101 @@
 		.then(response => response.text())
 		.then(text => {
 		const data = JSON.parse(text);
-
+			console.log(text);
 		document.getElementById('modal_title_reqno').textContent = data.plan.ACTIVITY_NO || '';
 
-		// Set tanggal dan sales name
 		document.querySelector('[name="activity_date"]').value = data.plan.ACTIVITY_DATE || '';
 		document.querySelector('[name="sales_npk"]').value = data.plan.SALES_NPK || '';
 		document.querySelector('[name="sales_name"]').value = data.plan.SALES_NAME || '';
 
-		// Render semua plan_activities secara dinamis
 		const activitiesContainer = document.getElementById('activities_container');
 		activitiesContainer.innerHTML = ''; // kosongkan dulu
 
-		data.plan_activities.forEach((activity, index) => {
-			// Parse koordinat
-			const coords = (activity.COORDINATE || '-6.2301638, 106.8311237').split(',');
-			const lat = coords[0].trim();
-			const long = coords[1].trim();
+		// ✅ Tambahkan pengecekan ini
+		if (Array.isArray(data.plan_activities)) {
+			data.plan_activities.forEach((activity, index) => {
+				// Parse koordinat
+				const coords = (activity.COORDINATE || '-6.2301638, 106.8311237').split(',');
+				const lat = coords[0].trim();
+				const long = coords[1].trim();
+				let imageHtml = '';
 
-			activitiesContainer.innerHTML += `
-			<h3 style="margin-top: 20px; padding: 20px; background:#00cdb0; border: 1px solid #ddd; margin-bottom: 0px !important; color: #fff" class="sub-title">
-				<strong>${activity.CUST || ''}</strong> &nbsp;-&nbsp; ${activity.CUST_NAME || ''}
-			</h3>
-			<table class="table table-bordered" style="margin-bottom: 0px">
-				<thead>
-				<tr class="mobile-space">
-					<th width="50%">CUSTOMER'S ADDRESS</th>
-					<th width="50%">ACTUAL LOCATION</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr class="mobile-space">
-					<td data-label="CUSTOMER'S ADDRESS">
-						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.ADDRESS || ''}</textarea>
-					</td>
-					<td data-label="ACTUAL LOCATION">
-						<iframe style="height: 170px; width: 100%; margin-top: 10px" class="maps-frame" 
-							src="https://maps.google.com/maps?q=${lat},${long}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-						<p style="text-transform: uppercase">${activity.ADDRESS_ACTUAL || ''}</p>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-			<table class="table table-bordered" style="margin-bottom: 0px">
-				<thead>
-				<tr class="mobile-space">
-					<th width="50%">TARGET PLAN</th>
-					<th width="50%">ACTUAL RESULT</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr class="mobile-space">
-					<td data-label="TARGET PLAN">
-					<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.TARGET_PLAN || ''}</textarea>
-					</td>
-					<td data-label="ACTUAL RESULT">
-					<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.REMARK || ''}</textarea>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-			<table class="table table-bordered" style="margin-bottom: 20px">
-				<thead>
-				<tr class="mobile-space"><th>IMAGE</th></tr>
-				</thead>
-				<tbody>
-				<tr class="mobile-space">
-					<td data-label="IMAGE">
-					<div style="margin-bottom: 10px; text-align: center; width: 100%">
-						<img class="img-top" src="<?= base_url('uploads/plan/') ?>${activity.IMAGE_PATH || ''}" alt="Uploaded Image" style="max-width: 200px; border: 1px solid #ccc; padding: 5px;">
-					</div>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-			`;
-		});
+				if (activity.IMAGES && activity.IMAGES.length > 0) {
+					activity.IMAGES.forEach(img => {
+						imageHtml += `
+							<div style="display:inline-block; margin:5px; text-align:center;">
+								<a class="buttons" href="<?= base_url('uploads/plan/') ?>${img.IMAGE_PATH}" data-lightbox="mygallery">
+									<img src="<?= base_url('uploads/plan/') ?>${img.IMAGE_PATH}" alt="" width="100" style="object-fit: cover">
+								</a>
+							</div>
+						`;
+					});
+				} else {
+					imageHtml = '<p style="text-align:center; font-style:italic;">No images uploaded.</p>';
+				}
+
+				activitiesContainer.innerHTML += `
+				<h3 style="margin-top: 20px; padding: 20px; background:#00cdb0; border: 1px solid #ddd; margin-bottom: 0px !important; color: #fff" class="sub-title">
+					<strong>${activity.CUST || ''}</strong> &nbsp;-&nbsp; ${activity.CUST_NAME || ''}
+				</h3>
+				<table class="table table-bordered" style="margin-bottom: 0px">
+					<thead>
+					<tr class="mobile-space">
+						<th width="50%">CUSTOMER'S ADDRESS</th>
+						<th width="50%">ACTUAL LOCATION</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="mobile-space">
+						<td data-label="CUSTOMER'S ADDRESS">
+							<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.ADDRESS || ''}</textarea>
+						</td>
+						<td data-label="ACTUAL LOCATION">
+							<iframe style="height: 170px; width: 100%; margin-top: 10px" class="maps-frame" 
+								src="https://maps.google.com/maps?q=${lat},${long}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+							<p style="text-transform: uppercase">${activity.ADDRESS_ACTUAL || ''}</p>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="table table-bordered" style="margin-bottom: 0px">
+					<thead>
+					<tr class="mobile-space">
+						<th width="50%">PLAN</th>
+						<th width="50%">ACTUAL RESULT</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="mobile-space">
+						<td data-label="PLAN">
+						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.TARGET_PLAN || ''}</textarea>
+						</td>
+						<td data-label="ACTUAL RESULT">
+						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.REMARK || ''}</textarea>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="table table-bordered" style="margin-bottom: 20px">
+					<thead>
+					<tr class="mobile-space"><th>IMAGE</th></tr>
+					</thead>
+					<tbody>
+					<tr class="mobile-space">
+						<td data-label="IMAGE">
+						<div style="margin-bottom: 10px; text-align: center; width: 100%">
+							${imageHtml}
+						</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				`;
+			});
+		} else {
+			activitiesContainer.innerHTML = `<p style="text-align:center; font-style:italic; color: red;">Tidak ada data aktivitas yang bisa ditampilkan.</p>`;
+			console.log('plan_activities bukan array:', data.plan_activities);
+		}
 
 		// Render other activities tetap seperti modal kamu
 		const tbody = document.getElementById('farmersinfo');

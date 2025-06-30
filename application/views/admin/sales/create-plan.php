@@ -852,7 +852,7 @@
                                     <th>CUSTOMER</th>
                                     <th>PHONE NUMBER</th>
                                     <th>ALAMAT</th>
-                                    <th>TARGET PLAN</th>
+                                    <th>PLAN</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -876,7 +876,7 @@
                                     <td data-label="ADDRESS">
                                         <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
                                     </td>
-                                    <td data-label="TARGET PLAN">
+                                    <td data-label="PLAN">
                                         <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3" required></textarea>
                                     </td>
                                     <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
@@ -895,7 +895,7 @@
                                     <th>CUSTOMER</th>
                                     <th>PHONE</th>
                                     <th>ADDRESS</th>
-                                    <th>TARGET PLAN</th>
+                                    <th>PLAN</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -914,7 +914,7 @@
                                     <td data-label="ADDRESS">
                                         <textarea name="other_address_plan[]" placeholder="CTH : MENARA JAMSOSTEK, JAKARTA SELATAN" style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" ></textarea>
                                     </td>
-                                    <td data-label="TARGET PLAN">
+                                    <td data-label="PLAN">
                                         <textarea name="other_target[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" id="" rows="3"></textarea>
                                     </td>
                                     <td>
@@ -987,7 +987,7 @@
             <td data-label="ADDRESS">
                 <textarea name="address[]" class="address-field" style="width: 100%;padding: 10px; border-radius: 5px !important; background-color: #eee; border-color: #d2d6de; text-transform: uppercase; color: #555;" rows="3" readonly></textarea>
             </td>
-            <td data-label="TARGET PLAN">
+            <td data-label="PLAN">
                 <textarea required name="target_plan[]" placeholder="CTH : MENAWARKAN PENJUALAN AYAM...." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase;" rows="3" required></textarea>
             </td>
             <td><a onclick="deleteRow(this)" href="javascript:void(0)" class="btn btn-sm" title="Hapus"><i class="fas fa-trash text-danger" style="width: 18px"></i></a></td>
