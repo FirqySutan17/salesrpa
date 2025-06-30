@@ -838,7 +838,13 @@
 									<?php endif; ?>
 									
 								</td>
-								<td data-label="ACTUAL"><?= htmlspecialchars($cust['REMARK']) ?></td>
+								<td data-label="ACTUAL">
+									<?php if ($cust['REMARK'] == NULL): ?>
+										ON PROGRESS
+									<?php else: ?>
+										<?= htmlspecialchars($cust['REMARK']) ?>
+									<?php endif; ?>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 						<?php $no++; ?>
@@ -902,41 +908,8 @@
 
       <!-- Container Dinamis untuk Plan Activities -->
       <div id="activities_container"></div>
+      <div id="others_container"></div>
 
-      <h3 class="sub-title" style="margin-top: 20px; padding: 20px; background: #00cdb0; border: 1px solid #ddd; margin-bottom: 0px !important; color: #fff">OTHER ACTUAL PLAN</h3>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>CUSTOMER</th>
-            <th>PHONE NUMBER</th>
-            <th>ALAMAT</th>
-            <th>REMARK</th>
-            <th>IMAGE</th>
-          </tr>
-        </thead>
-        <tbody id="farmersinfo">
-          <tr>
-            <td data-label="CUSTOMER" align="center">
-              <input type="hidden" name="other_id[]">
-              <input type="text" name="other_customer[]" class="form-control" placeholder="CTH: PT. SUPER UNGGAS JAYA" readonly />
-            </td>
-            <td data-label="PHONE NUMBER" align="center">
-              <input type="text" name="other_phone[]" class="form-control" placeholder="CTH: 08XXXXXXXXX" readonly />
-            </td>
-            <td data-label="ALAMAT" style="padding-top: 15px !important">
-              <textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px"></textarea>
-            </td>
-            <td data-label="REMARK">
-              <textarea name="other_remark[]" class="form-control" placeholder="CTH: Menawarkan penjualan ayam..." style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" rows="5" readonly></textarea>
-            </td>
-            <td data-label="UPLOAD">
-              <div style="margin-bottom: 10px;">
-                <img src="" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
 	  <a href="javascript:void(0)" onclick="closeModal()" class="btn btn-sm btn-show-cancel">CLOSE</a>
     </div>
   </div>
@@ -1009,7 +982,7 @@
 					<tbody>
 					<tr class="mobile-space">
 						<td data-label="CUSTOMER'S ADDRESS">
-							<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.ADDRESS || ''}</textarea>
+							<textarea name="address[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.ADDRESS || ''}</textarea>
 						</td>
 						<td data-label="ACTUAL LOCATION">
 							<iframe style="height: 170px; width: 100%; margin-top: 10px" class="maps-frame" 
@@ -1029,10 +1002,10 @@
 					<tbody>
 					<tr class="mobile-space">
 						<td data-label="PLAN">
-						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.TARGET_PLAN || ''}</textarea>
+						<textarea name="target_plan[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.TARGET_PLAN || 'ON PROGRESS'}</textarea>
 						</td>
 						<td data-label="ACTUAL RESULT">
-						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.REMARK || ''}</textarea>
+						<textarea name="remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${activity.REMARK || 'ON PROGRESS'}</textarea>
 						</td>
 					</tr>
 					</tbody>
@@ -1059,32 +1032,94 @@
 		}
 
 		// Render other activities tetap seperti modal kamu
-		const tbody = document.getElementById('farmersinfo');
-		tbody.innerHTML = ''; // kosongkan dulu
-		data.other_activities.forEach(function(other) {
-			tbody.innerHTML += `
-			<tr>
-				<td data-label="CUSTOMER" align="center">
-				<input type="hidden" name="other_id[]" value="${other.ID || ''}">
-				<input type="text" name="other_customer[]" class="form-control" value="${other.CUSTOMER || ''}" readonly/>
-				</td>
-				<td data-label="PHONE NUMBER" align="center">
-				<input type="text" name="other_phone[]" class="form-control" value="${other.PHONE || ''}" readonly/>
-				</td>
-				<td data-label="ALAMAT" style="padding-top: 15px !important">
-				<textarea name="other_address[]" class="form-control" rows="5" readonly style="margin-top:10px">${other.ADDRESS || ''}</textarea>
-				</td>
-				<td data-label="REMARK">
-				<textarea name="other_remark[]" class="form-control" readonly style="width: 100%;padding: 10px; border-radius: 5px !important; border-color: #d2d6de; text-transform: uppercase; font-size: 12px" rows="5">${other.REMARK || ''}</textarea>
-				</td>
-				<td data-label="UPLOAD">
-				<div style="margin-bottom: 10px; text-align: center; width: 100%">
-					<img class="img-top" src="<?= base_url('uploads/other/') ?>${other.IMAGE_PATH || ''}" alt="Existing Image" style="max-width: 150px; border: 1px solid #ccc; padding: 5px;">
-				</div>
-				</td>
-			</tr>
-			`;
-		});
+		const othersContainer = document.getElementById('others_container');
+		othersContainer.innerHTML = ''; // kosongkan dulu
+		// ✅ Tambahkan pengecekan ini
+		if (Array.isArray(data.other_activities)) {
+			data.other_activities.forEach((other, index) => {
+				// Parse koordinat
+				const coords = (other.COORDINATE || '-6.2301638, 106.8311237').split(',');
+				const lat = coords[0].trim();
+				const long = coords[1].trim();
+				let imageoHtml = '';
+
+				if (other.IMAGES && other.IMAGES.length > 0) {
+					other.IMAGES.forEach(img => {
+						imageoHtml += `
+							<div style="display:inline-block; margin:5px; text-align:center;">
+								<a class="buttons" href="<?= base_url('uploads/other/') ?>${img.IMAGE_PATH}" data-lightbox="mygallery">
+									<img src="<?= base_url('uploads/other/') ?>${img.IMAGE_PATH}" alt="" width="100" style="object-fit: cover">
+								</a>
+							</div>
+						`;
+					});
+				} else {
+					imageoHtml = '<p style="text-align:center; font-style:italic;">No images uploaded.</p>';
+				}
+
+				othersContainer.innerHTML += `
+				<h3 style="margin-top: 20px; padding: 20px; background:#00beee; border: 1px solid #ddd; margin-bottom: 0px !important; color: #fff; text-transform: uppercase" class="sub-title">
+					NEW CUSTOMER - ${other.CUSTOMER || ''}
+				</h3>
+				<table class="table table-bordered" style="margin-bottom: 0px">
+					<thead>
+					<tr class="mobile-space">
+						<th width="50%">CUSTOMER'S ADDRESS</th>
+						<th width="50%">ACTUAL LOCATION</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="mobile-space">
+						<td data-label="CUSTOMER'S ADDRESS">
+							<input type="hidden" name="other_id[]" value="${other.ID || ''}">
+							<textarea name="address_plan[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${other.ADDRESS_PLAN || ''}</textarea>
+						</td>
+						<td data-label="ACTUAL LOCATION">
+							<iframe style="height: 170px; width: 100%; margin-top: 10px" class="maps-frame" 
+								src="https://maps.google.com/maps?q=${lat},${long}&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+							<p style="text-transform: uppercase">${other.ADDRESS || ''}</p>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="table table-bordered" style="margin-bottom: 0px">
+					<thead>
+					<tr class="mobile-space">
+						<th width="50%">PLAN</th>
+						<th width="50%">ACTUAL RESULT</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="mobile-space">
+						<td data-label="PLAN">
+						<textarea name="other_plan[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${other.TARGET_PLAN || 'ON PROGRESS'}</textarea>
+						</td>
+						<td data-label="ACTUAL RESULT">
+						<textarea name="other_remark[]" placeholder="CTH : TULIS REMARK DISINI.." rows="5" class="form-control" readonly>${other.REMARK || 'ON PROGRESS'}</textarea>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="table table-bordered" style="margin-bottom: 20px">
+					<thead>
+					<tr class="mobile-space"><th>IMAGE</th></tr>
+					</thead>
+					<tbody>
+					<tr class="mobile-space">
+						<td data-label="IMAGE">
+						<div style="margin-bottom: 10px; text-align: center; width: 100%">
+							${imageoHtml}
+						</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				`;
+			});
+		} else {
+			othersContainer.innerHTML = `<p style="text-align:center; font-style:italic; color: red;">Tidak ada data aktivitas yang bisa ditampilkan.</p>`;
+			console.log('other_activities bukan array:', data.other_activities);
+		}
 
 		// Tampilkan modal
 		document.getElementById('modalWrapper').style.display = 'block';
@@ -1093,12 +1128,6 @@
 		console.error("Gagal parsing JSON:", err);
 		});
 	}
-
-	$('#sales').select2({
-        theme: 'bootstrap4',
-        language: "en",
-        placeholder: "- SELECT SALES -",
-    });
 
     function closeModal() {
         document.getElementById('modalWrapper').style.display = 'none';

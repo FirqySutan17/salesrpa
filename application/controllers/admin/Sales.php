@@ -68,6 +68,30 @@ class Sales extends CI_Controller {
 		}
 
 		$data['can_modify'] = $can_modify;
+
+		$can_modify_other = [];
+
+		foreach ($data['plans'] as $plan) {
+			$activity_no = $plan['ACTIVITY_NO'];
+
+			// Query cek remark di TB_PLAN_ACTIVITY
+			$this->db->select('REMARK');
+			$this->db->where('ACTIVITY_NO', $activity_no);
+			$activities = $this->db->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
+
+			$hasRemark = false;
+			foreach ($activities as $act) {
+				if (!empty(trim($act['REMARK']))) {
+					$hasRemark = true;
+					break;
+				}
+			}
+
+			$can_modify_other[$activity_no] = !$hasRemark; // true kalau semua remark kosong
+		}
+
+		$data['can_modify_other'] = $can_modify_other;
+		
 		$this->db->from('TB_PLAN');
 		$this->db->where('SALES_NPK', $npk_user);
 		$this->db->where('ACTIVITY_DATE', $today);
@@ -767,7 +791,6 @@ class Sales extends CI_Controller {
 
 		$data['plan'] = $this->db->where('ACTIVITY_NO', $activity_no)->get('TB_PLAN')->row_array();
 		$plan_activities = $this->db->where('ACTIVITY_NO', $activity_no)->order_by('CUST', 'ASC')->get('TB_PLAN_ACTIVITY')->result_array();
-
 		foreach ($plan_activities as &$activity) {
 			if (!isset($activity['ACTIVITY_NO']) || !isset($activity['CUST'])) {
 				continue;
@@ -781,13 +804,24 @@ class Sales extends CI_Controller {
 
 			$activity['IMAGES'] = $images;
 		}
-
 		$data['plan_activities'] = $plan_activities;
 
-		$data['other_activities'] = $this->db
-			->where('ACTIVITY_NO', $activity_no)
-			->get('TB_PLAN_ACTIVITY_OTHER')
-			->result_array();
+		$data['other'] = $this->db->where('ACTIVITY_NO', $activity_no)->get('TB_PLAN_ACTIVITY_OTHER')->row_array();
+		$other_activities = $this->db->where('ACTIVITY_NO', $activity_no)->order_by('ID', 'ASC')->get('TB_PLAN_ACTIVITY_OTHER')->result_array();
+		foreach ($other_activities as &$other) {
+			if (!isset($other['ACTIVITY_NO']) || !isset($other['ID'])) {
+				continue;
+			}
+
+			$images = $this->db
+				->where('ACTIVITY_NO', $other['ACTIVITY_NO'])
+				->where('ID', $other['ID'])
+				->get('TB_PLAN_ACTIVITY_OTHER_IMAGES')
+				->result_array();
+
+			$other['IMAGES'] = $images;
+		}
+		$data['other_activities'] = $other_activities;
 
 		// dd($data);
 		header('Content-Type: application/json');

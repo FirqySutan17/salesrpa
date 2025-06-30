@@ -547,7 +547,7 @@
 							<?php endforeach; ?>
 						</td>
 						<td>
-							 <?php if (isset($can_modify[$plan['ACTIVITY_NO']]) && $can_modify[$plan['ACTIVITY_NO']]): ?>
+							 <?php if (isset($can_modify[$plan['ACTIVITY_NO']]) && $can_modify_other[$plan['ACTIVITY_NO']]): ?>
 								<a href="<?= base_url('dashboard/sales/activity/modify-plan/' . $plan['ACTIVITY_NO']) ?>" class="btn btn-sm btn-show-detail" style="background: #00c4ff; color: #fff">MODIFY</a>
 							<?php endif; ?>
 							<?php
